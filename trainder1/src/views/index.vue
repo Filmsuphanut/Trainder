@@ -1,23 +1,47 @@
 <template>
     <v-container>
-        <h1>{{ dataA }}</h1>
-        <v-btn to="/register">คลิกที่นี่ เพื่อสมัครสมาชิก</v-btn>
-        <div class='red--text'>หรือ</div>
-        <v-btn to="/login">เข้าสู่ระบบ</v-btn>
+        <br><br><br>
+        <h1>Trainder</h1>
+        <br><br><br>
+        <Login/>
+        <v-row justify="end">
+            <v-col cols="4" md="3">
+                <div class="box2 pa-5 text-center rounded-0" >
+                <div>ยังไม่มี id เหรอ ?</div><br>
+                <v-btn  to="/register">สมัครสมาชิกเลย</v-btn>
+                </div>
+            </v-col>
+        </v-row>
+        
     </v-container>
 </template>
 
 <script>
+
+import Login from './login'
+
 export default {
      name : 'index',
+    components:{
+        Login,
+    },
     data(){
         return{
-            dataA:'ยังไม่มี id เหรอ สมัครสิ',
         }
     },
     methods:{
 
     },
-
 }
 </script>
+
+
+<style>
+
+.box2 {
+background-color: rgb(255, 255, 255);
+  text-align: center;
+
+  
+}
+</style>

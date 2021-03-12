@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/index.vue'
 import Register from '../views/register.vue'
-import Login from '../views/login.vue'
+//import Login from '../views/login.vue'
 import TrainerHome from '../views/TrainerHome.vue'
 import UserHome from '../views/UserHome.vue'
 
@@ -20,12 +20,12 @@ const routes = [
     component: Register
 
   },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login
+  // {
+  //   path: '/login',
+  //   name: 'login',
+  //   component: Login
 
-  },
+  // },
   {
     path: '/UserHome',
     name: 'UserHome',
