@@ -1,10 +1,12 @@
 <template>
   <v-app>
+    <!--
     <v-app-bar
       app
       color="primary"
       dark
     >
+    
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -35,22 +37,25 @@
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
+      
     </v-app-bar>
+-->
 
     <v-main>
-      <HelloWorld/>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+//import Index from './views/index';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+  //  Index,
+
   },
 
   data: () => ({
