@@ -26,6 +26,14 @@ export default {
 
             sessionStorage.setItem('token',response.data.id)//token
             sessionStorage.setItem('role',response.data.name)//role trainer normaluser ?
+            sessionStorage.setItem('name',response.data.name)//role trainer normaluser ?
+
+            if(sessionStorage.getItem('role') === 'Trainer'){
+                this.$router.push('/TrainerHome')
+            }else if(sessionStorage.getItem('role') === 'User'){
+                this.$router.push('/UserHome')
+            }
+
         }
     },
 
