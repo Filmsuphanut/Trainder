@@ -15,7 +15,7 @@ export default {
             dataA:'ยังไม่มี id เหรอ สมัครสิ',
         }
     },
-    method:{
+    methods:{
 
     },
 
