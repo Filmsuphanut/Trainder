@@ -97,10 +97,7 @@
             </v-card>
             </v-dialog>
 
-            <v-snackbar
-            v-model="snackbar"
-            :multi-line="multiLine"
-            >
+            <v-snackbar v-model="snackbar" :timeout="2000">
             {{snacktext}}
 
             <template v-slot:action="{ attrs }">
@@ -164,7 +161,7 @@ export default {
                 if(response.data === 'false'){
                     this.snackbar = true
                     this.snacktext = this.snackalert.duplicate
-                }else if(response.data !== 'error'){
+                }else if(response.data === 'error'){
                     this.snackbar = true
                     this.snacktext = this.snackalert.captcha
                 }else{

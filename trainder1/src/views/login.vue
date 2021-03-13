@@ -10,10 +10,7 @@
         </form>     
         
 
-            <v-snackbar
-            v-model="snackbar"
-            :multi-line="multiLine"
-            >
+            <v-snackbar v-model="snackbar" :timeout="2000">
             รหัสผ่านไม่ถูกต้อง
 
             <template v-slot:action="{ attrs }">
