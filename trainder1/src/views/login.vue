@@ -4,9 +4,9 @@
         
         <div class="box2 text-center"   width="300px" height="250px" >
            <form id="userdata" @submit.prevent="loginsubmit">
-            <v-text-field label="ชื่อผู้ใช้" v-model="userdata.name"></v-text-field>
+            <v-text-field label="Email" v-model="userdata.name"></v-text-field>
             <v-text-field label="รหัสผ่าน" type="password" v-model="userdata.pass"></v-text-field>
-            <v-btn type="submit">เข้าสู่ระบบ</v-btn>
+            <v-btn type="submit" :loading="loading" :disabled="loading" >เข้าสู่ระบบ</v-btn>
         </form>     
         
     </div>
@@ -20,14 +20,17 @@ export default {
     data(){
         return{
             userdata:{name:null,pass:null},
+            loading:false,
         }
     },
     methods:{
         async loginsubmit(e){
+            this.loading = true
             const response = await axios.post('todos',this.userdata)
             console.log(this.userdata,response)
+            
             e.preventDefault()
-
+            this.loading = false
             sessionStorage.setItem('token',response.data.id)//token
             sessionStorage.setItem('role',response.data.name)//role trainer normaluser ?
             sessionStorage.setItem('name',response.data.name)//role trainer normaluser ?
@@ -38,9 +41,9 @@ export default {
                 this.$router.push('/UserHome')
             }
 
-        }
-    },
-
+        },
+    },    
+    
 }
 </script>
 

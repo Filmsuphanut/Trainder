@@ -1,42 +1,187 @@
 <template>
     <v-container>
-        <h1>สมัครสมาชิก</h1>
-        
-        <form id="userdata" @submit.prevent="regissubmit">
-            <v-text-field label="ชื่อผู้ใช้" v-model="userdata.name"></v-text-field>
-            <v-text-field label="รหัสผ่าน" type="password" v-model="userdata.pass"></v-text-field>
-            <v-btn type="submit" >สมัครสมาชิก</v-btn>
-        </form>
-        
+
+
+    <br>
+        <div class="bigbox">
+        <br><br>
+
+        <table class="tab" border="1">
+            <tr><td width="35%" height="1000px">
+            <div class="box">
+                <img src="../images/Logo.png" width="200" height="80" align="center"><br><br>
+
+            <v-form ref="form" @submit.prevent="regissubmit">
+            <v-row justify='center'>
+                <v-col>
+                <v-text-field label="ชื่อจริง" :rules="checkdata" color="purple darken-2" v-model="userdata.firstname" required></v-text-field>
+                <v-text-field label="นามสกุล" :rules="checkdata" v-model="userdata.lastname"></v-text-field>
+                <v-text-field label="Email" :rules="checkdata" v-model="userdata.email"></v-text-field>
+                <v-text-field label="รหัสผ่าน" :rules="passwordRules" type="password" v-model="userdata.pass"></v-text-field>
+                <v-text-field label="ยืนยันรหัสผ่าน" :rules="confirmPasswordRules" type="password" v-model="cpass"></v-text-field>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col>
+                    <v-checkbox
+                    v-model="checkbox"
+                    required
+                    @click.stop.prevent="dialog = true"
+                    >
+                <template v-slot:label>
+                ฉันยอมรับ&nbsp;
+                <a
+                    href="#"
+                    @click.stop.prevent="dialog = true"
+                >กฎและข้อบังคับ</a>
+                </template>
+                    </v-checkbox>
+                </v-col>
+            </v-row>
+            
+            <v-row justify='center'>
+                
+                <v-col class="text-right">
+                <div>ชื่อผู้ใช้ถูกใช้ไปแล้ว</div>
+                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิก</v-btn>    
+                </v-col>
+            </v-row>
+                
+            
+            </v-form>
+            </div>
+            </td></tr>
+            
+        </table>
+        </div>
+
+
+        <v-dialog
+            v-model="dialog"
+            absolute
+            max-width="400"
+            persistent
+            >
+            <v-card>
+                <v-card-title>
+                กฎและข้อบังคับ
+                </v-card-title>
+                <v-card-text>
+                <br>
+                บลาบลาบลาบลาบลา
+
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                <v-btn
+                    text
+                    @click="checkbox = false, dialog = false"
+                >
+                    ฉันไม่ยอมรับ
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                    class="white--text"
+                    color="deep-purple accent-4"
+                    @click="checkbox = true, dialog = false"
+                >
+                    ฉันยอมรับ
+                </v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+
+
     </v-container>
 </template>
 
 <script>
-// import Vue from 'vue'
-// import axios from 'axios'
-// import VueAxios from 'vue-axios'
-
-// Vue.use(VueAxios, axios)
-
 import axios from 'axios'
 
 export default {
     name : 'register',
     data(){
         return{
-            userdata:{name: null,pass:null},
+            userdata:{email: null,pass:null,firstname:null,lastname:null,},
+            cpass:null,
+
+            passwordRules: [
+                (value) => !!value || 'คุณยังไม่ได้ใส่รหัสผ่าน',
+                (value) => (value && value.length >= 8) || 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร',
+            ],
+            confirmPasswordRules: [
+                (value) => !!value || 'โปรดกรอกรหัสผ่านอีกครั้ง',
+                (value) =>
+                value === this.userdata.pass || 'รหัสผ่านไม่ตรงกัน',
+            ],
+            checkdata:[val => (val || '').length > 0 || 'โปรดกรอกฟิลด์นี้'],
+
+            checkbox:false,
+            dialog:false,
+            loading:false
+
         }
     },
     methods:{
         async regissubmit(e){
             // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
             // console.log(JSON.stringify(response.data))})
-            const response = await axios.post('todos',this.userdata)
-            console.log(response)
-            e.preventDefault()
-            this.$router.push('/')
+            if(this.$refs.form.validate()){
+                this.loading = true
+                const response = await axios.post('todos',this.userdata)
+                console.log(response)
+                e.preventDefault()
+                this.loading = false
+            }
+
+            //this.$router.push('/')
         }
     },
 
 }
 </script>
+
+
+<style scoped>
+
+.box {
+background-color: rgb(255, 255, 255);
+    border: 2px solid rgb(205, 205, 253); 
+    padding: 5% 15% 10% 15%;
+    border-radius: 10px;
+    text-align: center;
+     width: 100%;
+    height: 100%;
+      box-shadow:
+  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12);
+
+}
+.bigbox{
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+     padding: 2% 2% 2% 2%;
+    width:100%;
+    height:100%;
+    border: 2px solid rgb(152, 152, 255); 
+    border-radius: 10px;
+      box-shadow:
+  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+.tab{
+  margin-left: auto;
+  margin-right: auto;
+
+}
+</style>
