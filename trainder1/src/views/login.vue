@@ -1,17 +1,15 @@
 <template>
 
-<v-row justify="end" >
-    <v-col cols="5" md="3" >
+
         
-        <div class="box pa-5 text-center rounded-0" >
+        <div class="box2 text-center"   width="300px" height="250px" >
            <form id="userdata" @submit.prevent="loginsubmit">
             <v-text-field label="ชื่อผู้ใช้" v-model="userdata.name"></v-text-field>
             <v-text-field label="รหัสผ่าน" type="password" v-model="userdata.pass"></v-text-field>
             <v-btn type="submit">เข้าสู่ระบบ</v-btn>
         </form>     
         
-    </div></v-col>
-</v-row>
+    </div>
 
 </template>
 
@@ -47,9 +45,13 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 
-.box {
+.box2 {
+    
+    border: 2px solid rgb(205, 205, 253);
+    border-radius: 10px;
+    padding: 25px 25px 25px 25px;
   box-shadow:
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
@@ -59,7 +61,7 @@ export default {
   0 100px 80px rgba(0, 0, 0, 0.12);
     background-color: rgb(255, 255, 255);
   text-align: center;
-
-  
+   width: 300px;
+  height: 250px;
 }
 </style>
