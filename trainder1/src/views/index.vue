@@ -22,7 +22,7 @@
                 <td><Login/><br><br>
                 
                 <div class="box text-center" >
-                <div >ยังไม่ได้เข้าร่วมกับ Trainder อีกเหรอ ?</div><br>
+                <div>ยังไม่ได้เข้าร่วมกับ Trainder อีกเหรอ ?</div><br>
                 <v-btn to="/register">สมัครสมาชิกเลย</v-btn>
                 </div>
 

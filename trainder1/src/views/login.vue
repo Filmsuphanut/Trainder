@@ -3,11 +3,11 @@
 
         
         <div class="box2 text-center"   width="300px" height="250px" >
-           <form id="userdata" @submit.prevent="loginsubmit">
-            <v-text-field label="Email" v-model="userdata.name"></v-text-field>
-            <v-text-field label="รหัสผ่าน" type="password" v-model="userdata.pass"></v-text-field>
+           <v-form id="userdata" ref="form" required @submit.prevent="loginsubmit">
+            <v-text-field label="Email" :rules="checkdata" v-model="userdata.name"></v-text-field>
+            <v-text-field label="รหัสผ่าน" :rules="checkdata" type="password" required v-model="userdata.pass"></v-text-field>
             <v-btn type="submit" :loading="loading" :disabled="loading" >เข้าสู่ระบบ</v-btn>
-        </form>     
+        </v-form>     
         
 
             <v-snackbar v-model="snackbar" :timeout="2000">
@@ -39,10 +39,12 @@ export default {
             userdata:{name:null,pass:null},
             loading:false,
             snackbar:false,
+            checkdata:[val => (val || '').length > 0 || 'โปรดกรอกฟิลด์นี้'],
         }
     },
     methods:{
         async loginsubmit(e){////////////////////////////////////////////////////////
+        if(this.$refs.form.validate()){
             this.loading = true
             const response = await axios.post('todos',this.userdata)
             console.log(this.userdata,response)
@@ -65,6 +67,7 @@ export default {
             }else{
                 this.snackbar = true
             }
+        }
 
         },
     },    
