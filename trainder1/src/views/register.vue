@@ -127,7 +127,7 @@ export default {
             
             passwordRules: [
                 (value) => !!value || 'คุณยังไม่ได้ใส่รหัสผ่าน',
-                (value) => (value && value.length >= 1) || 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร',
+                (value) => (value && value.length >= 8) || 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร',
             ],
             confirmPasswordRules: [
                 (value) => !!value || 'โปรดกรอกรหัสผ่านอีกครั้ง',
