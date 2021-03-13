@@ -1,6 +1,6 @@
 <template>
   <v-app id='v-application'>
-
+<link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
     <v-main>
       <router-view></router-view>
     </v-main>

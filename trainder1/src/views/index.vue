@@ -63,15 +63,7 @@ export default {
         }
     },
     methods:{
-        onSlideChange(slideNumber) {
-            if (slideNumber === 1) {
-                this.interval === 20;
-            } else if (slideNumber === 2) {
-                this.interval === 40;
-            } else {
-                this.interval === 60;
-            }
-        }
+
     },
 }
 </script>

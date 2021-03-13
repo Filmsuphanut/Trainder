@@ -4,9 +4,15 @@
 
     <br>
         <div class="bigbox">
-        <br><br>
+        <v-row justify='start'>
+        <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
 
-        <table class="tab" border="1">
+        </v-row>
+        
+        
+        <br>
+
+        <table class="tab" border="0">
             <tr><td width="35%" height="1000px">
             <div class="box">
                 <img src="../images/Logo.png" width="200" height="80" align="center"><br><br>
@@ -43,7 +49,6 @@
             <v-row justify='center'>
                 
                 <v-col class="text-right">
-                <div>ชื่อผู้ใช้ถูกใช้ไปแล้ว</div>
                 <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิก</v-btn>    
                 </v-col>
             </v-row>
@@ -83,7 +88,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                     class="white--text"
-                    color="deep-purple accent-4"
+                    color="green"
                     @click="checkbox = true, dialog = false"
                 >
                     ฉันยอมรับ
@@ -92,6 +97,23 @@
             </v-card>
             </v-dialog>
 
+            <v-snackbar
+            v-model="snackbar"
+            :multi-line="multiLine"
+            >
+            {{snacktext}}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                color="red"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+                >
+                Close
+                </v-btn>
+            </template>
+            </v-snackbar>
 
     </v-container>
 </template>
@@ -105,10 +127,10 @@ export default {
         return{
             userdata:{email: null,pass:null,firstname:null,lastname:null,},
             cpass:null,
-
+            
             passwordRules: [
                 (value) => !!value || 'คุณยังไม่ได้ใส่รหัสผ่าน',
-                (value) => (value && value.length >= 8) || 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร',
+                (value) => (value && value.length >= 1) || 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร',
             ],
             confirmPasswordRules: [
                 (value) => !!value || 'โปรดกรอกรหัสผ่านอีกครั้ง',
@@ -119,7 +141,10 @@ export default {
 
             checkbox:false,
             dialog:false,
-            loading:false
+            loading:false,
+            snackbar:false,
+            snackalert:{duplicate: 'Email นี้ถูกใช้ไปแล้ว',captcha: 'CAPTCHA ไม่ถูกต้อง'},
+            snacktext:null,
 
         }
     },
@@ -129,13 +154,27 @@ export default {
             // console.log(JSON.stringify(response.data))})
             if(this.$refs.form.validate()){
                 this.loading = true
+
+                
                 const response = await axios.post('todos',this.userdata)
-                console.log(response)
+                console.log(response.data)
                 e.preventDefault()
                 this.loading = false
+
+                if(response.data === 'false'){
+                    this.snackbar = true
+                    this.snacktext = this.snackalert.duplicate
+                }else if(response.data !== 'error'){
+                    this.snackbar = true
+                    this.snacktext = this.snackalert.captcha
+                }else{
+                    this.$router.push('/')
+                }
+
+                
             }
 
-            //this.$router.push('/')
+            
         }
     },
 
@@ -154,12 +193,12 @@ background-color: rgb(255, 255, 255);
      width: 100%;
     height: 100%;
       box-shadow:
-  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),
   0 22.3px 17.9px rgba(0, 0, 0, 0.072),
   0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-  0 100px 80px rgba(0, 0, 0, 0.12);
+  0 100px 80px rgba(0, 0, 0, 0.12); */
 
 }
 .bigbox{

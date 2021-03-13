@@ -9,7 +9,27 @@
             <v-btn type="submit" :loading="loading" :disabled="loading" >เข้าสู่ระบบ</v-btn>
         </form>     
         
+
+            <v-snackbar
+            v-model="snackbar"
+            :multi-line="multiLine"
+            >
+            รหัสผ่านไม่ถูกต้อง
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                color="red"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+                >
+                Close
+                </v-btn>
+            </template>
+            </v-snackbar>
+
     </div>
+
 
 </template>
 
@@ -21,24 +41,32 @@ export default {
         return{
             userdata:{name:null,pass:null},
             loading:false,
+            snackbar:false,
         }
     },
     methods:{
-        async loginsubmit(e){
+        async loginsubmit(e){////////////////////////////////////////////////////////
             this.loading = true
             const response = await axios.post('todos',this.userdata)
             console.log(this.userdata,response)
             
             e.preventDefault()
             this.loading = false
-            sessionStorage.setItem('token',response.data.id)//token
-            sessionStorage.setItem('role',response.data.name)//role trainer normaluser ?
-            sessionStorage.setItem('name',response.data.name)//role trainer normaluser ?
 
-            if(sessionStorage.getItem('role') === 'Trainer'){
-                this.$router.push('/TrainerHome')
-            }else if(sessionStorage.getItem('role') === 'User'){
-                this.$router.push('/UserHome')
+            if(response.data.id === 'true'){
+
+                sessionStorage.setItem('token',response.data.id)//token
+                sessionStorage.setItem('role',response.data.name)//role trainer normaluser ?
+                sessionStorage.setItem('name',response.data.name)//role trainer normaluser ?
+
+                if(sessionStorage.getItem('role') === 'Trainer'){
+                    this.$router.push('/TrainerHome')
+                }else if(sessionStorage.getItem('role') === 'User'){
+                    this.$router.push('/UserHome')
+                }
+
+            }else{
+                this.snackbar = true
             }
 
         },
