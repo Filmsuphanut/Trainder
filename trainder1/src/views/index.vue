@@ -25,9 +25,7 @@
                 <div>ยังไม่ได้เข้าร่วมกับ Trainder อีกเหรอ ?</div><br>
                 <v-btn to="/register">สมัครสมาชิกเลย</v-btn><br><br>
                 หรือว่า อยากร่วมเป็น&nbsp;
-                <a
-                    href="/Trainerregister"
-                >Trainer</a>
+                <a href="/Trainerregister">Trainer</a>
                 
                 </div>
 

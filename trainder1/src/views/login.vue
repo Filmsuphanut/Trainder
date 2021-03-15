@@ -6,10 +6,8 @@
            <v-form id="userdata" ref="form" required @submit.prevent="loginsubmit">
             <v-text-field label="Email" :rules="checkdata" v-model="userdata.name"></v-text-field>
             <v-text-field label="รหัสผ่าน" :rules="checkdata" type="password" required v-model="userdata.pass"></v-text-field>
-            <v-btn type="submit" :loading="loading" :disabled="loading" >เข้าสู่ระบบ</v-btn>
+            <v-btn type="submit" :loading="loading" :disabled="loading">เข้าสู่ระบบ</v-btn>
         </v-form>     
-        
-
             <v-snackbar v-model="snackbar" :timeout="2000">
             รหัสผ่านไม่ถูกต้อง
 
@@ -31,7 +29,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+//import axios from 'axios'
+import firebase from 'firebase'
+
 export default {
     name : 'login',
     data(){
@@ -44,31 +44,29 @@ export default {
     },
     methods:{
         async loginsubmit(e){////////////////////////////////////////////////////////
+
+        //var provider = new firebase.auth.GoogleAuthProvider()
+
         if(this.$refs.form.validate()){
             this.loading = true
-            const response = await axios.post('todos',this.userdata)
-            console.log(this.userdata,response)
-            
+            //const response = await axios.post('......',this.userdata)
+
+            //console.log(this.userdata,response)
+            firebase.auth().signInWithEmailAndPassword(this.userdata.name, this.userdata.pass)
+            .then((userCredential) => {
+                var user = userCredential.user
+                sessionStorage.setItem('name',JSON.stringify(userCredential.user.displayName))
+                console.log(user)
+                this.$router.push('/TrainerHome')
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorCode,errorMessage)
+            });
+
             e.preventDefault()
             this.loading = false
-
-            if(response.data.id === 'true'){
-
-                sessionStorage.setItem('token',response.data.id)//token
-                sessionStorage.setItem('role',response.data.name)//role trainer normaluser ?
-                sessionStorage.setItem('name',response.data.name)//role trainer normaluser ?
-
-                if(sessionStorage.getItem('role') === 'Trainer'){
-                    this.$router.push('/TrainerHome')
-                }else if(sessionStorage.getItem('role') === 'User'){
-                    this.$router.push('/UserHome')
-                }
-
-            }else{
-                this.snackbar = true ///รหัสผิด
-                console.log('wrong password')
-            }
-
 
         }
 

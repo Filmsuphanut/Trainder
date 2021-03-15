@@ -157,16 +157,16 @@ export default {
                 e.preventDefault()
                 this.loading = false
 
-                if(response.data === 'false'){
-                    this.snackbar = true
-                    this.snacktext = this.snackalert.duplicate
-                }else if(response.data === 'error'){
-                    this.snackbar = true
-                    this.snacktext = this.snackalert.captcha
-                }else{
-                    this.$router.push('/')
-                }
-                
+                // if(response.data === 'false'){
+                //     this.snackbar = true
+                //     this.snacktext = this.snackalert.duplicate
+                // }else if(response.data === 'error'){
+                //     this.snackbar = true
+                //     this.snacktext = this.snackalert.captcha
+                // }else{
+                //     this.$router.push('/')
+                // }
+
             }   
         }
     },
