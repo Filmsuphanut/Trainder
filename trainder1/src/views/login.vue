@@ -65,8 +65,11 @@ export default {
                 }
 
             }else{
-                this.snackbar = true
+                this.snackbar = true ///รหัสผิด
+                console.log('wrong password')
             }
+
+
         }
 
         },

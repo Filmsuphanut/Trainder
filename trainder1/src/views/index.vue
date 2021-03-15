@@ -23,7 +23,12 @@
                 
                 <div class="box text-center" >
                 <div>ยังไม่ได้เข้าร่วมกับ Trainder อีกเหรอ ?</div><br>
-                <v-btn to="/register">สมัครสมาชิกเลย</v-btn>
+                <v-btn to="/register">สมัครสมาชิกเลย</v-btn><br><br>
+                หรือว่า อยากร่วมเป็น&nbsp;
+                <a
+                    href="/Trainerregister"
+                >Trainer</a>
+                
                 </div>
 
                 </td>
@@ -78,7 +83,7 @@ background-color: rgb(255, 255, 255);
     border-radius: 10px;
     text-align: center;
      width: 300px;
-    height: 150px;
+    height: 180px;
       box-shadow:
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),

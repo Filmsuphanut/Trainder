@@ -1,12 +1,14 @@
 <template>
     <v-container>
 
+
     <br>
         <div class="bigbox">
         <v-row justify='start'>
         <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
 
         </v-row>
+        
         
         <br>
 
@@ -38,7 +40,7 @@
                 <a
                     href="#"
                     @click.stop.prevent="dialog = true"
-                >กฎและข้อบังคับ</a>
+                >กฎและข้อบังคับ</a>ของ Trainer
                 </template>
                     </v-checkbox>
                 </v-col>
@@ -47,7 +49,7 @@
             <v-row justify='center'>
                 
                 <v-col class="text-right">
-                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิก</v-btn>    
+                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิกเป็น Trainer</v-btn>    
                 </v-col>
             </v-row>
                 
@@ -117,10 +119,10 @@
 import axios from 'axios'
 
 export default {
-    name : 'register',
+    name : 'Trainerregister',
     data(){
         return{
-            userdata:{email: null,pass:null,firstname:null,lastname:null,user:true},
+            userdata:{email: null,pass:null,firstname:null,lastname:null,user:false},
             cpass:null,
             
             passwordRules: [
@@ -164,11 +166,8 @@ export default {
                 }else{
                     this.$router.push('/')
                 }
-
                 
-            }
-
-            
+            }   
         }
     },
 
