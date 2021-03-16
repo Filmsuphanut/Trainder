@@ -5,11 +5,16 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
+  state:{//data
+    user : {uid:""}
   },
-  mutations: {
+  mutations:{//
+    setUid(state,value){
+      Vue.set(state.user,"uid",value)
+      console.log(value)
+    }
   },
-  actions: {
+  actions:{//methods
   },
   modules: {
   }

@@ -1,23 +1,20 @@
 <template>
     <v-container>
 
-
     <br>
         <div class="bigbox">
         <v-row justify='start'>
         <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
-
         </v-row>
-        
-        
         <br>
-
         <table class="tab" border="0">
             <tr><td width="35%" height="700px">
             <div class="box">
                 <img src="../images/Logo.png" width="200" height="80" align="center"><br><br>
-
             <v-form ref="form" @submit.prevent="regissubmit">
+
+            
+
             <v-row justify='center'>
                 <v-col>
                 <v-text-field label="ชื่อจริง" :rules="checkdata" color="purple darken-2" v-model="userdata.firstname" required></v-text-field>
@@ -47,7 +44,6 @@
             </v-row>
             
             <v-row justify='center'>
-                
                 <v-col class="text-right">
                 <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิกเป็น Trainer</v-btn>    
                 </v-col>
@@ -156,7 +152,22 @@ export default {
                     .then((userCredential) => {
                         var user = userCredential.user
                         console.log(user)
-                        this.$router.push('/')                  
+
+
+                        
+                        let db = firebase.firestore();
+                        let userRef = db.collection("userData");
+
+                            userRef.add({
+                            fullName: [this.userdata.firstname, this.userdata.lastname].join(
+                                " "),
+                            role: "trainer",
+                            uid: user.uid,
+                            });
+
+                        //this.$store.commit("setUid",user.uid)
+                        this.$router.push('/TrainerSignIn')
+
                     })
                     .catch((error) => {
                         var errorCode = error.code

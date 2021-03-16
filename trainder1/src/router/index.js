@@ -6,6 +6,7 @@ import Register from '../views/register.vue'
 import TrainerHome from '../views/TrainerHome.vue'
 import UserHome from '../views/UserHome.vue'
 import Trainerregister from '../views/Trainerregister.vue'
+import TrainerSignIn from '../views/TrainerSignIn.vue'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/TrainerHome',
     name: 'TrainerHome',
     component: TrainerHome
+  },
+  {
+    path: '/TrainerSignIn',
+    name: 'TrainerSignIn',
+    component: TrainerSignIn
   }
   // {
   //   path: '/about',

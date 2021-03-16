@@ -3,7 +3,7 @@
         <br>
         <div class="bigbox">
         <table class="tab" border="0">
-            <tr><td><img src="../images/Logo.png" width="200" height="80"  align="left"></td></tr><br>
+            <tr><td><img src="../images/Logo.png" width="80" height="80"  align="left"></td></tr><br>
             <tr>
                 <td>
                     <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
@@ -25,10 +25,10 @@
                 <div>ยังไม่ได้เข้าร่วมกับ Trainder อีกเหรอ ?</div><br>
                 <v-btn to="/register">สมัครสมาชิกเลย</v-btn><br><br>
                 หรือว่า อยากร่วมเป็น&nbsp;
-                <a href="/Trainerregister">Trainer</a>
+
+                <router-link to="/Trainerregister">Trainer</router-link>
                 
                 </div>
-
                 </td>
             </tr>
         </table>
