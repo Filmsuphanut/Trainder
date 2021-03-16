@@ -40,6 +40,9 @@
 
 import Login from './login'
 
+
+
+
 export default {
      name : 'index',
     components:{

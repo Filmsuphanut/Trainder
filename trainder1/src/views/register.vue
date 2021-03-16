@@ -20,9 +20,9 @@
                 <v-col>
                 <v-text-field label="ชื่อจริง" :rules="checkdata" color="purple darken-2" v-model="userdata.firstname" required></v-text-field>
                 <v-text-field label="นามสกุล" :rules="checkdata" v-model="userdata.lastname"></v-text-field>
-                <v-text-field label="Email" :rules="checkdata" v-model="userdata.email"></v-text-field>
-                <v-text-field label="รหัสผ่าน" :rules="passwordRules" type="password" v-model="userdata.pass"></v-text-field>
-                <v-text-field label="ยืนยันรหัสผ่าน" :rules="confirmPasswordRules" type="password" v-model="cpass"></v-text-field>
+                <v-text-field label="Email" :rules="checkdata" v-model="userdata.email" ></v-text-field>
+                <v-text-field label="รหัสผ่าน" :rules="passwordRules" type="password" v-model="userdata.pass" ></v-text-field>
+                <v-text-field label="ยืนยันรหัสผ่าน" :rules="confirmPasswordRules" type="password" v-model="cpass" ></v-text-field>
                 </v-col>
             </v-row>
 
@@ -121,9 +121,9 @@ export default {
     name : 'register',
     data(){
         return{
-            userdata:{email: null,pass:null,firstname:null,lastname:null,user:true},
+            userdata:{email:null,pass:null,firstname:null,lastname:null,user:true},
             cpass:null,
-            
+
             passwordRules: [
                 (value) => !!value || 'คุณยังไม่ได้ใส่รหัสผ่าน',
                 (value) => (value && value.length >= 8) || 'รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร',
@@ -141,6 +141,7 @@ export default {
             snackbar:false,
             snackalert:{true:'ลงทะเบียนสำเร็จแล้ว',false:'Email นี้ถูกใช้ไปแล้ว'},
             snacktext:null,
+
         }
     },
     methods:{
@@ -149,7 +150,6 @@ export default {
             // console.log(JSON.stringify(response.data))})
 
             if(this.$refs.form.validate()){
-                this.loading = true
                 
                 //const response = await axios.post('todos',this.userdata)
                 console.log('asdasda')
@@ -166,11 +166,10 @@ export default {
                         console.log(errorCode,errorMessage)
                         this.snacktext = this.snackalert.false
                         this.snackbar = true
+        
                     });
 
-                
                 e.preventDefault()
-                this.loading = false
 
                 // if(response.data === 'false'){
                 //     this.snackbar = true
@@ -181,13 +180,13 @@ export default {
                 // }else{
                 //     this.$router.push('/')
                 // }
-
                 
             }
 
-            
         }
     },
+
+
 
 }
 </script>

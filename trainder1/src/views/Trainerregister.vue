@@ -116,7 +116,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+//import axios from 'axios'
+import firebase from 'firebase'
 
 export default {
     name : 'Trainerregister',
@@ -150,12 +151,23 @@ export default {
             // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
             // console.log(JSON.stringify(response.data))})
             if(this.$refs.form.validate()){
-                this.loading = true
-                
-                const response = await axios.post('todos',this.userdata)
-                console.log(response.data)
+
+                    firebase.auth().createUserWithEmailAndPassword(this.userdata.email, this.userdata.pass)
+                    .then((userCredential) => {
+                        var user = userCredential.user
+                        console.log(user)
+                        this.$router.push('/')                  
+                    })
+                    .catch((error) => {
+                        var errorCode = error.code
+                        var errorMessage = error.message
+                        console.log(errorCode,errorMessage)
+                        this.snacktext = this.snackalert.false
+                        this.snackbar = true
+                    });
+
                 e.preventDefault()
-                this.loading = false
+
 
                 // if(response.data === 'false'){
                 //     this.snackbar = true

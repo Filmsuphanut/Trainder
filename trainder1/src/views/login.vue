@@ -1,15 +1,14 @@
 <template>
 
-
-        
         <div class="box2 text-center"   width="300px" height="250px" >
            <v-form id="userdata" ref="form" required @submit.prevent="loginsubmit">
             <v-text-field label="Email" :rules="checkdata" v-model="userdata.name"></v-text-field>
             <v-text-field label="รหัสผ่าน" :rules="checkdata" type="password" required v-model="userdata.pass"></v-text-field>
             <v-btn type="submit" :loading="loading" :disabled="loading">เข้าสู่ระบบ</v-btn>
-        </v-form>     
+        </v-form>
+        <v-btn :loading="loading" :disabled="loading" @click="signinpopup">เข้าสู่ระบบด้วย Google</v-btn>
             <v-snackbar v-model="snackbar" :timeout="2000">
-            รหัสผ่านไม่ถูกต้อง
+            {{this.snacktext}}
 
             <template v-slot:action="{ attrs }">
                 <v-btn
@@ -40,36 +39,68 @@ export default {
             loading:false,
             snackbar:false,
             checkdata:[val => (val || '').length > 0 || 'โปรดกรอกฟิลด์นี้'],
+            snacktext:'',
         }
     },
     methods:{
         async loginsubmit(e){////////////////////////////////////////////////////////
 
-        //var provider = new firebase.auth.GoogleAuthProvider()
-
         if(this.$refs.form.validate()){
-            this.loading = true
             //const response = await axios.post('......',this.userdata)
-
+            
             //console.log(this.userdata,response)
             firebase.auth().signInWithEmailAndPassword(this.userdata.name, this.userdata.pass)
             .then((userCredential) => {
                 var user = userCredential.user
-                sessionStorage.setItem('name',JSON.stringify(userCredential.user.displayName))
+                //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
                 console.log(user)
                 this.$router.push('/TrainerHome')
             })
             .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode,errorMessage)
+                 var errorCode = error.code;
+                 var errorMessage = error.message;
+                 console.log(errorCode,errorMessage)
+                 this.snacktext = 'รหัสผ่านไม่ถูกต้อง'
+                 this.snackbar = true
             });
-
             e.preventDefault()
-            this.loading = false
 
         }
 
+        },
+        async signinpopup(e){
+        
+            var provider = new firebase.auth.GoogleAuthProvider();
+
+            provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+
+            firebase.auth()
+            .signInWithPopup(provider)
+            .then((result) => {
+                /** @type {firebase.auth.OAuthCredential} */
+                var credential = result.credential;
+                var token = credential.accessToken;
+                var user = result.user;
+                console.log(credential,token,user.email)
+                //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
+                this.$router.push('/TrainerHome')
+
+            }).catch((error) => {//////////////////////////////////////////////***** */
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+                console.log(errorCode,errorMessage,email,credential)
+                this.snacktext = 'Email นี้ถูกใช้ไปแล้ว'
+                this.snackbar = true
+            })
+            
+            e.preventDefault()
+            
         },
     },    
     
@@ -94,6 +125,6 @@ export default {
     background-color: rgb(255, 255, 255);
   text-align: center;
    width: 300px;
-  height: 250px;
+  height: 270px;
 }
 </style>
