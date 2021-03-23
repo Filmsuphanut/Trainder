@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+    <v-container>
 
-      <h>test</h>
+      <h1>Create Room</h1>
     <p>hello</p>
 
   </v-container>

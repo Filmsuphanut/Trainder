@@ -185,6 +185,7 @@ export default {
             var user = userCredential.user;
             console.log(user);
 
+            //firestore
             let db = firebase.firestore();
             let userRef = db.collection("userData");
 

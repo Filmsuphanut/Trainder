@@ -54,7 +54,10 @@ export default {
                 var user = userCredential.user
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
                 console.log(user)
-                this.$router.push('/TrainerHome')
+
+                //เช็คว่าเป็น trainer หรือ user ปกติ
+                this.$router.push('/UserHome')
+
             })
             .catch((error) => {
                  var errorCode = error.code;
@@ -82,8 +85,21 @@ export default {
                 var token = credential.accessToken;
                 var user = result.user;
                 console.log(credential,token,user.email)
+                console.log(result)
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
-                this.$router.push('/TrainerHome')
+
+
+                let db = firebase.firestore();
+                let userRef = db.collection("userData");
+
+                    userRef.add({
+                    fullName:user.displayName,
+                    role: "normal",
+                    uid: user.uid,
+                    });
+
+
+                this.$router.push('/UserHome')
 
             }).catch((error) => {//////////////////////////////////////////////***** */
                 // Handle Errors here.
