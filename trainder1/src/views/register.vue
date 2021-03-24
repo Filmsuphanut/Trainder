@@ -168,8 +168,7 @@ export default {
   },
   methods: {
     async regissubmit(e) {
-      // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
-      // console.log(JSON.stringify(response.data))})
+
 
       let rou = this.$router
 

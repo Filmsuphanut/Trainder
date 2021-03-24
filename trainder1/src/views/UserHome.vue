@@ -6,13 +6,14 @@
         <router-link to="/FindTrainer"><v-btn>ค้นหา Trainer ที่ถูกใจ</v-btn></router-link>
         <router-link to="/CreateRoom"><v-btn>สร้างห้องออกกำลังกายกับเพื่อน</v-btn></router-link>
 
+
     </v-container>
 </template>
 
 
 <script>
+
 import firebase from 'firebase'
-//import store from 'vuex'
 
 export default {
      name : 'index',
@@ -83,8 +84,6 @@ export default {
 
 
         },
-
-
     },
     components: {
 
