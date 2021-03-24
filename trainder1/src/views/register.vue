@@ -171,6 +171,8 @@ export default {
       // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
       // console.log(JSON.stringify(response.data))})
 
+      let rou = this.$router
+
       if (this.$refs.form.validate()) {
         //const response = await axios.post('todos',this.userdata)
         console.log("asdasda");
@@ -196,7 +198,18 @@ export default {
                 uid: user.uid,
                 });
 
-            this.$router.push("/UserHome");
+
+                user.updateProfile({
+                  displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
+                }).then(function() {
+
+                  rou.push("/UserHome");///////////////////////
+                }).catch(function(error) {
+                    console.log(error)
+                });
+
+                
+            
           })
           .catch((error) => {
             var errorCode = error.code;

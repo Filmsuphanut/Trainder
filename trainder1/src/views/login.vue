@@ -111,7 +111,7 @@ export default {
                 var credential = error.credential;
                 // ...
                 console.log(errorCode,errorMessage,email,credential)
-                this.snacktext = 'Email นี้ถูกใช้ไปแล้ว'
+                this.snacktext = 'เกิดข้อผิดพลาด'
                 this.snackbar = true
             })
             

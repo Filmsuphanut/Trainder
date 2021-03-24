@@ -8,8 +8,27 @@
 </template>
 
 <script>
-export default {
 
+import firebase from 'firebase'
+
+export default {
+  data(){
+    return{
+
+    }
+  },
+  methods:{
+
+        callname(){////ชื่อ user 
+            let user = firebase.auth().currentUser
+            let displayname
+
+            if (user != null) {
+                displayname = user.displayName
+            }
+            return displayname
+        },
+  },
 }
 </script>
 

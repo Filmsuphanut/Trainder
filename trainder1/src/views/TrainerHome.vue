@@ -2,7 +2,7 @@
 
    <v-container>
        <Auth/>
-        <h1>สวัสดี Trainer {{name}}</h1>
+        <h1>สวัสดี Trainer</h1>
 
     </v-container>
 </template>
@@ -15,7 +15,7 @@ export default {
      name : 'index',
     data(){
         return{
-            name: sessionStorage.getItem('name'),
+
         }
     },
     methods:{

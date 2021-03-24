@@ -6,13 +6,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state:{//data
-    user : {uid:""}
+    user : {token:null},
   },
   mutations:{//
-    setUid(state,value){
-      Vue.set(state.user,"uid",value)
-      console.log(value)
-    }
+    setToken(state,value){
+      Vue.set(state.user,"token",value)
+      console.log('store' + value)
+    },
   },
   actions:{//methods
   },
