@@ -10,7 +10,7 @@
         <table class="tab" border="0">
             <tr><td width="35%" height="700px">
             <div class="box">
-                <img src="../images/Logo.png" width="200" height="80" align="center"><br><br>
+                <img src="../images/Logo.png"  align="center"><br><br>
             <v-form ref="form" @submit.prevent="regissubmit">
 
             
