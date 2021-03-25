@@ -7,7 +7,7 @@
   </v-app>
 </template>
 
-<script>
+<script >
 //import Index from './views/index';
 
 export default {

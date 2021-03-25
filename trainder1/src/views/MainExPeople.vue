@@ -36,7 +36,7 @@ export default {
         async postUID(){
             let user = firebase.auth().currentUser
 
-            axios.post("https://jsonplaceholder.typicode.com/todos",user.uid).then((response) => {
+            axios.post("https://fir-b9dbd.web.app/",user.uid).then((response) => {
             console.log(JSON.stringify(response.data))})
 
         },

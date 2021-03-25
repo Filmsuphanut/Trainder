@@ -28,6 +28,22 @@
                       v-model="userdata.test"
                       required
                     ></v-text-field>
+
+                    <v-text-field
+                      label="อะไรก็ได้"
+                      :rules="checkdata"
+                      v-model="userdata.test"
+                      required
+                    ></v-text-field>
+
+                    <v-text-field
+                      label="อะไรก็ได้"
+                      :rules="checkdata"
+                      v-model="userdata.test"
+                      required
+                    ></v-text-field>
+
+
                   </v-col>
                 </v-row>
                 <v-row justify="center">

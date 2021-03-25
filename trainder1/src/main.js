@@ -4,13 +4,9 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 
-
-
 import VueAxios from "vue-axios";
 import axios from "axios";
 import '../src/axios'
-
-
 
 import firebase from "firebase/app";
 import "firebase/analytics";
