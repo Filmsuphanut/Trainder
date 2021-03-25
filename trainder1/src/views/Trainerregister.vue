@@ -13,8 +13,6 @@
                 <img src="../images/Logo.png"  align="center"><br><br>
             <v-form ref="form" @submit.prevent="regissubmit">
 
-            
-
             <v-row justify='center'>
                 <v-col>
                 <v-text-field label="ชื่อจริง" :rules="checkdata" color="purple darken-2" v-model="userdata.firstname" required></v-text-field>
