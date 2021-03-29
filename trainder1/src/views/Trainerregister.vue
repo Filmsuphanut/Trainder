@@ -135,7 +135,7 @@ export default {
             dialog:false,
             loading:false,
             snackbar:false,
-            snackalert:{duplicate: 'Email นี้ถูกใช้ไปแล้ว',captcha: 'CAPTCHA ไม่ถูกต้อง'},
+            snackalert:'Email นี้ถูกใช้ไปแล้ว',
             snacktext:null,
 
         }
@@ -170,7 +170,7 @@ export default {
                         var errorCode = error.code
                         var errorMessage = error.message
                         console.log(errorCode,errorMessage)
-                        this.snacktext = this.snackalert.false
+                        this.snacktext = this.snackalert
                         this.snackbar = true
                     });
 

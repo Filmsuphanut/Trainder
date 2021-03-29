@@ -7,10 +7,10 @@
         <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
       </v-row>
       <br />
-
+      
       <table class="tab" border="0">
         <tr>
-          <td width="35%" height="700px">
+          <td width="620" height="700px">
             <div class="box">
               <img
                 src="../images/Logo.png"
@@ -20,30 +20,77 @@
               /><br /><br />
 
               <v-form ref="form" @submit.prevent="regissubmit">
-                <v-row justify="center">
+                <v-row justify="center" >
                   <v-col>
-                    <v-text-field
-                      label="อะไรก็ได้"
-                      :rules="checkdata"
-                      v-model="userdata.test"
-                      required
-                    ></v-text-field>
 
                     <v-text-field
-                      label="อะไรก็ได้"
-                      :rules="checkdata"
-                      v-model="userdata.test"
-                      required
-                    ></v-text-field>
-
-                    <v-text-field
-                      label="อะไรก็ได้"
-                      :rules="checkdata"
-                      v-model="userdata.test"
+                      label="Personal ID"
+                      :rules="personalIDRule"
+                      v-model="userdata.personalID"
                       required
                     ></v-text-field>
 
 
+                    <v-select
+                      :items="gen"
+                      label="Gender"
+                      v-model="userdata.gender"
+                      required
+                      :rules="checkdata"
+                    ></v-select>
+
+                    <v-textarea
+                      label="address"
+                      v-model="userdata.address"
+                      color="blue"
+                      :rules="AddressRule"
+                      required
+                    >
+                      <template v-slot:label>
+                        <div>
+                          Address <small>(optional)</small>
+                        </div>
+                      </template>
+                    </v-textarea>
+
+                  <v-menu
+                    ref="menu"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                    value="userdata.BD"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="userdata.BD"
+                        label="Birthday date"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        :rules="checkdata"
+                        required
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      ref="picker"
+                      v-model="userdata.BD"
+                      max="2000-12-31"
+                      min="1940-01-01"
+                      @change="this.$refs.menu.save(userdata.BD)"
+                    ></v-date-picker>
+                  </v-menu>
+
+
+
+                    <v-text-field
+                      label="อะไรก็ได้"
+                      :rules="checkdata"
+                      v-model="userdata"
+                      required
+                    ></v-text-field>
                   </v-col>
                 </v-row>
                 <v-row justify="center">
@@ -54,6 +101,8 @@
                   </v-col>
                 </v-row>
               </v-form>
+            <v-btn @click="test"></v-btn>
+
             </div>
           </td>
         </tr>
@@ -81,30 +130,38 @@ export default {
   data() {
     return {
       userdata: {
-          test:null,
+        personalID: null,//
+        address: null,//
+        gender: null,//
+        BD: null,//
+        bank: null,//dropdown
+        accountNumber: null,//text
+        phone: null,//text-f
+        career: null,//dropdown
+        ec_skill: null,//checkbox
       },
-      cpass: null,
 
-      passwordRules: [
-        (value) => !!value || "คุณยังไม่ได้ใส่รหัสผ่าน",
+      gen: ["ชาย", "หญิง", "ไม่ระบุ"],
+
+      personalIDRule: [
+        (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
-          (value && value.length >= 8) ||
-          "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร",
+          (value && value.length == 13 && typeof(parseInt(value)) == 'number' && parseInt(value) >= 0)||
+          "หมายเลขบัตรประชาชนต้องเป็นตัวเลข และ เท่ากับ 13 ตัว",
       ],
-      confirmPasswordRules: [
-        (value) => !!value || "โปรดกรอกรหัสผ่านอีกครั้ง",
-        (value) => value === this.userdata.pass || "รหัสผ่านไม่ตรงกัน",
+
+      AddressRule: [
+        (value) => !!value || "โปรดกรอกฟิลด์นี้",
+        (value) =>
+          (value && value.length <= 100) ||
+          "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร",
       ],
+
       checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
 
-      checkbox: false,
-      dialog: false,
       loading: false,
       snackbar: false,
-      snackalert: {
-        duplicate: "Email นี้ถูกใช้ไปแล้ว",
-        captcha: "CAPTCHA ไม่ถูกต้อง",
-      },
+      snackalert: "Email นี้ถูกใช้ไปแล้ว",
       snacktext: null,
     };
   },
@@ -112,27 +169,24 @@ export default {
     async regissubmit(e) {
       // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
       // console.log(JSON.stringify(response.data))})
-      
-      if (this.$refs.form.validate()) {
 
+      if (this.$refs.form.validate()) {
         let uid = firebase.auth().currentUser.uid;
 
         let db = firebase.firestore();
         let userRef = db.collection("userData");
 
         let userData = await userRef.where("uid", "==", uid).get();
-        console.log(uid)
-
+        console.log(uid);
 
         userData.forEach((doc) => {
-            let docId = doc.id
-            userRef.doc(docId).update({
-                testField : this.userdata.test
-            })       
+          let docId = doc.id;
+          userRef.doc(docId).update({
+            testField: this.userdata.test,
+          });
         });
 
-        this.$router.push('/TrainerHome')
-
+        this.$router.push("/TrainerHome");
 
         // userRef.add({
         // fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
@@ -159,6 +213,12 @@ export default {
         e.preventDefault();
       }
     },
+
+    test(){
+      console.log((parseInt(this.userdata.personalID)) <= 0 )
+    },
+
+
   },
 };
 </script>
@@ -198,4 +258,10 @@ export default {
   margin-left: auto;
   margin-right: auto;
 }
+
+ .unstyled, .v-input > .v-input-control > .v-input-slot > .v-text-field__slot > input > ::-webkit-inner-spin-button, ::-webkit-calendar-picker-indicator {
+      display: none;
+      -webkit-appearance: none;
+    }
+
 </style>
