@@ -1,7 +1,7 @@
 <template>
 
    <v-container>
-       <Auth/>
+
         <h1>สวัสดี Trainer</h1>
 
     </v-container>
@@ -9,7 +9,7 @@
 
 
 <script>
-import Auth from '../views/Auth'
+
 
 export default {
      name : 'index',
@@ -22,7 +22,7 @@ export default {
 
     },
     components: {
-        Auth,
+
     }
 
 }
