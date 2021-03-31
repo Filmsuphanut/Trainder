@@ -5,14 +5,13 @@
     <p>hello</p>
     <div style="color:blue">สวัสดี {{callname()}}</div>
     <v-btn @click="postUID">ส่ง uid</v-btn>
-
+    <v-btn @click="getUID">รับ uid</v-btn>
   </v-container>
 </template>
 
 <script>
 import axios from 'axios'
 import firebase from 'firebase'
-
 
 
 export default {
@@ -36,8 +35,21 @@ export default {
         async postUID(){
             let user = firebase.auth().currentUser
 
-            axios.post("users",user.uid).then((response) => {
-            console.log(JSON.stringify(response.data))})
+            axios.post("post-test",user.uid).then((response) => {
+            //axios.get("").then((response) => {
+            console.log(response)})
+            
+            //console.log(JSON.stringify(response))})
+
+        },
+          async getUID(){
+            //let user = firebase.auth().currentUser
+
+            //axios.post("post-test",user.uid).then((response) => {
+            axios.get("").then((response) => {
+            console.log(response)})
+            
+            //console.log(JSON.stringify(response))})
 
         },
 
