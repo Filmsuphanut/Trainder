@@ -45,30 +45,32 @@ export default {
         async loginsubmit(e){////////////////////////////////////////////////////////
 
         if(this.$refs.form.validate()){
+            this.loading = true;
             //const response = await axios.post('......',this.userdata)
             
             //console.log(this.userdata,response)
+
             firebase.auth().signInWithEmailAndPassword(this.userdata.name, this.userdata.pass)
             .then((userCredential) => {
-                var user = userCredential.user
+                var user = userCredential.user;
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
-                console.log(user)
+                console.log(user);
 
                 //เช็คว่าเป็น trainer หรือ user ปกติ
-                this.$router.push('/UserHome')
+                this.getRole()
+
 
             })
             .catch((error) => {
                  var errorCode = error.code;
                  var errorMessage = error.message;
-                 console.log(errorCode,errorMessage)
-                 this.snacktext = 'รหัสผ่านไม่ถูกต้อง'
-                 this.snackbar = true
+                 console.log(errorCode,errorMessage);
+                 this.snacktext = 'รหัสผ่านไม่ถูกต้อง';
+                 this.snackbar = true;
             });
             e.preventDefault()
 
         }
-
         },
         async signinpopup(e){
         
@@ -117,6 +119,32 @@ export default {
             e.preventDefault()
             
         },
+
+        async getRole(){
+
+            let uid = firebase.auth().currentUser.uid;
+
+            let db = firebase.firestore();
+            let userRef = db.collection("userData");
+
+            let userData = await userRef.where("uid", "==", uid).get();
+
+            userData.forEach(doc => {
+                let role = doc.data().role;
+                console.log(role)
+                if(role === "trainer"){
+                    this.loading = false;
+                    this.$router.push('/TrainerHome');
+                }else{
+                    this.loading = false;
+                    this.$router.push('/UserHome');
+                }
+            });
+
+        },
+
+
+
     },    
     
 }

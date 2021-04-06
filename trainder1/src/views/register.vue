@@ -171,10 +171,10 @@ export default {
 
 
       let rou = this.$router
-
+      
       if (this.$refs.form.validate()) {
         //const response = await axios.post('todos',this.userdata)
-        console.log("asdasda");
+        this.loading = true;     
 
         firebase
           .auth()
@@ -201,7 +201,6 @@ export default {
                 user.updateProfile({
                   displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
                 }).then(function() {
-
                   rou.push("/UserHome");///////////////////////
                 }).catch(function(error) {
                     console.log(error)
@@ -216,19 +215,11 @@ export default {
             console.log(errorCode, errorMessage);
             this.snacktext = this.snackalert.false;
             this.snackbar = true;
+            this.loading = false;
           });
 
         e.preventDefault();
 
-        // if(response.data === 'false'){
-        //     this.snackbar = true
-        //     this.snacktext = this.snackalert.duplicate
-        // }else if(response.data === 'error'){
-        //     this.snackbar = true
-        //     this.snacktext = this.snackalert.captcha
-        // }else{
-        //     this.$router.push('/')
-        // }
       }
     },
   },

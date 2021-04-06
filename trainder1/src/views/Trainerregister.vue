@@ -142,9 +142,9 @@ export default {
     },
     methods:{
         async regissubmit(e){
-
+            
             if(this.$refs.form.validate()){
-
+                this.loading = true;///
                     firebase.auth().createUserWithEmailAndPassword(this.userdata.email, this.userdata.pass)
                     .then((userCredential) => {
                         var user = userCredential.user
@@ -172,6 +172,7 @@ export default {
                         console.log(errorCode,errorMessage)
                         this.snacktext = this.snackalert
                         this.snackbar = true
+                        this.loading = false;
                     });
 
                 e.preventDefault()
