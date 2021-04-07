@@ -117,7 +117,7 @@ export default {
     name : 'Trainerregister',
     data(){
         return{
-            userdata:{email: null,pass:null,firstname:null,lastname:null,user:false},
+            userdata:{email: null,pass:null,firstname:null,lastname:null},
             cpass:null,
             
             passwordRules: [

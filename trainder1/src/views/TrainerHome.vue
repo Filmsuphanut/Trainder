@@ -3,13 +3,15 @@
    <v-container>
 
         <h1>สวัสดี Trainer</h1>
-
+        <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
+        <v-btn @click="logout">ออกจากระบบ</v-btn>
     </v-container>
 </template>
 
 
 <script>
 
+import firebase from 'firebase';
 
 export default {
      name : 'index',
@@ -20,10 +22,30 @@ export default {
     },
     methods:{
 
-    },
-    components: {
+        logout(){
 
-    }
+            firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            console.log("logout")
+            this.$router.push('/')
+
+            }).catch((error) => {
+            // An error happened.
+            console.log(error);
+            });  
+
+        },
+
+        setPrevious(){
+            if(this.$store.state.previous.pre !== "/TrainerHome"){
+                this.$store.commit("setPreviousPage","/TrainerHome");
+            }
+        },
+
+    },
+    mounted(){
+        this.setPrevious();
+    },
 
 }
 </script>

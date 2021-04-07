@@ -10,6 +10,7 @@ import TrainerSignIn from '../views/TrainerSignIn.vue'
 import FindTrainer from '../views/MainFindTrainer.vue'
 import MainExPeople from '../views/MainExPeople.vue'
 import MainCreateRoom from '../views/MainCreateRoom.vue'
+import ProfileSetting from '../views/Setting.vue'
 
 Vue.use(VueRouter)
 
@@ -64,6 +65,11 @@ const routes = [
     path: '/CreateRoom',
     name: 'CreateRoom',
     component: MainCreateRoom
+  },
+  {
+    path: '/ProfileSetting',
+    name: 'ProfileSetting',
+    component: ProfileSetting
   },
   // {
   //   path: '/about',

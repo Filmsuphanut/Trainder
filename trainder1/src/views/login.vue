@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from 'firebase';
 
 export default {
     name : 'login',
@@ -89,16 +89,7 @@ export default {
                 console.log(result)
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
 
-
-                let db = firebase.firestore();
-                let userRef = db.collection("userData");
-
-                    userRef.add({
-                    fullName:user.displayName,
-                    role: "normal",
-                    uid: user.uid,
-                    });
-
+                this.CreateUserData(user)
 
                 this.$router.push('/UserHome')
 
@@ -119,6 +110,26 @@ export default {
             e.preventDefault()
             
         },
+        
+        async CreateUserData(user){
+
+            let db = firebase.firestore();
+            let userRef = db.collection("userData");
+            let userData = await userRef.where("uid", "==", user.uid).get();
+            let collision = user.uid;
+            
+            userData.forEach(doc => {
+                collision = (doc.data().uid == collision);
+            });
+            console.log(collision)
+            if (!collision){
+                userRef.add({
+                fullName:user.displayName,
+                role: "normal",
+                uid: user.uid,
+                });
+            }
+         },
 
         async getRole(){
 

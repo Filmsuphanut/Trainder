@@ -190,23 +190,19 @@ export default {
             let db = firebase.firestore();
             let userRef = db.collection("userData");
 
-                userRef.add({
-                fullName: [this.userdata.firstname, this.userdata.lastname].join(
-                    " "),
-                role: "normal",
-                uid: user.uid,
-                });
+            userRef.add({
+            fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
+            role: "normal",
+            uid: user.uid,
+            });
 
-
-                user.updateProfile({
-                  displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
-                }).then(function() {
-                  rou.push("/UserHome");///////////////////////
-                }).catch(function(error) {
-                    console.log(error)
-                });
-
-                
+            user.updateProfile({
+              displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
+            }).then(function() {
+              rou.push("/UserHome");///////////////////////
+            }).catch(function(error) {
+                console.log(error)
+            });    
             
           })
           .catch((error) => {
@@ -222,6 +218,7 @@ export default {
 
       }
     },
+
   },
 };
 </script>

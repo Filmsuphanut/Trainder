@@ -5,7 +5,8 @@
         <router-link to="/Excercise"><v-btn>ออกกำลังกายกับผู้อื่น</v-btn></router-link>
         <router-link to="/FindTrainer"><v-btn>ค้นหา Trainer ที่ถูกใจ</v-btn></router-link>
         <router-link to="/CreateRoom"><v-btn>สร้างห้องออกกำลังกายกับเพื่อน</v-btn></router-link>
-
+        <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
+        <v-btn @click="logout">ออกจากระบบ</v-btn>
 
     </v-container>
 </template>
@@ -84,10 +85,32 @@ export default {
 
 
         },
-    },
-    components: {
 
-    }
+        logout(){
+
+            firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            console.log("logout")
+            this.$router.push('/')
+
+            }).catch((error) => {
+            // An error happened.
+            console.log(error);
+            });  
+
+        },
+
+        setPrevious(){
+            if(this.$store.state.previous.pre !== "/UserHome"){
+                this.$store.commit("setPreviousPage","/UserHome");
+            }
+        },
+
+
+    },
+    mounted(){
+        this.setPrevious();
+    },
 
 }
 </script>
