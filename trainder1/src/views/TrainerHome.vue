@@ -1,7 +1,6 @@
 <template>
 
    <v-container>
-
         <h1>สวัสดี Trainer</h1>
         <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
         <v-btn @click="logout">ออกจากระบบ</v-btn>

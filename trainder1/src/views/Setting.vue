@@ -8,86 +8,195 @@
         </v-row>
         <br>
         <table class="tab" border="1">
-            <tr><td width="620" height="700px">
+            <tr><td width="700" height="700px">
             <div class="box">
-                <img src="../images/Logo.png"  align="center"><br><br>
+                
 
             <v-form ref="form" @submit.prevent="updateUserData">
 
-                <table border="1">
+            <h1 align="left">ตั้งค่าบัญชีผู้ใช้</h1><br>
 
-                    Email
-                        <v-text-field
-                        label="Email"
-                        :rules="checkdata"
-                         v-model="userData.email"
-                        :disabled="true"
-                        ></v-text-field>
+                    <table border="0">
+                    <tr>
+                        <td><img src="../images/people.jpg"  align="left" width="150" height="150"><br><br></td>
+                        <td width="50"></td>
+                        <td>
+                            <tr><td>
 
-                        <v-text-field
-                        label="firstname"
-                        :rules="checkdata"
-                         v-model="userData.firstname"
-                        ></v-text-field>
+                                <v-text-field
+                                label="Email"
+                                v-model="userData.email"
+                                :disabled="true"
+                                ></v-text-field>
 
-                        <v-text-field
-                        label="lastname"
-                        :rules="checkdata"
-                         v-model="userData.lastname"
-                        ></v-text-field>
+                            </td></tr>
+                            <tr><td width="400">
 
-                        <v-text-field
-                        label="personalID"
-                        :rules="checkdata"
-                         v-model="userData.personalID"
-                        ></v-text-field>
+                                <v-text-field
+                                label="ชื่อ"
+                                :rules="checkdata"
+                                v-model="userData.firstname"
+                                required
+                                ></v-text-field>
 
-                        <v-text-field
-                        label="address"
-                        :rules="checkdata"
-                         v-model="userData.address"
-                        ></v-text-field>            
+                                <v-text-field
+                                label="นามสกุล"
+                                :rules="checkdata"
+                                v-model="userData.lastname"
+                                required
+                                ></v-text-field>
 
-                        <v-text-field
-                        label="gender"
-                        :rules="checkdata"
-                         v-model="userData.gender"
-                        ></v-text-field>  
-
-
-                        <v-text-field
-                        label="BD"
-                        :rules="checkdata"
-                         v-model="userData.BD"
-                        ></v-text-field>  
-
-
-                        <v-text-field
-                        label="bank"
-                        :rules="checkdata"
-                         v-model="userData.bank"
-                        ></v-text-field>  
-
-                        <v-text-field
-                        label="bankaccountNumber"
-                        :rules="checkdata"
-                         v-model="userData.bankaccountNumber"
-                        ></v-text-field>  
-
-                        <v-text-field
-                        label="phone"
-                        :rules="checkdata"
-                         v-model="userData.phone"
-                        ></v-text-field>  
-
-                        <v-text-field
-                        label="career"
-                        :rules="checkdata"
-                         v-model="userData.career"
-                        ></v-text-field>  
-
-                    <v-btn :disabled="loading" type="submit" :loading="loading">Update</v-btn>
+                            </td></tr>
+                        </td>
+                    </tr>
+                    <tr><td colspan="1">สถานะผู้ใช้ : {{userData.role}}</td></tr>
                 </table>
+
+                    <br>
+                    <p align="left">ข้อมูลส่วนตัว</p>
+
+                    <v-text-field
+                      label="เลขบัตรประจำตัวประชาชน"
+                      :rules="personalIDRule"
+                      v-model="userData.personalID"
+                      required
+                    ></v-text-field>
+
+                    <v-select
+                      :items="gen"
+                      label="เพศ"
+                      v-model="userData.gender"
+                      required
+                      :rules="checkdata"
+                    ></v-select>
+
+                    <v-menu
+                      ref="menu"
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                      value="userData.BD"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="userData.BD"
+                          label="วันเกิด"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          required
+                          :rules="checkdata"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        ref="picker"
+                        v-model="userData.BD"
+                        max="2000-12-31"
+                        min="1940-01-01"
+                        @change="this.$refs.menu.save(userData.BD)"
+                      ></v-date-picker>
+                    </v-menu>
+
+                    <v-textarea
+                      label="ที่อยู่"
+                      v-model="userData.address"
+                      color="blue"
+                      :rules="AddressRule"
+                      required
+                    >
+                      <template v-slot:label>
+                        <div>ที่อยู่ <small>(ต้องไม่เกิน 100 ตัว)</small></div>
+                      </template>
+                    </v-textarea>
+                    <br />
+
+                    <v-select
+                        :items="jobs"
+                        label="อาชีพ"
+                        v-model="userData.career"
+                        :rules="checkdata"
+                        required
+                    ></v-select>
+
+                    <v-text-field
+                      label="โทรศัพท์ติดต่อ"
+                      :rules="PhoneNumberRule"
+                      v-model="userData.phone"
+                      required
+                    ></v-text-field>
+
+                    <br>
+                    <p align="left">ข้อมูลทางการเงิน</p>
+
+                    <v-select
+                      :items="banklist"
+                      label="ธนาคาร"
+                      v-model="userData.bank"
+                      :disabled="!userData.bankaccountNumber == ''"
+                    ></v-select>
+
+                    <v-text-field
+                      v-if="userData.bank"
+                      label="หมายเลขบัญชีธนาคาร"
+                      :rules="bankaccountNumberRule"
+                      v-model="userData.bankaccountNumber"
+                      required
+                    ></v-text-field>
+
+                    <br>
+                    <p align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</p>
+
+                      <v-row align="center" justify="center" >
+                      <v-col cols="10" sm="6" md="6">
+                        <v-checkbox
+                          v-model="userData.ec_skill"
+                          label="เวทเทรนนิ่ง"
+                          value="เวทเทรนนิ่ง"
+                          :rules="checkboxRule"
+                        ></v-checkbox>
+                        <v-checkbox
+                          v-model="userData.ec_skill"
+                          label="แอโรบิค"
+                          value="แอโรบิค"
+                          :rules="checkboxRule"
+                        ></v-checkbox>
+                        <v-checkbox
+                          v-model="userData.ec_skill"
+                          label="ออกกำลังกายทั่วไป"
+                          value="ออกกำลังกายทั่วไป"
+                          :rules="checkboxRule"
+                        ></v-checkbox>
+                      </v-col>
+
+                      <v-col cols="10" sm="6" md="6">
+                        <v-checkbox
+                          v-model="userData.ec_skill"
+                          label="โยคะ"
+                          value="โยคะ"
+                          :rules="checkboxRule"
+                        ></v-checkbox>
+                        <v-checkbox
+                          v-model="userData.ec_skill"
+                          label="คาร์ดิโอ"
+                          value="คาร์ดิโอ"
+                          :rules="checkboxRule"
+                        ></v-checkbox>
+                        <v-checkbox
+                          v-model="userData.ec_skill"
+                          label="อื่นๆ"
+                          value="อื่นๆ"
+                          :rules="checkboxRule"
+                        ></v-checkbox>
+                      </v-col>
+                    </v-row>
+
+ 
+                    <br><br>
+                    <v-btn :disabled="loading" type="submit" :loading="loading">Update</v-btn>
+
             </v-form>
 
 
@@ -126,15 +235,68 @@ export default {
                 email:null,
                 firstname:null,
                 lastname:null,
+                role:null,
                 personalID: null,
                 address: null, 
                 gender: null, 
                 BD: null, 
                 bank: null,
-                bankaccountNumber: null,
+                bankaccountNumber: "",
                 phone: null,
-                career: null, 
+                career: null,
+                ec_skill: [],  
                 },
+
+
+            gen: ["ชาย", "หญิง", "ไม่ระบุ"],
+            banklist: [
+                "ธนาคารกรุงเทพ",
+                "ธนาคารกสิกรไทย",
+                "ธนาคารกรุงไทย",
+                "ธนาคารทหารไทย",
+                "ธนาคารไทยพาณิชย์",
+                "ธนาคารกรุงศรีอยุธยา",
+                "ธนาคารออมสิน",
+            ],
+            jobs: ["ทำงานราชการ", "ทำงานเอกชน", "ทำอาชีพอิสระ"],
+
+            personalIDRule: [
+                (value) => !!value || "โปรดกรอกฟิลด์นี้",
+                (value) =>
+                (value &&
+                    (value.length == 13) &&
+                    typeof parseInt(value) == "number" &&
+                    parseInt(value) >= 0) ||
+                "หมายเลขบัตรประชาชนต้องเป็นตัวเลข และ เท่ากับ 13 ตัว",
+            ],
+
+            AddressRule: [
+                (value) => !!value || "โปรดกรอกฟิลด์นี้",
+                (value) =>
+                (value && value.length <= 100) || "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร",
+            ],
+
+            bankaccountNumberRule: [
+                (value) => !!value || "โปรดกรอกฟิลด์นี้",
+                (value) =>
+                (value &&
+                    (this.userData.bank == "ธนาคารออมสิน"
+                    ? value.length == 12
+                    : value.length == 10) &&
+                    typeof parseInt(value) == "number" &&
+                    parseInt(value) >= 0) ||
+                "หมายเลขบัญชีธนาคารไม่ถูกต้อง",
+            ],
+
+            PhoneNumberRule: [
+                (value) => !!value || "โปรดกรอกฟิลด์นี้",
+                (value) =>
+                (value &&
+                    value.length == 10 &&
+                    typeof parseInt(value) == "number" &&
+                    parseInt(value) >= 0) ||
+                "เบอร์โทรศัพท์ต้องเป็นตัวเลข และ มี 10 หลัก",
+            ],
 
             checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
             checkboxRule: [( ec_skill ) => (ec_skill || []).length > 0 || "โปรดเลือกอย่างน้อย 1 ในรายการนี้"],
@@ -152,9 +314,20 @@ export default {
             this.$router.push(previous)
         },
 
-        updateUserData(){
-            console.log(this.userData)
+        async updateUserData(){
+
+            // let uid = firebase.auth().currentUser.uid;
+            // console.log("called method")
+
+            // let db = firebase.firestore();
+            // let userRef = db.collection("userData");
+
+            // let userData = await userRef.where("uid", "==", uid).get();
+
+///////////////////////////////////////////////
+           
         },
+
 
     },
     async mounted(){
@@ -173,14 +346,16 @@ export default {
                 //console.log(doc.id, '=>', doc.data());
                 this.userData.firstname = (doc.data().fullName == undefined? null:(doc.data().fullName).split(" ")[0] );
                 this.userData.lastname = (doc.data().fullName == undefined? null:(doc.data().fullName).split(" ")[1]);
-                this.userData.personalID = (doc.data().PersonalID == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().PersonalID);
-                this.userData.address = (doc.data().Address == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().Address);
-                this.userData.gender = (doc.data().Gender == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().Gender);
-                this.userData.BD = (doc.data().Birthday == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().Birthday);
-                this.userData.bank = (doc.data().Bank == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().Bank);
-                this.userData.bankaccountNumber = (doc.data().BankAccountNumber == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().BankAccountNumber);
-                this.userData.phone = (doc.data().PhoneNumber == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().PhoneNumber);
-                this.userData.career = (doc.data().Career == undefined? "ไม่มีข้อมูล กรุณาเพิ่มข้อมูล":doc.data().Career);
+                this.userData.role = (doc.data().role == undefined? null: (doc.data().role == "trainer"? "เทรนเนอร์":"ผู้ใช้ทั่วไป") );
+                this.userData.personalID = (doc.data().PersonalID == undefined? null:doc.data().PersonalID);
+                this.userData.address = (doc.data().Address == undefined? null:doc.data().Address);
+                this.userData.gender = (doc.data().Gender == undefined? null:doc.data().Gender);
+                this.userData.BD = (doc.data().Birthday == undefined? null:doc.data().Birthday);
+                this.userData.bank = (doc.data().Bank == undefined? null:doc.data().Bank);
+                this.userData.bankaccountNumber = (doc.data().BankAccountNumber == undefined? null:doc.data().BankAccountNumber);
+                this.userData.phone = (doc.data().PhoneNumber == undefined? null:doc.data().PhoneNumber);
+                this.userData.career = (doc.data().Career == undefined? null:doc.data().Career);
+                this.userData.ec_skill = (doc.data().EC_skill == undefined? null:doc.data().EC_skill);
             });
     }
 
