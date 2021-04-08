@@ -8,7 +8,7 @@
         </v-row>
         <br>
         <table class="tab" border="1">
-            <tr><td width="35%" height="700px">
+            <tr><td width="620" height="700px">
             <div class="box">
                 <img src="../images/Logo.png"  align="center"><br><br>
 
