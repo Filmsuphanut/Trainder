@@ -316,13 +316,37 @@ export default {
 
         async updateUserData(){
 
-            // let uid = firebase.auth().currentUser.uid;
-            // console.log("called method")
+            let uid = firebase.auth().currentUser.uid;
+            console.log("called method")
 
-            // let db = firebase.firestore();
-            // let userRef = db.collection("userData");
+            let db = firebase.firestore();
+            let userRef = db.collection("userData");
 
-            // let userData = await userRef.where("uid", "==", uid).get();
+            let userData = await userRef.where("uid", "==", uid).get();
+            //let userData = await userRef.where("uid", "==", uid);
+
+            let docId;
+
+            userData.forEach(doc => {
+              console.log(doc)
+              docId = (doc.id)
+            });
+
+            let userDataRef = await userRef.doc(docId);
+
+            userDataRef.update({
+              fullName:[this.userData.firstname, this.userData.lastname].join(" ")
+            })
+            .then(() => {
+              console.log("update successfully !!");
+            })
+            .catch((error) =>{
+              console.log("update error : ",error);
+            })
+
+
+            // {
+            // });
 
 ///////////////////////////////////////////////
            
@@ -355,7 +379,7 @@ export default {
                 this.userData.bankaccountNumber = (doc.data().BankAccountNumber == undefined? null:doc.data().BankAccountNumber);
                 this.userData.phone = (doc.data().PhoneNumber == undefined? null:doc.data().PhoneNumber);
                 this.userData.career = (doc.data().Career == undefined? null:doc.data().Career);
-                this.userData.ec_skill = (doc.data().EC_skill == undefined? null:doc.data().EC_skill);
+                this.userData.ec_skill = (doc.data().EC_skill == undefined? []:doc.data().EC_skill);
             });
     }
 
