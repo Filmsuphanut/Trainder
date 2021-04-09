@@ -303,7 +303,6 @@ export default {
 
             loading: false,
             snackbar: false,
-            snackalert: "Email นี้ถูกใช้ไปแล้ว",
             snacktext: null,
         }
     },
@@ -316,6 +315,8 @@ export default {
 
         async updateUserData(){
 
+            this.loading = true;
+            let user = firebase.auth().currentUser;
             let uid = firebase.auth().currentUser.uid;
             console.log("called method")
 
@@ -335,14 +336,38 @@ export default {
             let userDataRef = await userRef.doc(docId);
 
             userDataRef.update({
-              fullName:[this.userData.firstname, this.userData.lastname].join(" ")
+              fullName:[this.userData.firstname, this.userData.lastname].join(" "),
+              PersonalID: this.userData.personalID, 
+              Address: this.userData.address , 
+              Birthday: this.userData.BD , 
+              Gender: this.userData.gender , 
+              Career: this.userData.career , 
+              PhoneNumber: this.userData.phone ,
+              EC_skill: this.userData.ec_skill ,
+              Bank: this.userData.bank ,
+              BankAccountNumber: this.userData.bankaccountNumber, 
             })
             .then(() => {
-              console.log("update successfully !!");
+              console.log("update userProfile successfully !!");
+
+              user.updateProfile({
+                displayName: [this.userData.firstname, this.userData.lastname].join(" "),
+              })
+              console.log("update displayname successfully !!");
+
+              this.snacktext = 'อัพเดทข้อมูลผู้ใช้เรียบร้อย';
+              this.snackbar = true;
+              this.loading = false;
             })
             .catch((error) =>{
+              this.loading = false;
               console.log("update error : ",error);
             })
+
+
+
+
+
 
 
             // {
@@ -368,18 +393,18 @@ export default {
 
             userData.forEach(doc => {
                 //console.log(doc.id, '=>', doc.data());
-                this.userData.firstname = (doc.data().fullName == undefined? null:(doc.data().fullName).split(" ")[0] );
-                this.userData.lastname = (doc.data().fullName == undefined? null:(doc.data().fullName).split(" ")[1]);
-                this.userData.role = (doc.data().role == undefined? null: (doc.data().role == "trainer"? "เทรนเนอร์":"ผู้ใช้ทั่วไป") );
-                this.userData.personalID = (doc.data().PersonalID == undefined? null:doc.data().PersonalID);
-                this.userData.address = (doc.data().Address == undefined? null:doc.data().Address);
-                this.userData.gender = (doc.data().Gender == undefined? null:doc.data().Gender);
-                this.userData.BD = (doc.data().Birthday == undefined? null:doc.data().Birthday);
-                this.userData.bank = (doc.data().Bank == undefined? null:doc.data().Bank);
-                this.userData.bankaccountNumber = (doc.data().BankAccountNumber == undefined? null:doc.data().BankAccountNumber);
-                this.userData.phone = (doc.data().PhoneNumber == undefined? null:doc.data().PhoneNumber);
-                this.userData.career = (doc.data().Career == undefined? null:doc.data().Career);
-                this.userData.ec_skill = (doc.data().EC_skill == undefined? []:doc.data().EC_skill);
+                this.userData.firstname = (doc.data().fullName == null? null:(doc.data().fullName).split(" ")[0]);
+                this.userData.lastname = (doc.data().fullName == null? null:(doc.data().fullName).split(" ")[1]);
+                this.userData.role = (doc.data().role == null? null: (doc.data().role == "trainer"? "เทรนเนอร์":"ผู้ใช้ทั่วไป") );
+                this.userData.personalID = doc.data().PersonalID;
+                this.userData.address = doc.data().Address;
+                this.userData.gender = doc.data().Gender;
+                this.userData.BD = doc.data().Birthday;
+                this.userData.bank = doc.data().Bank;
+                this.userData.bankaccountNumber = doc.data().BankAccountNumber;
+                this.userData.phone = doc.data().PhoneNumber;
+                this.userData.career = doc.data().Career;
+                this.userData.ec_skill = (doc.data().EC_skill == null? []:doc.data().EC_skill);
             });
     }
 

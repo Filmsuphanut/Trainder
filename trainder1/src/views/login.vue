@@ -82,11 +82,12 @@ export default {
             .signInWithPopup(provider)
             .then((result) => {
                 /** @type {firebase.auth.OAuthCredential} */
-                var credential = result.credential;
-                var token = credential.accessToken;
+                //var credential = result.credential;
+                //var token = credential.accessToken;
                 var user = result.user;
-                console.log(credential,token,user.email)
+                //console.log(credential,token,user.email)
                 console.log(result)
+                console.log(user.uid)
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
 
                 this.CreateUserData(user)
@@ -116,16 +117,29 @@ export default {
             let db = firebase.firestore();
             let userRef = db.collection("userData");
             let userData = await userRef.where("uid", "==", user.uid).get();
-            let collision = user.uid;
-            
+            let docID = null;
+
             userData.forEach(doc => {
-                collision = (doc.data().uid == collision);
+                docID = doc.id;
             });
-            console.log(collision)
-            if (!collision){
+
+            console.log(docID);
+            if(docID == null){
+                console.log("add");
                 userRef.add({
                 fullName:user.displayName,
                 role: "normal",
+
+                PersonalID: null, 
+                Address: null , 
+                Birthday: null , 
+                Gender: null , 
+                Career: null , 
+                PhoneNumber: null ,
+                EC_skill: null ,
+                Bank: null ,
+                BankAccountNumber: null,
+
                 uid: user.uid,
                 });
             }

@@ -193,6 +193,15 @@ export default {
             userRef.add({
             fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
             role: "normal",
+            PersonalID: null, 
+            Address: null , 
+            Birthday: null , 
+            Gender: null , 
+            Career: null , 
+            PhoneNumber: null ,
+            EC_skill: null ,
+            Bank: null ,
+            BankAccountNumber: null ,
             uid: user.uid,
             });
 

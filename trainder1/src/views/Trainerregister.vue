@@ -156,8 +156,7 @@ export default {
                         let userRef = db.collection("userData");
 
                             userRef.add({
-                            fullName: [this.userdata.firstname, this.userdata.lastname].join(
-                                " "),
+                            fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
                             role: "trainer",
                             uid: user.uid,
                             });
