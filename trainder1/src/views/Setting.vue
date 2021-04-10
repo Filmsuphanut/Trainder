@@ -146,8 +146,32 @@
                       required
                     ></v-text-field>
 
+
+                    <v-select
+                      :items="gen"
+                      label="เพศ"
+                      v-model="userData.gender"
+                      required
+                      :rules="checkdata"
+                    ></v-select>
+
+<!-- /////////   ///////// -->
                     <br>
                     <p align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</p>
+
+
+                    <br>
+                    <v-select
+                      :items="['ลดน้ำหนัก','เพิ่มกล้ามเนื้อ','หุ่นที่ดี','เพื่อสุขภาพ']"
+                      label="เป้าหมายในการออกกำลังกาย"
+                      v-model="userData.purpose"
+                      required
+                      :rules="checkdata"
+                    ></v-select>
+                    <br>
+
+
+<p align="left" style="font-size:80%;" >ความถนัดในการออกกำลังกาย</p>
 
                       <v-row align="center" justify="center" >
                       <v-col cols="10" sm="6" md="6">
@@ -192,7 +216,7 @@
                         ></v-checkbox>
                       </v-col>
                     </v-row>
-
+<!-- /////////   ///////// -->
  
                     <br><br>
                     <v-btn :disabled="loading" type="submit" :loading="loading">Update</v-btn>
@@ -244,7 +268,8 @@ export default {
                 bankaccountNumber: "",
                 phone: null,
                 career: null,
-                ec_skill: [],  
+                ec_skill: null,  
+                purpose:null,
                 },
 
 
@@ -280,11 +305,10 @@ export default {
                 (value) => !!value || "โปรดกรอกฟิลด์นี้",
                 (value) =>
                 (value &&
-                    (this.userData.bank == "ธนาคารออมสิน"
-                    ? value.length == 12
-                    : value.length == 10) &&
-                    typeof parseInt(value) == "number" &&
-                    parseInt(value) >= 0) ||
+                    (this.userData.bank == "ธนาคารออมสิน"? value.length == 12: value.length == 10) &&
+                    value.match(/^[0-9]+$/)) ||
+                    // typeof parseInt(value) == "number" &&
+                    // parseInt(value) >= 0) ||
                 "หมายเลขบัญชีธนาคารไม่ถูกต้อง",
             ],
 
@@ -313,7 +337,9 @@ export default {
             this.$router.push(previous)
         },
 
-        async updateUserData(){
+        async updateUserData(e){
+
+            if (this.$refs.form.validate()) {
 
             this.loading = true;
             let user = firebase.auth().currentUser;
@@ -345,7 +371,9 @@ export default {
               PhoneNumber: this.userData.phone ,
               EC_skill: this.userData.ec_skill ,
               Bank: this.userData.bank ,
-              BankAccountNumber: this.userData.bankaccountNumber, 
+              BankAccountNumber: this.userData.bankaccountNumber,
+              Purpose: this.userData.purpose,
+
             })
             .then(() => {
               console.log("update userProfile successfully !!");
@@ -364,8 +392,8 @@ export default {
               console.log("update error : ",error);
             })
 
-
-
+            }
+            e.preventDefault();
 
 
 
@@ -404,7 +432,8 @@ export default {
                 this.userData.bankaccountNumber = doc.data().BankAccountNumber;
                 this.userData.phone = doc.data().PhoneNumber;
                 this.userData.career = doc.data().Career;
-                this.userData.ec_skill = (doc.data().EC_skill == null? []:doc.data().EC_skill);
+                this.userData.ec_skill = doc.data().EC_skill;
+                this.userData.purpose = doc.data().Purpose;
             });
     }
 

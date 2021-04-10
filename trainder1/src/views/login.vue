@@ -139,7 +139,8 @@ export default {
                 EC_skill: null ,
                 Bank: null ,
                 BankAccountNumber: null,
-
+                Purpose: null,
+                
                 uid: user.uid,
                 });
             }

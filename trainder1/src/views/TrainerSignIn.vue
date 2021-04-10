@@ -12,12 +12,7 @@
         <tr>
           <td width="620" height="700px">
             <div class="box">
-              <img
-                src="../images/Logo.png"
-                width="200"
-                height="80"
-                align="center"
-              /><br /><br />
+              <img src="../images/Logo.png" align="center"><br><br>
 
               <v-form ref="form" @submit.prevent="regissubmit">
                 <v-row justify="center">
@@ -102,8 +97,18 @@
 
                     <br><br>
                     <p align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</p>
-<br>
-<p align="left" style="font-size:80%;" >โปรดเลือกความถนัดในการออกกำลังกายของท่านอย่างน้อย 1 อย่างในรายการนี้</p>
+
+                    <br>
+                    <v-select
+                      :items="['ลดน้ำหนัก','เพิ่มกล้ามเนื้อ','หุ่นที่ดี','เพื่อสุขภาพ']"
+                      label="เป้าหมายในการออกกำลังกาย"
+                      v-model="userdata.purpose"
+                      required
+                      :rules="checkdata"
+                    ></v-select>
+
+<br><br>
+<p align="left" style="font-size:80%;" >โปรดเลือกความถนัดในการออกกำลังกายของท่าน 1 อย่างในรายการนี้</p>
 
 
                       <v-row align="center" justify="center" >
@@ -220,7 +225,8 @@ export default {
         bankaccountNumber: "",
         phone: null,
         career: null, 
-        ec_skill: [], 
+        ec_skill: null, 
+        purpose: null,
       },
 
       gen: ["ชาย", "หญิง", "ไม่ระบุ"],
@@ -255,11 +261,10 @@ export default {
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
           (value &&
-            (this.userdata.bank == "ธนาคารออมสิน"
-              ? value.length == 12
-              : value.length == 10) &&
-            typeof parseInt(value) == "number" &&
-            parseInt(value) >= 0) ||
+            (this.userdata.bank == "ธนาคารออมสิน"? value.length == 12: value.length == 10) &&
+              value.match(/^[0-9]+$/)) ||
+            //typeof parseInt(value) == "number" &&
+           // parseInt(value) >= 0) ||
           "หมายเลขบัญชีธนาคารไม่ถูกต้อง",
       ],
 
@@ -274,7 +279,7 @@ export default {
       ],
 
       checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
-      checkboxRule: [( ec_skill ) => (ec_skill || []).length > 0 || "โปรดเลือกอย่างน้อย 1 ในรายการนี้"],
+      checkboxRule: [( ec_skill ) => (ec_skill || []).length > 0 || "โปรดเลือก 1 ในรายการนี้"],
 
       loading: false,
       snackbar: false,
@@ -286,8 +291,9 @@ export default {
     async regissubmit(e) {
       // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
       // console.log(JSON.stringify(response.data))})
-
+      this.loading = true;
       if (this.$refs.form.validate()) {
+        
         let uid = firebase.auth().currentUser.uid;
 
         let db = firebase.firestore();
@@ -308,11 +314,12 @@ export default {
             EC_skill: this.userdata.ec_skill ,
             Bank: this.userdata.bank ,
             BankAccountNumber: this.userdata.bankaccountNumber ,
+            Purpose: this.userdata.purpose ,
           });
         });
 
         this.$router.push("/TrainerHome");
-
+        
         console.log(this.userdata)
 
         //ไม่เกี่ยว
@@ -341,6 +348,7 @@ export default {
 
         e.preventDefault();
       }
+      this.loading = false;
     },
 
     test() {
