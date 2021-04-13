@@ -36,7 +36,6 @@
                     ></v-select>
 
                     <v-menu
-                      ref="menu"
                       v-model="menu"
                       :close-on-content-click="false"
                       transition="scale-transition"
@@ -57,11 +56,9 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        ref="picker"
                         v-model="userdata.BD"
                         max="2000-12-31"
                         min="1940-01-01"
-                        @change="this.$refs.menu.save(userdata.BD)"
                       ></v-date-picker>
                     </v-menu>
 
@@ -181,9 +178,10 @@
                             prepend-icon="mdi-camera"
                             dense
                             rounded
-                            :required="index==1"
+                            :required="index==0"
                             @change="onUpload($event, index)"
                           ></v-file-input>
+                        
                         </template>
                     </div>
                     <!-- Done Upload Certificate -->
@@ -207,14 +205,15 @@
                       v-model="userdata.bankaccountNumber"
                       required
                     ></v-text-field>
+
+                    
                   </v-col>
                 </v-row>
 
                 <v-row justify="center">
                   <v-col class="text-right">
                     <v-btn :disabled="loading" type="submit" :loading="loading"
-                      >เพิ่มข้อมูล</v-btn
-                    >
+                      >เพิ่มข้อมูล</v-btn>
                   </v-col>
                 </v-row>
               </v-form>
@@ -328,6 +327,7 @@ export default {
       // Vue.axios.post("https://jsonplaceholder.typicode.com/todos",this.userdata).then((response) => {
       // console.log(JSON.stringify(response.data))})
       this.loading = true;
+
       if (this.$refs.form.validate()) {
         let uid = firebase.auth().currentUser.uid;
 
@@ -357,7 +357,6 @@ export default {
         });
 
         this.$router.push("/TrainerHome");
-
         console.log(this.userdata);
 
         //ไม่เกี่ยว
@@ -385,8 +384,10 @@ export default {
         //     });
 
         e.preventDefault();
+      }else{
+        this.loading = false;
       }
-      this.loading = false;
+
     },
 
     test() {
