@@ -12,13 +12,11 @@
         <tr>
           <td width="620" height="700px">
             <div class="box">
-              <img src="../images/Logo.png" align="center"><br><br>
+              <img src="../images/Logo.png" align="center" /><br /><br />
 
               <v-form ref="form" @submit.prevent="regissubmit">
                 <v-row justify="center">
                   <v-col>
-
-
                     <br />
                     <p align="left">ข้อมูลส่วนตัว</p>
 
@@ -95,23 +93,30 @@
                       required
                     ></v-text-field>
 
-                    <br><br>
+                    <br /><br />
                     <p align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</p>
 
-                    <br>
+                    <br />
                     <v-select
-                      :items="['ลดน้ำหนัก','เพิ่มกล้ามเนื้อ','หุ่นที่ดี','เพื่อสุขภาพ']"
+                      :items="[
+                        'ลดน้ำหนัก',
+                        'เพิ่มกล้ามเนื้อ',
+                        'หุ่นที่ดี',
+                        'เพื่อสุขภาพ',
+                      ]"
                       label="เป้าหมายในการออกกำลังกาย"
                       v-model="userdata.purpose"
                       required
                       :rules="checkdata"
                     ></v-select>
 
-<br><br>
-<p align="left" style="font-size:80%;" >โปรดเลือกความถนัดในการออกกำลังกายของท่าน 1 อย่างในรายการนี้</p>
+                    <br /><br />
+                    <p align="left" style="font-size:80%;">
+                      โปรดเลือกความถนัดในการออกกำลังกายของท่าน 1
+                      อย่างในรายการนี้
+                    </p>
 
-
-                      <v-row align="center" justify="center" >
+                    <v-row align="center" justify="center">
                       <v-col cols="10" sm="6" md="6">
                         <v-checkbox
                           v-model="userdata.ec_skill"
@@ -155,6 +160,33 @@
                       </v-col>
                     </v-row>
 
+                    <!-- Upload Certificate -->
+
+                    <br /><br />
+                    <p align="left" style="font-size:80%;">
+                      โปรดทำการอัพโหลดเกียรติบัตรที่เกี่ยวข้อง <br />
+                      (ตัวอย่าง: เกียรติบัตรการจบการศึกษาสาขาวิทยาศาสตร์การกีฬา,
+                      etc.)
+                    </p>
+
+                    <!-- Upload Certificate 1 [required] -->
+                    <div>
+                        <template v-for="(inp, index) in 3">
+                          <v-file-input 
+                            :key="index"
+                            :rules="rules"
+                            accept="image/png, image/jpeg, image/jpg"
+                            :placeholder="'Certificate ' + (index==0?' (required)':' (optional)')"
+                            filled
+                            prepend-icon="mdi-camera"
+                            dense
+                            rounded
+                            :required="index==1"
+                            @change="onUpload($event, index)"
+                          ></v-file-input>
+                        </template>
+                    </div>
+                    <!-- Done Upload Certificate -->
 
                     <br /><br />
                     <p align="left">ข้อมูลทางการเงิน</p>
@@ -175,10 +207,6 @@
                       v-model="userdata.bankaccountNumber"
                       required
                     ></v-text-field>
-
-
-
-
                   </v-col>
                 </v-row>
 
@@ -217,15 +245,15 @@ export default {
   data() {
     return {
       userdata: {
-        personalID: null, 
-        address: null, 
-        gender: null, 
-        BD: null, 
+        personalID: null,
+        address: null,
+        gender: null,
+        BD: null,
         bank: null,
         bankaccountNumber: "",
         phone: null,
-        career: null, 
-        ec_skill: null, 
+        career: null,
+        ec_skill: null,
         purpose: null,
       },
 
@@ -261,10 +289,12 @@ export default {
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
           (value &&
-            (this.userdata.bank == "ธนาคารออมสิน"? value.length == 12: value.length == 10) &&
-              value.match(/^[0-9]+$/)) ||
-            //typeof parseInt(value) == "number" &&
-           // parseInt(value) >= 0) ||
+            (this.userdata.bank == "ธนาคารออมสิน"
+              ? value.length == 12
+              : value.length == 10) &&
+            value.match(/^[0-9]+$/)) ||
+          //typeof parseInt(value) == "number" &&
+          // parseInt(value) >= 0) ||
           "หมายเลขบัญชีธนาคารไม่ถูกต้อง",
       ],
 
@@ -279,12 +309,18 @@ export default {
       ],
 
       checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
-      checkboxRule: [( ec_skill ) => (ec_skill || []).length > 0 || "โปรดเลือก 1 ในรายการนี้"],
+      checkboxRule: [
+        (ec_skill) => (ec_skill || []).length > 0 || "โปรดเลือก 1 ในรายการนี้",
+      ],
 
       loading: false,
       snackbar: false,
       snackalert: "Email นี้ถูกใช้ไปแล้ว",
       snacktext: null,
+
+      // Upload Picture Variables
+      picture: [null, null, null],
+      imageData: [null, null, null],
     };
   },
   methods: {
@@ -293,7 +329,6 @@ export default {
       // console.log(JSON.stringify(response.data))})
       this.loading = true;
       if (this.$refs.form.validate()) {
-        
         let uid = firebase.auth().currentUser.uid;
 
         let db = firebase.firestore();
@@ -305,22 +340,25 @@ export default {
         userData.forEach((doc) => {
           let docId = doc.id;
           userRef.doc(docId).update({
-            PersonalID: this.userdata.personalID, 
-            Address: this.userdata.address , 
-            Birthday: this.userdata.BD , 
-            Gender: this.userdata.gender , 
-            Career: this.userdata.career , 
-            PhoneNumber: this.userdata.phone ,
-            EC_skill: this.userdata.ec_skill ,
-            Bank: this.userdata.bank ,
-            BankAccountNumber: this.userdata.bankaccountNumber ,
-            Purpose: this.userdata.purpose ,
+            PersonalID: this.userdata.personalID,
+            Address: this.userdata.address,
+            Birthday: this.userdata.BD,
+            Gender: this.userdata.gender,
+            Career: this.userdata.career,
+            PhoneNumber: this.userdata.phone,
+            EC_skill: this.userdata.ec_skill,
+            Bank: this.userdata.bank,
+            BankAccountNumber: this.userdata.bankaccountNumber,
+            Purpose: this.userdata.purpose,
+            cert1: this.picture[0],
+            cert2: this.picture[1],
+            cert3: this.picture[2],
           });
         });
 
         this.$router.push("/TrainerHome");
-        
-        console.log(this.userdata)
+
+        console.log(this.userdata);
 
         //ไม่เกี่ยว
 
@@ -353,6 +391,23 @@ export default {
 
     test() {
       console.log(parseInt(this.userdata.personalID) <= 0);
+    },
+
+    // Upload Picture method
+    onUpload(e, index) {
+      this.imageData[index] = e;
+      this.picture[index] = null;
+      const storageRef = firebase
+        .storage()
+        .ref(`${this.imageData[index].name}`)
+        .put(this.imageData[index]);
+      storageRef.on(`state_changed`, () =>
+        storageRef.snapshot.ref.getDownloadURL().then((url) => {
+          this.picture[index] = url;
+          console.log(this.imageData[index]);
+          console.log(this.picture[index]);
+        })
+      );
     },
   },
 };
