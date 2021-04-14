@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-5">
-    <chat-room />
+    <!-- <chat-room /> -->
     <MyWebRTC />
   </v-card>
 </template>
@@ -10,18 +10,18 @@
 // import WebRTC from '../components/WebRTC'
 // ISSUE 5: https://github.com/westonsoftware/vue-webrtc/issues/5
 // import * as io from "socket.io-client";
-import ChatRoom from './ChatRoom.vue';
+// import ChatRoom from './ChatRoom.vue';
 import MyWebRTC from './myWebRTC.vue';
-import Watcher from './watcher.vue';
+// import Watcher from './watcher.vue';
 // window.io = io;
 //
 //
 export default {
   name: "home",
   components : {
-    ChatRoom,
+    // ChatRoom,
     MyWebRTC,
-    Watcher
+    // Watcher
   },
   data() {
     return {
