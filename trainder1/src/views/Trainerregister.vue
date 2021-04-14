@@ -159,6 +159,9 @@ export default {
                             fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
                             role: "trainer",
                             uid: user.uid,
+                            cert1: "",
+                            cert2: "",
+                            cert3: "",
                             });
 
                         //this.$store.commit("setUid",user.uid)
