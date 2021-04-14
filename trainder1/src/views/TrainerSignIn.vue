@@ -171,24 +171,24 @@
                         <template v-for="(inp, index) in 3">
                           <v-file-input 
                             :key="index"
-                            :rules="rules"
+                            :rules="index==0? checkimage:rules"
                             accept="image/png, image/jpeg, image/jpg"
                             :placeholder="'Certificate ' + (index==0?' (required)':' (optional)')"
                             filled
                             prepend-icon="mdi-camera"
                             dense
                             rounded
+                            :disabled="index==0? false:(index==1? (checkurl.length == 0):(index==2? (checkurl.length <= 1):true))"
                             :required="index==0"
                             @change="onUpload($event, index)"
+                            @click:clear="checkurl.pop()"
                           ></v-file-input>
                         
                         </template>
                     </div>
                     <!-- Done Upload Certificate -->
-
                     <br /><br />
                     <p align="left">ข้อมูลทางการเงิน</p>
-
                     <v-select
                       :items="banklist"
                       label="ธนาคาร"
@@ -320,6 +320,8 @@ export default {
       // Upload Picture Variables
       picture: [null, null, null],
       imageData: [null, null, null],
+      checkurl:[],
+      checkimage:[value => value || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป'] ,
     };
   },
   methods: {
@@ -329,6 +331,7 @@ export default {
       this.loading = true;
 
       if (this.$refs.form.validate()) {
+        console.log("validate");
         let uid = firebase.auth().currentUser.uid;
 
         let db = firebase.firestore();
@@ -390,13 +393,11 @@ export default {
 
     },
 
-    test() {
-      console.log(parseInt(this.userdata.personalID) <= 0);
-    },
-
     // Upload Picture method
     onUpload(e, index) {
       this.imageData[index] = e;
+      this.checkurl.push(URL.createObjectURL(e));
+      console.log(this.checkurl)
       this.picture[index] = null;
       const storageRef = firebase
         .storage()
@@ -405,8 +406,8 @@ export default {
       storageRef.on(`state_changed`, () =>
         storageRef.snapshot.ref.getDownloadURL().then((url) => {
           this.picture[index] = url;
-          console.log(this.imageData[index]);
-          console.log(this.picture[index]);
+          // console.log(this.imageData[index]);
+          // console.log(this.picture[index]);
         })
       );
     },

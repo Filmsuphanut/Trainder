@@ -10,7 +10,6 @@
         <table class="tab" border="1">
             <tr><td width="700" height="700px">
             <div class="box">
-                
 
             <v-form ref="form" @submit.prevent="updateUserData">
 
