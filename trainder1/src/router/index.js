@@ -11,6 +11,7 @@ import FindTrainer from '../views/MainFindTrainer.vue'
 import MainExPeople from '../views/MainExPeople.vue'
 import MainCreateRoom from '../views/MainCreateRoom.vue'
 import ProfileSetting from '../views/Setting.vue'
+import VDOC from '../views/VdoCall.vue'
 
 Vue.use(VueRouter)
 
@@ -38,8 +39,7 @@ const routes = [{
     {
         path: '/vdoc',
         name: 'videocall',
-        component: () =>
-            import ('../views/VdoCall.vue')
+        component: VDOC
     },
     {
         path: '/UserHome',

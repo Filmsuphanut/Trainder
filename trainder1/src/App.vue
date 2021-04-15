@@ -1,21 +1,23 @@
 <template>
-  <v-app id='v-application'>
-<link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
+  <v-app id="v-application">
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons"
+      rel="stylesheet"
+    />
     <v-main>
       <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
-<script >
+<script>
 //import Index from './views/index';
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
-  //  Index,
-
+    //  Index,
   },
 
   data: () => ({
@@ -23,7 +25,6 @@ export default {
   }),
 };
 </script>
-
 
 <style scoped>
 #v-application {

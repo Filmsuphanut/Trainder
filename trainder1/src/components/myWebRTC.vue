@@ -1,22 +1,34 @@
 <template>
   <div>
-    <v-text-field label="Input room's name " v-model="inputRoom"
+    <v-text-field solo label="Input room's name " v-model="inputRoom"
       >Input</v-text-field
     >
     <v-btn color="info" @click="join">join</v-btn>
     <v-btn color="error" @click="leave">leave</v-btn>
     <v-btn color="warning" @click="initCamera">Open Camera</v-btn>
+    <p>Room Logs</p>
     <v-sheet color="success" class="mt-3 d-flex flex-column white--text">
       <template v-for="(log, idx) in roomLogs">
         <p :key="idx">{{ log }}</p>
       </template>
+    </v-sheet>
+    <p>Room Chats</p>
+    <v-sheet color="info" class="my-3 d-flex flex-column white--text">
+      <template v-for="(log, idx) in roomChats">
+        <p :key="idx">{{ log }}</p>
+      </template>
+
+      <v-row style="width:500px" class="justify-center align-center">
+        <v-text-field class="mt-5" solo label="Chat" v-model="chat">
+        </v-text-field>
+        <v-btn color="success" @click="sendChat">Send</v-btn>
+      </v-row>
     </v-sheet>
     <div id="vdoList">
       <p>Your Camera</p>
       <video id="myVdo" class="mt-5" playsinline autoplay muted></video>
       <p>Others Camera</p>
     </div>
-    {{ Object.keys(peerConnections) }}
   </div>
 </template>
 
@@ -24,19 +36,23 @@
 const config = {
   iceServers: [
     {
-      urls: ["stun:stun.l.google.com:19302"],
+      // urls: ["stun:stun.l.google.com:19302"],
+      urls: ["stun:stun.evera.cloud:5349"],
     },
     {
-      urls: ["turn:13.250.13.83:3478?transport=udp"],
-      username: "YzYNCouZM1mhqhmseWk6",
-      credential: "YzYNCouZM1mhqhmseWk6",
+      urls: "turn:turn.evera.cloud:5349",
+      username: "test",
+      credential: "test321",
     },
   ],
 };
 
 import io from "socket.io-client";
 
-var socket = io("http://localhost:3000", {
+let endpoint = "https://floating-island-08423.herokuapp.com";
+// let endpoint = "http://191.101.184.233:3001/"
+// let endpoint = "http://localhost:3000";
+var socket = io(endpoint, {
   withCredentials: true,
 });
 
@@ -50,6 +66,8 @@ export default {
       room: "",
       currentRoom: "",
       roomLogs: [],
+      chat: "",
+      roomChats: [],
     };
   },
   computed: {},
@@ -58,7 +76,8 @@ export default {
       const video = document.getElementById("myVdo");
       // Media contrains
       const constraints = {
-        video: { facingMode: "user" },
+        video: { facingMode: "user", width: 960, height: 640 },
+        audio: true,
         // Uncomment to enable audio
         // audio: true,
       };
@@ -85,6 +104,8 @@ export default {
       Ovideo.id = id;
       Ovideo.autoplay = true;
       Ovideo.playsInline = true;
+      Ovideo.width  = 640
+      Ovideo.height = 480
       document.getElementById("vdoList").appendChild(Ovideo);
       // offer stream
       this.peerConnections[id] = new RTCPeerConnection(config);
@@ -158,29 +179,30 @@ export default {
       });
       // other offer stream
       socket.on("offer", (id, description) => {
-        if (!this.connectedPeers[id]) {
-          this.addPeerConnection(id);
-          console.log(`received offer from user : ${id}`);
-          this.answer(id, description);
-          this.connectedPeers[id] = true;
-        }
+        this.addPeerConnection(id);
+        console.log(`received offer from user : ${id}`);
+        this.answer(id, description);
         // set theirs desc and answer
       });
 
       socket.on("answer", (id, description) => {
-        if (!this.connectedPeers[id]) {
-          console.log(`received answer from user : ${id}`);
-          this.peerConnections[id].setRemoteDescription(
-            new RTCSessionDescription(description)
-          );
-          this.connectedPeers[id] = true;
+        if (this.peerConnections[id]) {
+          sd = this.peerConnections[id].currentRemoteDescription;
+          if (sd) {
+            console.log(`received answer from user : ${id}`);
+            this.peerConnections[id].setRemoteDescription(
+              new RTCSessionDescription(description)
+            );
+          }
         }
       });
 
       socket.on("candidate", (id, candidate) => {
-        this.peerConnections[id].addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
+        if (this.peerConnections[id]){
+          this.peerConnections[id].addIceCandidate(
+            new RTCIceCandidate(candidate)
+          );
+        }
       });
 
       socket.on("user-leaved-room", (id) => {
@@ -205,11 +227,20 @@ export default {
           // or item.parentNode.removeChild(item); for older browsers (Edge-)
         });
       this.roomLogs = [];
+      this.roomChats = [];
+      this.chat = "";
       this.room = "";
+    },
+    sendChat() {
+      socket.emit("chat message", this.room, this.chat);
+      this.chat = "";
     },
   },
   mounted() {
     this.initRTC();
+    socket.on("chat messaged", (user, msg) => {
+      this.roomChats.push(`${user} : ${msg}`);
+    });
     // this.streamingInit();
   },
 };

@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "fir-b9dbd"
+  },
+  "targets": {
+    "fir-b9dbd": {
+      "hosting": {
+        "webrtc-test-8bef3.web.app": [
+          "webrtc-test-8bef3.web.app"
+        ],
+        "webrtc-test-8bef3": [
+          "webrtc-test-8bef3"
+        ]
+      }
+    }
+  }
+}
