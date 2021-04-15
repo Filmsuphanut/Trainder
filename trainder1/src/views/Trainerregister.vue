@@ -162,6 +162,7 @@ export default {
                             cert1: "",
                             cert2: "",
                             cert3: "",
+                            profilePic: "https://firebasestorage.googleapis.com/v0/b/fir-b9dbd.appspot.com/o/people.jpg?alt=media&token=c73c8c03-fed9-4eda-a5d4-f2fb81a552f8",
                             });
 
                         //this.$store.commit("setUid",user.uid)
