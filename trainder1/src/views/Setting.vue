@@ -63,6 +63,7 @@
                       filled
                       dense
                       rounded
+                      :rules="checkimage"
                       @change="onUpload($event)"
                       @click:clear="clearPic()"
                     ></v-file-input>
@@ -357,6 +358,8 @@ export default {
       imageData: null,
       altPic: null,
       checkUrl: null,
+      checkimage:[value => (value.size < 2000000) || 'กรุณาอัพไฟล์ที่มีขนาดไม่เกิน 2 mb'] ,
+      uploadimage:false,
     };
   },
   methods: {
@@ -442,22 +445,32 @@ export default {
       console.log("Uploading...");
       //this.picture = null;
       const storageRef = firebase
-        .storage()
+        storageRef.storage()
         .ref(`${this.imageData.name}`)
-        .put(this.imageData);
-      storageRef.on(`state_changed`, () =>
-        storageRef.snapshot.ref.getDownloadURL().then((url) => {
-          this.userData.profilePic = url;
-          // console.log(this.imageData[index]);
-          // console.log(this.picture[index]);
-        })
-      );
+        .put(this.imageData).then(data => {
+            data.ref.getDownloadURL().then(url => {
+              this.userData.profilePic = url;
+              console.log(this.userData.profilePic);
+          });
+        }).catch(error => {
+            console.log(error);
+        });
+      // storageRef.on(`state_changed`, () =>
+      //   storageRef.snapshot.ref.getDownloadURL().then((url) => {
+      //     this.userData.profilePic = url;
+      //     console.log(this.userData.profilePic);
+      //     // console.log(this.imageData[index]);
+      //     // console.log(this.picture[index]);
+      //   })
+      // );
     },
 
     clearPic() {
       console.log("Click Clear");
       console.log('picture url: ' + this.userData.profilePic);
       this.userData.profilePic = this.altPic;
+      this.uploadimage = false;
+      console.log(this.uploadimage);
     }
 
   },

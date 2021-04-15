@@ -180,7 +180,7 @@
                             rounded
                             :disabled="index==0? false:(index==1? (checkurl.length == 0):(index==2? (checkurl.length <= 1):true))"
                             :required="index==0"
-                            @change="onUpload($event, index)"
+                            @change="onUpload($event, index),loading = true"
                             @click:clear="checkurl.pop()"
                           ></v-file-input>
                         
@@ -321,7 +321,7 @@ export default {
       picture: [null, null, null],
       imageData: [null, null, null],
       checkurl:[],
-      checkimage:[value => value || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป'] ,
+      checkimage:[value => (value && (value.size < 4000000))  || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป และ ไฟล์ไม่เกิน 4 mb'] ,
     };
   },
   methods: {
@@ -395,21 +395,35 @@ export default {
 
     // Upload Picture method
     onUpload(e, index) {
+      //this.loading = true;
       this.imageData[index] = e;
       this.checkurl.push(URL.createObjectURL(e));
       console.log(this.checkurl)
       this.picture[index] = null;
       const storageRef = firebase
-        .storage()
+        storageRef.storage()
         .ref(`${this.imageData[index].name}`)
-        .put(this.imageData[index]);
-      storageRef.on(`state_changed`, () =>
-        storageRef.snapshot.ref.getDownloadURL().then((url) => {
-          this.picture[index] = url;
-          // console.log(this.imageData[index]);
-          // console.log(this.picture[index]);
-        })
-      );
+        .put(this.imageData[index]).then(data => {
+            data.ref.getDownloadURL().then(url => {
+              this.picture[index] = url;
+              console.log(this.imageData[index]);
+              console.log(this.picture[index]);
+              this.loading = false;
+          });
+        }).catch(error => {
+            console.log(error);
+            this.loading = false;
+        });
+
+
+      // storageRef.on(`state_changed`, () =>
+      //   storageRef.snapshot.ref.getDownloadURL().then((url) => {
+      //     this.picture[index] = url;
+      //     // console.log(this.imageData[index]);
+      //     // console.log(this.picture[index]);
+      //   })
+      // );
+
     },
   },
 };
