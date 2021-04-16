@@ -49,7 +49,8 @@ const config = {
 
 import io from "socket.io-client";
 
-let endpoint = "https://floating-island-08423.herokuapp.com";
+// let endpoint = "https://floating-island-08423.herokuapp.com";
+let endpoint = "https://api.evera.cloud/"
 // let endpoint = "http://191.101.184.233:3001/"
 // let endpoint = "http://localhost:3000";
 var socket = io(endpoint, {
@@ -104,14 +105,14 @@ export default {
       Ovideo.id = id;
       Ovideo.autoplay = true;
       Ovideo.playsInline = true;
-      Ovideo.width  = 640
-      Ovideo.height = 480
+      Ovideo.width = 640;
+      Ovideo.height = 480;
       document.getElementById("vdoList").appendChild(Ovideo);
       // offer stream
       this.peerConnections[id] = new RTCPeerConnection(config);
       this.peerConnections[id].onicecandidate = (event) => {
         if (event.candidate) {
-          socket.emit("candidate", this.room, event.candidate);
+          socket.emit("candidate", this.room,id, event.candidate);
         }
       };
       this.peerConnections[id].ontrack = (event) => {
@@ -134,6 +135,7 @@ export default {
           socket.emit(
             "offer",
             this.room,
+            id,
             this.peerConnections[id].localDescription
           );
         });
@@ -151,7 +153,12 @@ export default {
         .then((sdp) => this.peerConnections[id].setLocalDescription(sdp))
         .then(() => {
           console.log(`answer to user : ${id}`);
-          socket.emit("answer", id, this.peerConnections[id].localDescription);
+          socket.emit(
+            "answer",
+            this.room,
+            id,
+            this.peerConnections[id].localDescription
+          );
         });
     },
     async join() {
@@ -178,27 +185,26 @@ export default {
         this.offer(id);
       });
       // other offer stream
-      socket.on("offer", (id, description) => {
-        this.addPeerConnection(id);
-        console.log(`received offer from user : ${id}`);
-        this.answer(id, description);
+      socket.on("offer", (id, to, description) => {
+        if (socket.id == to) {
+          this.addPeerConnection(id);
+          console.log(`received offer from user : ${id}`);
+          this.answer(id, description);
+        }
         // set theirs desc and answer
       });
 
-      socket.on("answer", (id, description) => {
-        if (this.peerConnections[id]) {
-          sd = this.peerConnections[id].currentRemoteDescription;
-          if (sd) {
-            console.log(`received answer from user : ${id}`);
-            this.peerConnections[id].setRemoteDescription(
-              new RTCSessionDescription(description)
-            );
-          }
+      socket.on("answer", (id, to, description) => {
+        if (socket.id == to) {
+          console.log(`received answer from user : ${id}`);
+          this.peerConnections[id].setRemoteDescription(
+            new RTCSessionDescription(description)
+          );
         }
       });
 
-      socket.on("candidate", (id, candidate) => {
-        if (this.peerConnections[id]){
+      socket.on("candidate", (id, to, candidate) => {
+        if (this.peerConnections[id] && socket.id == to) {
           this.peerConnections[id].addIceCandidate(
             new RTCIceCandidate(candidate)
           );
