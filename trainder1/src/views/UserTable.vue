@@ -5,7 +5,9 @@
     <v-row justify="start">
         <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
     </v-row>
-    <br>
+
+    <br><br>
+    <h3 align="left">ตารางออกกำลังกายของคุณ {{callname()}}</h3><br>
 
   <div>
     <v-sheet
@@ -79,6 +81,9 @@
 
 
 <script>
+
+import firebase from "firebase";
+
   export default {
     name:"UserTable",
     data(){
@@ -134,6 +139,15 @@
         return Math.floor((b - a + 1) * Math.random()) + a
       },
 
+    callname(){
+        let user = firebase.auth().currentUser
+        let displayname
+
+        if (user != null) {
+            displayname = user.displayName
+        return displayname
+        }
+    },
     back() {
         let previous = this.$store.state.previous.pre;
         this.$router.push(previous);
