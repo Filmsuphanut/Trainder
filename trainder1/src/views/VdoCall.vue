@@ -1,7 +1,5 @@
 <template>
-  <v-container>
     <vdo-room />
-  </v-container>
 </template>
 
 <script>

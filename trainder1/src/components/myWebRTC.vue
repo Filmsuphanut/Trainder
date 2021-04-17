@@ -1,36 +1,104 @@
 <template>
-  <div>
-    <v-text-field solo label="Input room's name " v-model="inputRoom"
-      >Input</v-text-field
-    >
-    <v-btn color="info" @click="join">join</v-btn>
-    <v-btn color="error" @click="leave">leave</v-btn>
-    <v-btn color="warning" @click="initCamera">Open Camera</v-btn>
-    <p>Room Logs</p>
-    <v-sheet color="success" class="mt-3 d-flex flex-column white--text">
-      <template v-for="(log, idx) in roomLogs">
-        <p :key="idx">{{ log }}</p>
-      </template>
-    </v-sheet>
-    <p>Room Chats</p>
-    <v-sheet color="info" class="my-3 d-flex flex-column white--text">
-      <template v-for="(log, idx) in roomChats">
-        <p :key="idx">{{ log }}</p>
-      </template>
+  <div style="height:100vh">
+    <v-row v-if="online" style="height:100%">
+      <v-col>
+        <div id="vdoList">
+          <v-col>
+            <video id="myVdo" class="mt-5" playsinline autoplay muted></video>
+            <div class="d-flex justify-space-around">
+              <v-btn color="warning" @click="camera">Toggle Camera</v-btn>
+              <v-btn color="warning" @click="mute">Toggle Mute</v-btn>
+            </div>
+          </v-col>
+        </div>
+      </v-col>
 
-      <v-row style="width:500px" class="justify-center align-center">
-        <v-text-field class="mt-5" solo label="Chat" v-model="chat">
-        </v-text-field>
-        <v-btn color="success" @click="sendChat">Send</v-btn>
-      </v-row>
-    </v-sheet>
-    <div id="vdoList">
-      <p>Your Camera</p>
-      <video id="myVdo" class="mt-5" playsinline autoplay muted></video>
-      <p>Others Camera</p>
-    </div>
+      <v-col cols="4">
+        <v-card class="d-flex flex-column pa-5" style="height:100%">
+          <div>
+            <p>user : {{ username }}</p>
+            <v-text-field
+              outlined
+              label="Input room's name "
+              v-model="inputRoom"
+              hide-details
+              >Input</v-text-field
+            >
+            <v-btn color="info" @click="join">join</v-btn>
+            <v-btn color="error" @click="leave">leave</v-btn>
+
+            <p class="ma-0">Chats</p>
+          </div>
+          <v-sheet
+            color="info"
+            class="d-flex flex-column white--text flex-grow-1"
+          >
+            <div class="flex-grow-1">
+              <template v-for="(log, idx) in roomChats">
+                <p :key="idx">{{ log }}</p>
+              </template>
+            </div>
+            <div>
+              <v-row class="d-flex justify-center align-center">
+                <div style="width:20vw">
+                  <v-text-field
+                    background-color="white"
+                    outlined
+                    label="Chat"
+                    v-model="chat"
+                    @keydown.enter="sendChat"
+                    hide-details
+                    dense
+                  >
+                  </v-text-field>
+                </div>
+                <div>
+                  <v-btn color="success" @click="sendChat">Send</v-btn>
+                </div>
+              </v-row>
+            </div>
+          </v-sheet>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-overlay :absolute="false" :value="nameInput" opacity="0.95">
+      <v-card width="500" light>
+        <v-card-title class="info white--text">
+          <v-icon large left>
+            mdi-twitter
+          </v-icon>
+          <span class="title font-weight-light">Trainder</span>
+        </v-card-title>
+        <v-card-text class="pa-5">
+          <label class="text-h6">Please fill your name</label>
+          <v-text-field
+            outlined
+            placeholder="david..."
+            hide-details
+            v-model="username"
+            @keydown.enter="onInputName"
+            prepend-inner-icon="mdi-account"
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="pa-6"
+            block
+            v-if="username"
+            color="success"
+            @click="onInputName"
+            >Proceed</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-overlay>
   </div>
 </template>
+
+<style></style>
 
 <script>
 const config = {
@@ -50,12 +118,10 @@ const config = {
 import io from "socket.io-client";
 
 // let endpoint = "https://floating-island-08423.herokuapp.com";
-let endpoint = "https://api.evera.cloud/"
+// let endpoint = "https://api.evera.cloud";
 // let endpoint = "http://191.101.184.233:3001/"
-// let endpoint = "http://localhost:3000";
-var socket = io(endpoint, {
-  withCredentials: true,
-});
+let endpoint = "http://localhost:5000";
+var socket;
 
 export default {
   data() {
@@ -69,15 +135,32 @@ export default {
       roomLogs: [],
       chat: "",
       roomChats: [],
+      online: false,
+      username: "",
+      nameInput: true,
+      roomMemCount: 0,
     };
   },
-  computed: {},
+  computed: {
+    micStatus() {
+      const video = document.getElementById("myVdo");
+      if (video) {
+        const stream = video.srcObject;
+        return stream.getAudioTracks()[0].enabled;
+      }
+      return false;
+    },
+  },
   methods: {
+    onInputName() {
+      this.initRTC();
+      this.nameInput = false;
+    },
     async initCamera() {
       const video = document.getElementById("myVdo");
       // Media contrains
       const constraints = {
-        video: { facingMode: "user", width: 960, height: 640 },
+        video: { facingMode: "user", width: 640, height: 480 },
         audio: true,
         // Uncomment to enable audio
         // audio: true,
@@ -90,9 +173,40 @@ export default {
         })
         .catch((error) => console.error(error));
     },
+    camera() {
+      const video = document.getElementById("myVdo");
+      if (video) {
+        const stream = video.srcObject;
+        stream.getVideoTracks()[0].enabled = !stream.getVideoTracks()[0]
+          .enabled;
+      }
+    },
+    mute() {
+      const video = document.getElementById("myVdo");
+      if (video) {
+        const stream = video.srcObject;
+        stream.getAudioTracks()[0].enabled = !stream.getAudioTracks()[0]
+          .enabled;
+      }
+    },
     initRTC() {
+      this.nameInput = false;
+      socket = io(endpoint, {
+        withCredentials: true,
+      });
       socket.on("connect", () => {
         // console.log(socket.id);
+        socket.emit("deliver-info", {
+          uid: this.makeid(15),
+          name: this.username,
+        });
+      });
+
+      socket.on("connected", (id) => {
+        this.online = true;
+      });
+      socket.on("chat messaged", (_, userData, msg) => {
+        this.roomChats.push(`${userData.name} : ${msg}`);
       });
 
       window.onunload = window.onbeforeunload = () => {
@@ -101,18 +215,21 @@ export default {
       };
     },
     addPeerConnection(id) {
-      const Ovideo = document.createElement("video");
-      Ovideo.id = id;
-      Ovideo.autoplay = true;
-      Ovideo.playsInline = true;
-      Ovideo.width = 640;
-      Ovideo.height = 480;
-      document.getElementById("vdoList").appendChild(Ovideo);
+      var Ovideo = document.getElementById(id);
+      if (!Ovideo) {
+        Ovideo = document.createElement("video");
+        Ovideo.id = id;
+        Ovideo.autoplay = true;
+        Ovideo.playsInline = true;
+        Ovideo.width = 640;
+        Ovideo.height = 480;
+        document.getElementById("vdoList").appendChild(Ovideo);
+      }
       // offer stream
       this.peerConnections[id] = new RTCPeerConnection(config);
       this.peerConnections[id].onicecandidate = (event) => {
         if (event.candidate) {
-          socket.emit("candidate", this.room,id, event.candidate);
+          socket.emit("candidate", this.room, id, event.candidate);
         }
       };
       this.peerConnections[id].ontrack = (event) => {
@@ -170,17 +287,17 @@ export default {
       socket.emit("join-room", this.room);
 
       socket.on("joined", (data) => {
-        this.roomLogs = [];
-        this.roomLogs.push("your has joined rooms : " + this.room);
-        this.roomLogs.push("user inside room :" + data.users.join(", "));
+        this.roomChats = [];
+        this.roomChats.push("your has joined rooms : " + this.room);
+        this.roomChats.push("user inside room :" + data.users.join(", "));
         // data.users.forEach((id) => {
         //   if (id == socket.id) return;
         //   this.addPeerConnection(id);
         // });
       });
 
-      socket.on("user-joined-room", (id) => {
-        this.roomLogs.push(`user ${id} joined`);
+      socket.on("user-joined-room", (id, userData) => {
+        this.roomChats.push(`user ${userData.name} joined`);
         console.log(`offering to user : ${id}`);
         this.offer(id);
       });
@@ -211,12 +328,11 @@ export default {
         }
       });
 
-      socket.on("user-leaved-room", (id) => {
-        this.roomLogs.push(`user ${id} has leaved rooms.`);
+      socket.on("user-leaved-room", (id, userData) => {
+        this.roomChats.push(`user ${userData.name} has leaved rooms.`);
         const video = document.getElementById(id);
-        video.remove();
+        if (video) video.remove();
         this.peerConnections[id].close();
-        this.coonnectedPeers[id] = false;
         delete this.peerConnections[id];
       });
     },
@@ -229,10 +345,9 @@ export default {
       Array.prototype.slice
         .call(document.getElementsByTagName("video"))
         .forEach(function(item) {
-          if (item.id != "myVdo") item.remove();
+          if (item && item.id != "myVdo") item.remove();
           // or item.parentNode.removeChild(item); for older browsers (Edge-)
         });
-      this.roomLogs = [];
       this.roomChats = [];
       this.chat = "";
       this.room = "";
@@ -241,12 +356,20 @@ export default {
       socket.emit("chat message", this.room, this.chat);
       this.chat = "";
     },
+    makeid(length) {
+      var result = [];
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result.push(
+          characters.charAt(Math.floor(Math.random() * charactersLength))
+        );
+      }
+      return result.join("");
+    },
   },
   mounted() {
-    this.initRTC();
-    socket.on("chat messaged", (user, msg) => {
-      this.roomChats.push(`${user} : ${msg}`);
-    });
     // this.streamingInit();
   },
 };

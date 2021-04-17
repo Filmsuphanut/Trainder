@@ -10,6 +10,13 @@
   </v-app>
 </template>
 
+<style>
+*{
+  box-sizing: border-box !important;
+}
+</style>
+
+
 <script>
 //import Index from './views/index';
 

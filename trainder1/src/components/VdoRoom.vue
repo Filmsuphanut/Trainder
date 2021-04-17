@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-5">
+  <v-card class="">
     <!-- <chat-room /> -->
     <MyWebRTC />
   </v-card>
