@@ -142,7 +142,7 @@ import firebase from 'firebase'
         return event.color
       },
       setToday () {
-        this.focus = this.today
+        this.value = this.today
       },
       prev () {
         this.$refs.calendar.prev()
