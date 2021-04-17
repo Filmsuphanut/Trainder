@@ -92,7 +92,7 @@ export default {
 
                 this.CreateUserData(user)
 
-                this.$router.push('/UserHome')
+                this.$router.push('/User')
 
             }).catch((error) => {//////////////////////////////////////////////***** */
                 // Handle Errors here.
@@ -163,7 +163,7 @@ export default {
                     this.$router.push('/TrainerHome');
                 }else{
                     this.loading = false;
-                    this.$router.push('/UserHome');
+                    this.$router.push('/User');
                 }
             });
 
