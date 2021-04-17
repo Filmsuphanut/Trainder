@@ -11,6 +11,7 @@ import FindTrainer from '../views/MainFindTrainer.vue'
 import MainExPeople from '../views/MainExPeople.vue'
 import MainCreateRoom from '../views/MainCreateRoom.vue'
 import ProfileSetting from '../views/Setting.vue'
+import UserTable from '../views/UserTable.vue'
 
 Vue.use(VueRouter)
 
@@ -37,8 +38,8 @@ const routes = [
 
   // },
   {
-    path: '/UserHome',
-    name: 'UserHome',
+    path: '/User',
+    name: 'User',
     component: UserHome
   },
   {
@@ -52,7 +53,7 @@ const routes = [
     component: TrainerSignIn
   },
   {
-    path: '/FindTrainer',
+    path: '/User/FindTrainer',
     name: 'FindTrainer',
     component: FindTrainer
   },
@@ -70,6 +71,11 @@ const routes = [
     path: '/ProfileSetting',
     name: 'ProfileSetting',
     component: ProfileSetting
+  },
+  {
+    path: '/User/Table',
+    name: 'UserTable',
+    component: UserTable
   },
   // {
   //   path: '/about',

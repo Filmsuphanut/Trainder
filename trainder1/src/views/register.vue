@@ -211,7 +211,7 @@ export default {
             user.updateProfile({
               displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
             }).then(function() {
-              rou.push("/UserHome");///////////////////////
+              rou.push("/User");///////////////////////
             }).catch(function(error) {
                 console.log(error)
             });    

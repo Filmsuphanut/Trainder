@@ -3,9 +3,10 @@
    <v-container>
         <h1>สวัสดี {{callname()}}</h1>
         <router-link to="/Excercise"><v-btn>ออกกำลังกายกับผู้อื่น</v-btn></router-link>
-        <router-link to="/FindTrainer"><v-btn>ค้นหา Trainer ที่ถูกใจ</v-btn></router-link>
+        <router-link to="/User/FindTrainer"><v-btn>ค้นหา Trainer ที่ถูกใจ</v-btn></router-link>
         <router-link to="/CreateRoom"><v-btn>สร้างห้องออกกำลังกายกับเพื่อน</v-btn></router-link>
         <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
+        <router-link to="/User/Table" ><v-btn>Table</v-btn></router-link>
         <v-btn @click="logout">ออกจากระบบ</v-btn>
 
     </v-container>
@@ -101,8 +102,8 @@ export default {
         },
 
         setPrevious(){
-            if(this.$store.state.previous.pre !== "/UserHome"){
-                this.$store.commit("setPreviousPage","/UserHome");
+            if(this.$store.state.previous.pre !== "/User"){
+                this.$store.commit("setPreviousPage","/User");
             }
         },
 
