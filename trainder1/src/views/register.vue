@@ -168,10 +168,7 @@ export default {
   },
   methods: {
     async regissubmit(e) {
-
-
       let rou = this.$router
-      
       if (this.$refs.form.validate()) {
         //const response = await axios.post('todos',this.userdata)
         this.loading = true;     
@@ -209,14 +206,28 @@ export default {
             uid: user.uid,
             });
 
+            ///addTable
+            let tableRef = db.collection("Table");
+            tableRef.add({
+                uid: user.uid,
+              });
+
+            this.addTable(user,tableRef)
+
+
+
+
+            ////updateProfile
             user.updateProfile({
               displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
             }).then(function() {
+
               rou.push("/register/auth");///////////////////////
             }).catch(function(error) {
                 console.log(error)
             });    
-            
+
+
           })
           .catch((error) => {
             var errorCode = error.code;
@@ -226,10 +237,22 @@ export default {
             this.snackbar = true;
             this.loading = false;
           });
-
         e.preventDefault();
-
       }
+    },
+    
+    async addTable(user,tableRef){
+
+        let userData = await tableRef.where("uid", "==", user.uid).get();
+
+        let docid = null;
+
+        userData.forEach(doc => {
+          docid = doc.id;
+          console.log(doc.id, '=>', doc.data());
+        });
+
+        tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
     },
 
   },

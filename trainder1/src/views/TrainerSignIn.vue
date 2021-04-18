@@ -339,9 +339,12 @@ export default {
 
         let userData = await userRef.where("uid", "==", uid).get();
         console.log(uid);
-
+        let docId = null;
+        
         userData.forEach((doc) => {
-          let docId = doc.id;
+          docId = doc.id;
+        });
+
           userRef.doc(docId).update({
             PersonalID: this.userdata.personalID,
             Address: this.userdata.address,
@@ -357,34 +360,9 @@ export default {
             cert2: this.picture[1],
             cert3: this.picture[2],
           });
-        });
 
         this.$router.push("/TrainerHome");
         console.log(this.userdata);
-
-        //ไม่เกี่ยว
-
-        // userRef.add({
-        // fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
-        // role: "normal",
-        // uid: user.uid,
-        // });
-
-        ///เก็บไว้ใน database
-
-        //     firebase.auth().createUserWithEmailAndPassword(this.userdata.email, this.userdata.pass)
-        //     .then((userCredential) => {
-        //         var user = userCredential.user
-        //         console.log(user)
-        //         this.$router.push('/')
-        //     })
-        //     .catch((error) => {
-        //         var errorCode = error.code
-        //         var errorMessage = error.message
-        //         console.log(errorCode,errorMessage)
-        //         this.snacktext = this.snackalert.false
-        //         this.snackbar = true
-        //     });
 
         e.preventDefault();
       }else{

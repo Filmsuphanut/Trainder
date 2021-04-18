@@ -84,6 +84,7 @@
           </v-row>
         </v-col>
       </v-row>
+      <v-btn @click="logout">ออกจากระบบ</v-btn>
     </v-container>
   </div>
    <!-- <v-container>
@@ -95,6 +96,7 @@
         <router-link to="/User/Table" ><v-btn>Table</v-btn></router-link>
         <v-btn @click="logout">ออกจากระบบ</v-btn>
     </v-container> -->
+    
 </template>
 
 

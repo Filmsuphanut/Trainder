@@ -150,8 +150,6 @@ export default {
                         var user = userCredential.user
                         console.log(user)
 
-
-                        
                         let db = firebase.firestore();
                         let userRef = db.collection("userData");
 
@@ -165,6 +163,21 @@ export default {
                             profilePic: "https://firebasestorage.googleapis.com/v0/b/fir-b9dbd.appspot.com/o/people.jpg?alt=media&token=c73c8c03-fed9-4eda-a5d4-f2fb81a552f8",
                             });
 
+                            ///addTable
+                            let tableRef = db.collection("Table");
+                            tableRef.add({
+                                uid: user.uid,
+                            });
+
+                            this.addTable(user,tableRef)
+
+                        user.updateProfile({
+                            displayName: [
+                            this.userdata.firstname,
+                            this.userdata.lastname,
+                            ].join(" "),
+                        });
+                        
                         //this.$store.commit("setUid",user.uid)
                         this.$router.push('/TrainerSignIn')
 
@@ -192,7 +205,21 @@ export default {
                 // }
 
             }   
-        }
+        },
+            async addTable(user,tableRef){
+
+            let userData = await tableRef.where("uid", "==", user.uid).get();
+
+            let docid = null;
+
+            userData.forEach(doc => {
+            docid = doc.id;
+            console.log(doc.id, '=>', doc.data());
+            });
+
+            tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
+        },
+
     },
 
 }

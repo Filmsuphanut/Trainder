@@ -7,7 +7,7 @@
     </v-row>
 
     <br><br>
-    <h3 align="left">ตารางออกกำลังกายของคุณ {{callname()}}</h3><br>
+    <h3 align="left">ตารางออกกำลังกายของคุณ {{callname()}} </h3><br>
 
   <div>
     <v-sheet
@@ -21,6 +21,13 @@
         @click="$refs.calendar.prev()"
       >
         <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
+
+      <v-btn         
+        outlined
+        class="ma-2"
+        @click="addEvent">
+        เพิ่มกิจกรรมใหม่
       </v-btn>
 
       <v-btn         
@@ -57,10 +64,12 @@
         ref="calendar"
         v-model="value"
         color="primary"
-
+        :short-intervals="false"
         :weekdays="[0, 1, 2, 3, 4, 5, 6]"
         :type="type"
         :events="events"
+        :event-overlap-mode="mode"
+        :event-overlap-threshold="30"
         :event-color="getEventColor"
         @change="updateRange"
       ></v-calendar>
@@ -95,9 +104,69 @@ import firebase from "firebase";
     },
     methods: {
 
+      async addEvent(){
+
+        let user = firebase.auth().currentUser;
+        let uid = user.uid;
+        let db = firebase.firestore();
+        let tableRef = db.collection("Table");
+        let userData = await tableRef.where("uid", "==", uid).get();
+
+        let docid = null;
+
+        userData.forEach(doc => {
+          docid = doc.id;
+          console.log(doc.id, '=>', doc.data());
+        });
+
+        let userEvent = await tableRef.doc(docid).collection("Event").get();
+
+        userEvent.forEach(doc => {
+            console.log(doc.id, " => ", doc.data());
+            this.events.push(doc.data());
+        });
+
+
+        //console.log(userEvent)
+
+      },
+
+
+      getEvents ({ start, end }) {
+        const events = []
+
+        const min = new Date(`${start.date}T00:00:00`)
+        const max = new Date(`${end.date}T23:59:59`)
+        const days = (max.getTime() - min.getTime()) / 86400000
+        const eventCount = this.rnd(days, days + 20)
+
+        for (let i = 0; i < eventCount; i++) {
+          const allDay = this.rnd(0, 3) === 0
+          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+          const second = new Date(first.getTime() + secondTimestamp)
+
+          events.push({
+            name: this.names[this.rnd(0, this.names.length - 1)],
+            start: first,
+            end: second,
+            color: this.colors[this.rnd(0, this.colors.length - 1)],
+            timed: !allDay,
+          })
+        }
+
+        this.events = events
+        console.log(this.events)
+      },
       getEventColor (event) {
         return event.color
       },
+      rnd (a, b) {
+        return Math.floor((b - a + 1) * Math.random()) + a
+      },
+
+
       setToday () {
         this.value = this.today;
         this.type = 'day';
@@ -146,17 +215,26 @@ import firebase from "firebase";
         const endYear = end.year
         const suffixYear = startYear === endYear ? '' : endYear
 
-        const startDay = start.day + this.nth(start.day)
-        const endDay = end.day + this.nth(end.day)
+        const startDay = start.day //+ this.nth(start.day)
+        const endDay = end.day //+ this.nth(end.day)
 
         switch (this.type) {
           case 'month':
             return `${startMonth} ${startYear}`
           case 'week':
-          case '4day':
-            return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
+            if((this.monthFormatter(start)==this.monthFormatter(end)) && (start.year==end.year)){
+              return `${startDay} - ${endDay} ${startMonth}  ${startYear}`
+            }else if((this.monthFormatter(start)!=this.monthFormatter(end)) && (start.year==end.year)){
+              return `${startDay} ${startMonth} ${startYear} - ${endDay} ${suffixMonth} ${startYear}` 
+            }else{
+              return `${startDay} ${startMonth} ${startYear} - ${endDay} ${suffixMonth} ${suffixYear}`
+            }
+
+            //return `${startDay} ${startMonth}  ${startYear} - ${endDay} ${suffixMonth} ${suffixYear}`
+
+            
           case 'day':
-            return `${startMonth} ${startDay} ${startYear}`
+            return `${startDay} ${startMonth}  ${startYear}`
         }
         return ''
       },
@@ -169,7 +247,6 @@ import firebase from "firebase";
     mounted () {
       this.$refs.calendar.checkChange()
     },
-
 
   }
 </script>

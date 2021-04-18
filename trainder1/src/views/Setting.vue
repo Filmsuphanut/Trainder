@@ -358,7 +358,8 @@ export default {
       this.$router.push(previous);
     },
     async updateUserData(e) {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate()) 
+      {
         this.loading = true;
         let user = firebase.auth().currentUser;
         let uid = firebase.auth().currentUser.uid;

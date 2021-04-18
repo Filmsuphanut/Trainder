@@ -146,6 +146,16 @@ export default {
                 uid: user.uid,
                 });
                 this.$router.push('/register/auth')
+
+                ///addTable
+                let tableRef = db.collection("Table");
+                tableRef.add({
+                    uid: user.uid,
+                });
+
+                this.addTable(user.uid,tableRef)
+
+
             }else{
                 this.$router.push('/user')
             }
@@ -172,6 +182,19 @@ export default {
                 }
             });
 
+        },
+        async addTable(useruid,tableRef){
+
+            let userData = await tableRef.where("uid", "==", useruid).get();
+
+            let docid = null;
+
+            userData.forEach(doc => {
+            docid = doc.id;
+            console.log(doc.id, '=>', doc.data());
+            });
+
+            tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
         },
 
 
