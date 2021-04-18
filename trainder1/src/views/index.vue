@@ -3,7 +3,6 @@
         <br>
         <div class="bigbox">
         <table class="tab" border="0">
-            <tr><td><img src="../images/Logo.png" width="80" height="80"  align="left"></td></tr><br>
             <tr>
                 <td>
                     <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
