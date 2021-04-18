@@ -8,7 +8,7 @@
             <v-row>
               <v-col cols="7">
                 <v-card-title>
-                  <h3>Hello {{callname()}}!</h3>
+                  <h5>Hello {{callname()}}!</h5>
                 </v-card-title>
                 <v-card-subtitle>
                   It's good to see you again.
@@ -23,13 +23,15 @@
           <v-card rounded="xl">
             <v-row>
               <v-col cols="6" class="pl-5">
-                <h2>Profile Setting</h2>
-              </v-col>
-              <v-col v-for="button in buttons" :key="button" cols="2">
+                <h2 @click="$router.push('/ProfileSetting')" >Profile Setting</h2>
+              </v-col>             
+              <!-- <v-col v-for="button in buttons" :key="button" cols="2">
                 <v-btn fab small dark :color=button.color>
                   <v-icon>{{button.icon}}</v-icon>
                 </v-btn>
-              </v-col>
+              </v-col> -->
+
+
             </v-row>
           </v-card>
           <v-row justify="space-between">
@@ -54,23 +56,23 @@
         <v-col cols="6">
           <!-- Buttons -->
           <v-row>
-            <v-btn rounded large block class="mt-7 pa-10" color="blue lighten-3">
+            <v-btn rounded large block class="mt-7 pa-10" color="blue lighten-3" to="/User/FindTrainer">
               <h3>Excercise With Trainer</h3>
             </v-btn>
           </v-row>
           <v-row>
-            <v-btn rounded large block class="mt-6 pa-10" color="blue lighten-3">
+            <v-btn rounded large block class="mt-6 pa-10" color="blue lighten-3" to="/Excercise">
               <h3>Excercise With People</h3>
             </v-btn>
           </v-row>
           <v-row>
-            <v-btn rounded large block class="mt-6 pa-10" color="blue lighten-3">
+            <v-btn rounded large block class="mt-6 pa-10" color="blue lighten-3" to="/CreateRoom">
               <h3>Excercise With Your Friend</h3> 
             </v-btn>
           </v-row>
           <v-row>
             <v-col cols="6">
-              <v-btn rounded block large class="mt-6 pa-10" color="blue lighten-3">
+              <v-btn rounded block large class="mt-6 pa-10" color="blue lighten-3" to="/User/Table">
                 <h3>Table</h3>
               </v-btn>
             </v-col>
