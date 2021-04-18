@@ -2,16 +2,15 @@
   <v-container>
     <br />
     <div class="bigbox">
-      <v-row justify="start">
-        <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
-      </v-row>
       <br />
       <table class="tab" border="1">
         <tr>
           <td width="700" height="700px">
             <div class="box">
+
               <v-form ref="form" @submit.prevent="updateUserData">
-                <h1 align="left">ตั้งค่าบัญชีผู้ใช้</h1>
+              
+                <h3 align="left">บันทึกข้อมูลผู้ใช้ใหม่</h3>
                 <br />
 
                 <table border="0">
@@ -42,20 +41,22 @@
                             label="ชื่อ"
                             :rules="checkdata"
                             v-model="userData.firstname"
-                            required
+                            :disabled="true"
+
                           ></v-text-field>
 
                           <v-text-field
                             label="นามสกุล"
                             :rules="checkdata"
                             v-model="userData.lastname"
-                            required
+                            :disabled="true"
                           ></v-text-field>
                         </td>
                       </tr>
                     </td>
                   </tr>
                   <template>
+                    
                     <v-file-input
                       prepend-icon="mdi-camera"
                       accept="image/png, image/jpeg, image/jpg"
@@ -67,10 +68,8 @@
                       @change="onUpload($event)"
                       @click:clear="clearPic()"
                     ></v-file-input>
+
                   </template>
-                  <tr>
-                    <td colspan="1">สถานะผู้ใช้ : {{ userData.role }}</td>
-                  </tr>
                 </table>
 
                 <br />
@@ -90,6 +89,8 @@
                   required
                   :rules="checkdata"
                 ></v-select>
+
+
 
                 <v-menu
                   ref="menu"
@@ -157,6 +158,7 @@
                   label="ธนาคาร"
                   v-model="userData.bank"
                   :disabled="!userData.bankaccountNumber == ''"
+                  required
                 ></v-select>
 
                 <v-text-field
@@ -166,14 +168,6 @@
                   v-model="userData.bankaccountNumber"
                   required
                 ></v-text-field>
-
-                <v-select
-                  :items="gen"
-                  label="เพศ"
-                  v-model="userData.gender"
-                  required
-                  :rules="checkdata"
-                ></v-select>
 
                 <!-- /////////   ///////// -->
                 <br />
@@ -245,8 +239,8 @@
 
                 <br /><br />
                 <v-btn :disabled="loading" type="submit" :loading="loading"
-                  >Update</v-btn
-                >
+                  >Update</v-btn>
+                
               </v-form>
             </div>
           </td>
@@ -268,6 +262,7 @@
 
 <script>
 import firebase from "firebase";
+
 export default {
   name: "Setting",
   data() {
@@ -276,7 +271,6 @@ export default {
         email: null,
         firstname: null,
         lastname: null,
-        role: null,
         personalID: null,
         address: null,
         gender: null,
@@ -287,8 +281,10 @@ export default {
         career: null,
         ec_skill: null,
         purpose: null,
-        profilePic: "",
+        profilePic: null,
+
       },
+
       gen: ["ชาย", "หญิง", "ไม่ระบุ"],
       banklist: [
         "ธนาคารกรุงเทพ",
@@ -300,6 +296,7 @@ export default {
         "ธนาคารออมสิน",
       ],
       jobs: ["ทำงานราชการ", "ทำงานเอกชน", "ทำอาชีพอิสระ"],
+
       personalIDRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
@@ -309,11 +306,13 @@ export default {
             parseInt(value) >= 0) ||
           "หมายเลขบัตรประชาชนต้องเป็นตัวเลข และ เท่ากับ 13 ตัว",
       ],
+
       AddressRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
           (value && value.length <= 100) || "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร",
       ],
+
       bankaccountNumberRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
@@ -326,6 +325,7 @@ export default {
           // parseInt(value) >= 0) ||
           "หมายเลขบัญชีธนาคารไม่ถูกต้อง",
       ],
+
       PhoneNumberRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
@@ -335,14 +335,17 @@ export default {
             parseInt(value) >= 0) ||
           "เบอร์โทรศัพท์ต้องเป็นตัวเลข และ มี 10 หลัก",
       ],
+
       checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
       checkboxRule: [
         (ec_skill) =>
           (ec_skill || []).length > 0 || "โปรดเลือกอย่างน้อย 1 ในรายการนี้",
       ],
+
       loading: false,
       snackbar: false,
       snacktext: null,
+
       //Profile Picture
       profilePic: null,
       imageData: null,
@@ -350,29 +353,37 @@ export default {
       checkUrl: null,
       checkimage:[value => !value || (value.size < 2000000) || 'กรุณาอัพไฟล์ที่มีขนาดไม่เกิน 2 mb'] ,
       uploadimage:false,
+
+////////////////////////////////////
+
+
     };
   },
   methods: {
-    back() {
-      let previous = this.$store.state.previous.pre;
-      this.$router.push(previous);
-    },
     async updateUserData(e) {
+
+      let rou = this.$router
       if (this.$refs.form.validate()) {
+          console.log("function")
         this.loading = true;
-        let user = firebase.auth().currentUser;
         let uid = firebase.auth().currentUser.uid;
         console.log("called method");
+
         let db = firebase.firestore();
         let userRef = db.collection("userData");
+
         let userData = await userRef.where("uid", "==", uid).get();
         //let userData = await userRef.where("uid", "==", uid);
+
         let docId;
+
         userData.forEach((doc) => {
           console.log(doc);
           docId = doc.id;
         });
+
         let userDataRef = await userRef.doc(docId);
+
         userDataRef
           .update({
             fullName: [this.userData.firstname, this.userData.lastname].join(
@@ -392,16 +403,10 @@ export default {
             
           })
           .then(() => {
-            console.log("update userProfile successfully !!");
-            user.updateProfile({
-              displayName: [
-                this.userData.firstname,
-                this.userData.lastname,
-              ].join(" "),
-            });
-            console.log("update displayname successfully !!");
-            this.snacktext = "อัพเดทข้อมูลผู้ใช้เรียบร้อย";
-            this.snackbar = true;
+            console.log("save userProfile successfully !!");
+
+            rou.push("/User")
+            //////////////////////////////////////////////////////////
             this.loading = false;
           })
           .catch((error) => {
@@ -410,10 +415,13 @@ export default {
           });
       }
       e.preventDefault();
+
       // {
       // });
+
       ///////////////////////////////////////////////
     },
+
     // Upload Picture method
     onUpload(e) {
       this.imageData = e;
@@ -442,6 +450,7 @@ export default {
       //   })
       // );
     },
+
     clearPic() {
       console.log("Click Clear");
       console.log('picture url: ' + this.userData.profilePic);
@@ -449,26 +458,25 @@ export default {
       this.uploadimage = false;
       console.log(this.uploadimage);
     }
+
   },
   async mounted() {
     let uid = firebase.auth().currentUser.uid;
     console.log(uid);
+
     let db = firebase.firestore();
     let userRef = db.collection("userData");
+
     let userData = await userRef.where("uid", "==", uid).get();
+
     this.userData.email = firebase.auth().currentUser.email;
+
     userData.forEach((doc) => {
       //console.log(doc.id, '=>', doc.data());
       this.userData.firstname =
         doc.data().fullName == null ? null : doc.data().fullName.split(" ")[0];
       this.userData.lastname =
         doc.data().fullName == null ? null : doc.data().fullName.split(" ")[1];
-      this.userData.role =
-        doc.data().role == null
-          ? null
-          : doc.data().role == "trainer"
-          ? "เทรนเนอร์"
-          : "ผู้ใช้ทั่วไป";
       this.userData.personalID = doc.data().PersonalID;
       this.userData.address = doc.data().Address;
       this.userData.gender = doc.data().Gender;
@@ -515,6 +523,7 @@ export default {
     0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
+
 .tab {
   margin-left: auto;
   margin-right: auto;
