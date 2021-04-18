@@ -90,11 +90,12 @@ export default {
                 console.log(user.uid)
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
 
+                //Create user data and push to next page*************************************************
                 this.CreateUserData(user)
 
-                this.$router.push('/User')
+                
 
-            }).catch((error) => {//////////////////////////////////////////////***** */
+            }).catch((error) => {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -140,9 +141,13 @@ export default {
                 Bank: null ,
                 BankAccountNumber: null,
                 Purpose: null,
+                profilePic:"https://firebasestorage.googleapis.com/v0/b/fir-b9dbd.appspot.com/o/people.jpg?alt=media&token=c73c8c03-fed9-4eda-a5d4-f2fb81a552f8",
                 
                 uid: user.uid,
                 });
+                this.$router.push('/register/auth')
+            }else{
+                this.$router.push('/user')
             }
          },
 

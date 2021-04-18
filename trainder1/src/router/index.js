@@ -12,6 +12,7 @@ import MainExPeople from '../views/MainExPeople.vue'
 import MainCreateRoom from '../views/MainCreateRoom.vue'
 import ProfileSetting from '../views/Setting.vue'
 import UserTable from '../views/UserTable.vue'
+import register2 from '../views/register2.vue'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,11 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register
+  },
+  {
+    path: '/register/auth',
+    name: 'register2',
+    component: register2
   },
   {
     path: '/Trainerregister',

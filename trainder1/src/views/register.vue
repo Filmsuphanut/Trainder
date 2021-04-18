@@ -204,14 +204,15 @@ export default {
             Bank: null ,
             BankAccountNumber: null ,
             Purpose: null,
-
+            profilePic:"https://firebasestorage.googleapis.com/v0/b/fir-b9dbd.appspot.com/o/people.jpg?alt=media&token=c73c8c03-fed9-4eda-a5d4-f2fb81a552f8",
+            
             uid: user.uid,
             });
 
             user.updateProfile({
               displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
             }).then(function() {
-              rou.push("/User");///////////////////////
+              rou.push("/register/auth");///////////////////////
             }).catch(function(error) {
                 console.log(error)
             });    
@@ -244,7 +245,7 @@ export default {
   text-align: center;
   width: 100%;
   height: 100%;
-  box-shadow: ;
+  box-shadow: 2;
   /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),
