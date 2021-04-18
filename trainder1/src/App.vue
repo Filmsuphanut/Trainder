@@ -2,6 +2,7 @@
   <v-app id='v-application'>
 <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
     <v-main>
+      <Toolbar></Toolbar>
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -9,11 +10,13 @@
 
 <script >
 //import Index from './views/index';
+import Toolbar from './components/Toolbar.vue'
 
 export default {
   name: 'App',
 
   components: {
+    Toolbar
   //  Index,
 
   },
