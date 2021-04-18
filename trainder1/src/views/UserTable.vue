@@ -30,8 +30,8 @@
         ดูกิจกรรมวันนี้
       </v-btn>
 
-      <v-toolbar-title         outlined
-        class="ma-3">ฟหกฟหกฟหก</v-toolbar-title>
+      <v-toolbar-title outlined
+        class="ma-3">{{ title }}</v-toolbar-title>
 
       <v-select
         v-model="type"
@@ -58,7 +58,7 @@
         v-model="value"
         color="primary"
 
-        :weekdays="weekday"
+        :weekdays="[0, 1, 2, 3, 4, 5, 6]"
         :type="type"
         :events="events"
         :event-color="getEventColor"
@@ -84,12 +84,13 @@ import firebase from "firebase";
         return{
             type: 'month',
             types: ['month', 'week', 'day'],
-            weekday: [0, 1, 2, 3, 4, 5, 6],
             value: new Date().toISOString().substr(0, 10),
             today: new Date().toISOString().substr(0, 10),
             events: [],
             colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
             names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+            start: null,
+            end: null,
         }
     },
     methods: {
@@ -106,8 +107,11 @@ import firebase from "firebase";
         this.start = start
         this.end = end
       },
-
-
+      nth (d) {
+        return d > 3 && d < 21
+          ? 'th'
+          : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
+      },
 
 
     callname(){
@@ -127,11 +131,13 @@ import firebase from "firebase";
     },
     computed: {
       title () {
+
         const { start, end } = this
         if (!start || !end) {
+          
           return ''
         }
-
+      
         const startMonth = this.monthFormatter(start)
         const endMonth = this.monthFormatter(end)
         const suffixMonth = startMonth === endMonth ? '' : endMonth
