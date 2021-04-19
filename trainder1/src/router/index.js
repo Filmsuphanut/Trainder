@@ -12,6 +12,7 @@ import MainExPeople from '../views/MainExPeople.vue'
 import MainCreateRoom from '../views/MainCreateRoom.vue'
 import ProfileSetting from '../views/Setting.vue'
 import VDOC from '../views/VdoCall.vue'
+import CVDOC from '../views/customCall.vue'
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,11 @@ const routes = [{
         path: '/vdoc',
         name: 'videocall',
         component: VDOC
+    },
+    {
+        path: '/custom-vdoc',
+        name: 'custom-videocall',
+        component: CVDOC
     },
     {
         path: '/UserHome',

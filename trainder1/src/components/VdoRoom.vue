@@ -1,8 +1,5 @@
 <template>
-  <v-card class="">
-    <!-- <chat-room /> -->
     <MyWebRTC />
-  </v-card>
 </template>
 
 <script>
@@ -17,7 +14,6 @@ import MyWebRTC from './myWebRTC.vue';
 //
 //
 export default {
-  name: "home",
   components : {
     // ChatRoom,
     MyWebRTC,

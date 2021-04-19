@@ -88,7 +88,7 @@
         class="d-flex justify-center align-center"
         style="height: 100%; width: 100%; position: relative"
       >
-        <!-- <v-menu
+        <v-menu
           offset-y
           top
           :close-on-click="false"
@@ -109,9 +109,9 @@
               hide-details
               >Input</v-text-field
             >
-            <v-btn class="ml-3" color="info" @click="join">join</v-btn>
+            <v-btn class="ml-3" color="info" @click="join(inputRoom)">join</v-btn>
           </div>
-        </v-menu> -->
+        </v-menu>
         <v-spacer></v-spacer>
         <v-btn
           icon
@@ -142,13 +142,7 @@
         </v-btn>
       </div>
     </v-footer>
-    <!-- loader  -->
-   <v-overlay :value="!nameInput && !room">
-      <v-progress-circular
-        indeterminate
-        size="200"
-      >Waiting... 🤩</v-progress-circular>
-    </v-overlay>
+
     <!-- input -->
     <v-overlay :absolute="false" :value="nameInput" opacity="0.95">
       <v-card width="500" light>
@@ -336,12 +330,6 @@ export default {
         this.roomChats.push(`${userData.name} : ${msg}`);
       });
 
-      socket.on("found-room", (to, room) => {
-        if (this.uid == to) {
-            this.join(room);
-        }
-      });
-
       window.onunload = window.onbeforeunload = () => {
         this.leave();
         socket.close();
@@ -414,7 +402,7 @@ export default {
     async join(room) {
       // if (this.room == this.inputRoom) return alert("Already inside the room.");
       this.leave();
-      this.room = room
+      this.room = room;
       await this.initCamera();
       socket.emit("join-room", this.room);
 
