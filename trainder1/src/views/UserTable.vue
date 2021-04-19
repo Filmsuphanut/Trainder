@@ -86,6 +86,7 @@
         :type="type"
         :events="events"
         :now="today"
+        :event-overlap-mode="mode"
         :event-overlap-threshold="30"
         :event-color="getEventColor"
         @change="updateRange"
@@ -94,6 +95,7 @@
         @click:date="viewDay"
       ></v-calendar>
     </v-sheet>
+
   </div>
 
 <!--@change=""-->
@@ -178,6 +180,7 @@ import firebase from "firebase";
             type: 'month',
             pre_type:'month',
             types: ['month', 'week'],
+            mode: 'stack',
             value: new Date().toISOString().substr(0, 10),
             today: new Date().toISOString().substr(0, 10),
             events: [],
@@ -231,19 +234,27 @@ import firebase from "firebase";
 
       },
 
-      async addEvent(){
+      async addEvent(){///// บัค start กี่โมงก็ได้แต่ end เที่ยงคืน = ไม่ขึ้น
 
           if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend)) {
             this.addEventDialog = false
-
+            
             let db = firebase.firestore();
             let tableRef = db.collection("Table");
 
+            let st = this.eventstart;
+            let ed = this.eventend;
+
+            if( (this.eventstart.substr(11, 16) == "00:00") && (this.eventend.substr(11, 16) == "00:00") && (this.eventstart.substr(11, 16) == this.eventend.substr(11, 16)) ) {
+              st = this.eventstart.substr(11, 16)!="00:00"? this.eventstart:this.eventstart.substr(0, 10);
+              ed = this.eventend.substr(11, 16)!="00:00"? this.eventend:this.eventend.substr(0, 10);
+            }
+
             tableRef.doc(this.userDocid).collection("Event").add({
               name: this.eventname,
-              start: this.eventstart,
-              details: this.eventdetails,
-              end: this.eventend,
+              start:st,
+              end:ed,
+              details: this.eventdetails,       
               color: this.eventcolor,
             });
             
