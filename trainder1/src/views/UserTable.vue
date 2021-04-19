@@ -155,9 +155,10 @@
         <v-card-actions>
           <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">แก้ไขกิจกรรม</v-btn>
           <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">บันทึก</v-btn>
-          <v-btn text color="secondary" @click="selectedOpen = false,currentlyEditing= null ">ปิด</v-btn>
+          <v-btn text color="secondary" @click="selectedOpen = false,currentlyEditing= null,selectedEvent.name = pre_eventname,selectedEvent.details=pre_eventdetails
+          ,pre_eventname=null,pre_eventdetails=null">ปิด</v-btn>
         </v-card-actions>
-
+<!--บัคนิดหน่อย -->
 
           </v-card>
         </v-menu>
@@ -186,6 +187,8 @@ import firebase from "firebase";
             events: [],
             start:null,
             end:null,
+
+
             
 //////////////////// event
             userDocid:null,
@@ -200,6 +203,10 @@ import firebase from "firebase";
             selectedElement: null,
             selectedOpen: false,
             currentlyEditing: null,
+
+            pre_eventname:null,
+            pre_eventdetails:null,
+
 ////////////////// rule
           checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
 
@@ -248,6 +255,8 @@ import firebase from "firebase";
             if( (this.eventstart.substr(11, 16) == "00:00") && (this.eventend.substr(11, 16) == "00:00") && (this.eventstart.substr(11, 16) == this.eventend.substr(11, 16)) ) {
               st = this.eventstart.substr(11, 16)!="00:00"? this.eventstart:this.eventstart.substr(0, 10);
               ed = this.eventend.substr(11, 16)!="00:00"? this.eventend:this.eventend.substr(0, 10);
+            }else if((this.eventend.substr(11, 16) == "00:00")){
+              ed = this.eventend.substr(0, 15) + "1";
             }
 
             tableRef.doc(this.userDocid).collection("Event").add({
@@ -297,6 +306,9 @@ import firebase from "firebase";
 
       editEvent(ev){
         this.currentlyEditing = ev.id;
+        this.pre_eventname = ev.name;
+        this.pre_eventdetails = ev.details;
+        console.log(this.pre_eventname)
       },
 
       async updateEvent(ev){
