@@ -10,11 +10,13 @@
     <h3 align="left">ตารางออกกำลังกายของคุณ {{callname()}} </h3><br>
 
   <div>
+    
     <v-sheet
       tile
       height="54"
       class="d-flex"
     >
+    
       <v-btn
         icon
         class="ma-2"
@@ -26,7 +28,7 @@
       <v-btn         
         outlined
         class="ma-2"
-        @click="addEvent">
+        @click="addEventDialog=true">
         เพิ่มกิจกรรมใหม่
       </v-btn>
 
@@ -37,20 +39,34 @@
         ดูกิจกรรมวันนี้
       </v-btn>
 
+
       <v-toolbar-title outlined
         class="ma-3">{{ title }}</v-toolbar-title>
 
-      <v-select
+
+
+
+
+
+      <v-spacer></v-spacer>
+
+      <!-- <v-select v-if="type!='day'"
         v-model="type"
         :items="types"
         dense
         outlined
         hide-details
         class="ma-2"
-        label="type"
-      ></v-select>
+        label="ตัวเลือกการดู"
+      ></v-select> -->
 
-      <v-spacer></v-spacer>
+      <v-btn v-if="type=='day'"
+        outlined
+        class="ma-2"
+        @click="backViewDay">
+        กลับ
+      </v-btn>
+
       <v-btn
         icon
         class="ma-2"
@@ -59,6 +75,7 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-sheet>
+
     <v-sheet height="600">
       <v-calendar
         ref="calendar"
@@ -68,16 +85,83 @@
         :weekdays="[0, 1, 2, 3, 4, 5, 6]"
         :type="type"
         :events="events"
-        :event-overlap-mode="mode"
+        :now="today"
         :event-overlap-threshold="30"
         :event-color="getEventColor"
         @change="updateRange"
+        @click:event="showEvent"
+        @click:more="viewDay"
+        @click:date="viewDay"
       ></v-calendar>
     </v-sheet>
   </div>
 
 <!--@change=""-->
 </div>
+
+<v-dialog v-model="addEventDialog" max-width="500">
+  <v-card>
+    <v-container>
+      <v-form ref="addEventform" @submit.prevent="addEvent">
+        <v-text-field v-model="eventname" type="text" label="ชื่อกิจกรรม" :rules="checkdata"></v-text-field>
+        <v-text-field v-model="eventdetails" type="text" label="details" :rules="checkdata"></v-text-field>
+        <v-text-field v-model="eventstart" type="datetime-local" label="start" ></v-text-field>
+        <v-text-field v-model="eventend" type="datetime-local" label="end" ></v-text-field>
+        <v-text-field v-model="eventcolor" type="color" label="color" :rules="checkdata"></v-text-field>
+        <v-btn type="submit" color="primay" class="mr-4" >สร้างกิจกรรมใหม่</v-btn>
+      </v-form>
+    </v-container>
+  </v-card>
+</v-dialog>
+
+<!-- clickevent -->
+        <v-menu
+          v-model="selectedOpen"
+          :close-on-content-click="false"
+          :activator="selectedElement"
+          offset-x
+        >
+          <v-card
+            color="grey lighten-4"
+            min-width="350px"
+            flat
+          >
+
+          <v-toolbar :color="selectedEvent.color" dark>
+            <v-btn icon @click="deleteEvent(selectedEvent)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        <v-card-text>
+          <v-form v-if="currentlyEditing !== selectedEvent.id">
+             {{selectedEvent.details}}
+          </v-form>
+
+          <v-form v-else> 
+            <v-text-field v-model="selectedEvent.name" type="text" label="name"></v-text-field>
+            <textarea 
+              v-model="selectedEvent.details" type="text" style="width: 100%" :min-height="100" placeholder="add note">
+            </textarea>
+          </v-form>
+
+        </v-card-text>
+
+            
+        <v-card-actions>
+          <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">แก้ไขกิจกรรม</v-btn>
+          <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">บันทึก</v-btn>
+          <v-btn text color="secondary" @click="selectedOpen = false,currentlyEditing= null ">ปิด</v-btn>
+        </v-card-actions>
+
+
+          </v-card>
+        </v-menu>
+
+
+<!--- v card -->
+
   </v-container>
 </template>
 
@@ -86,91 +170,205 @@
 <script>
 
 import firebase from "firebase";
-
   export default {
     name:"UserTable",
     data(){
         return{
             type: 'month',
-            types: ['month', 'week', 'day'],
+            pre_type:'month',
+            types: ['month', 'week'],
             value: new Date().toISOString().substr(0, 10),
             today: new Date().toISOString().substr(0, 10),
             events: [],
-            colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-            names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-            start: null,
-            end: null,
+
+//////////////////// event
+            userDocid:null,
+            eventname: null,
+            eventstart: new Date().toISOString().substr(0, 16),
+            eventdetails: null,
+            eventcolor:null,
+            eventend: new Date().toISOString().substr(0, 16),
+            addEventDialog:false,
+
+            selectedEvent: {},
+            selectedElement: null,
+            selectedOpen: false,
+            currentlyEditing: null,
+////////////////// rule
+          checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+
         }
     },
     methods: {
+      async getEvents(){
 
-      async addEvent(){
-
+        this.fetchEvent();
         let user = firebase.auth().currentUser;
         let uid = user.uid;
         let db = firebase.firestore();
         let tableRef = db.collection("Table");
         let userData = await tableRef.where("uid", "==", uid).get();
 
-        let docid = null;
-
         userData.forEach(doc => {
-          docid = doc.id;
-          console.log(doc.id, '=>', doc.data());
+          this.userDocid = doc.id;
+          //console.log(doc.id, '=>', doc.data());
         });
 
-        let userEvent = await tableRef.doc(docid).collection("Event").get();
+        let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
 
         userEvent.forEach(doc => {
             console.log(doc.id, " => ", doc.data());
-            this.events.push(doc.data());
+            if(JSON.stringify(doc.data()) != "{}"){
+
+              let EventData = doc.data()
+              EventData.id = doc.id
+              this.events.push(EventData);
+            }
         });
 
-
-        //console.log(userEvent)
-
       },
 
+      async addEvent(){
 
-      getEvents ({ start, end }) {
-        const events = []
+          if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend)) {
+            this.addEventDialog = false
 
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
+            let db = firebase.firestore();
+            let tableRef = db.collection("Table");
 
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
+            tableRef.doc(this.userDocid).collection("Event").add({
+              name: this.eventname,
+              start: this.eventstart,
+              details: this.eventdetails,
+              end: this.eventend,
+              color: this.eventcolor,
+            });
+            
+            this.getEvents()
 
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
-          })
+            this.eventname = null;
+            //this.eventstart = new Date().toISOString().substr(0, 16);
+            this.eventdetails = null;
+            //this.eventend  = new Date().toISOString().substr(0, 16);
+            this.eventcolor = null;
+            // this.events.push({
+            //   name: this.eventname,
+            //   start: this.eventstart,
+            //   end: this.eventend,
+            //   color: this.eventcolor,
+            // })
+
+            console.log(this.events);
+          }else{
+            console.log("มีบางอย่างไม่ถูกต้อง...");
+          }
+      },
+      showEvent ({ nativeEvent, event }) {
+        const open = () => {
+          this.selectedEvent = event;
+          this.selectedElement = nativeEvent.target;
+          setTimeout(() => this.selectedOpen = true, 10)
+        }
+        
+        if (this.selectedOpen) {
+          this.selectedOpen = false;
+          setTimeout(open, 10)
+        } else {
+          open()
         }
 
-        this.events = events
-        console.log(this.events)
+        nativeEvent.stopPropagation()
       },
+
+      editEvent(ev){
+        this.currentlyEditing = ev.id;
+      },
+
+      async updateEvent(ev){
+        let db = firebase.firestore();
+        let tableRef = db.collection("Table");
+
+        await tableRef.doc(this.userDocid).collection("Event").doc(ev.id).update({
+             details: ev.details,
+             name: ev.name,
+        });
+        this.selectedOpen = false;
+        this.currentlyEditing = null;
+
+
+        this.getEvents();
+
+      console.log(ev.id,"updateEvent successfully")
+      },
+      async deleteEvent(ev){
+
+        let db = firebase.firestore();
+        let tableRef = db.collection("Table");
+
+        await tableRef.doc(this.userDocid).collection("Event").doc(ev.id).delete();
+        this.selectedOpen = false;
+
+        this.getEvents();
+        console.log(ev.id,'delete successfully');
+
+      },
+      fetchEvent(){
+        this.events = [];
+      },
+      // getEvents ({ start, end }) {
+      //   const events = []
+
+      //   const min = new Date(`${start.date}T00:00:00`)
+      //   const max = new Date(`${end.date}T23:59:59`)
+      //   const days = (max.getTime() - min.getTime()) / 86400000
+      //   const eventCount = this.rnd(days, days + 20)
+
+      //   for (let i = 0; i < eventCount; i++) {
+      //     const allDay = this.rnd(0, 3) === 0
+      //     const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+      //     const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+      //     const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+      //     const second = new Date(first.getTime() + secondTimestamp)
+
+      //     events.push({
+      //       name: this.names[this.rnd(0, this.names.length - 1)],
+      //       start: first,
+      //       end: second,
+      //       color: this.colors[this.rnd(0, this.colors.length - 1)],
+      //       timed: !allDay,
+      //     })
+      //   }
+
+      //   this.events = events
+      //   console.log(this.events)
+      // },
       getEventColor (event) {
         return event.color
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
+      viewDay ({ date }) {
+        this.value = date;
+        this.pre_type = this.type;
+        this.type = 'day';
+        this.eventstart = new Date(date).toISOString().substr(0, 16);
+        this.eventend = new Date(date).toISOString().substr(0, 16)
 
-
+      },
+      backViewDay(){
+        this.value = this.today;
+        this.type = this.pre_type;
+      },
       setToday () {
         this.value = this.today;
+        this.pre_type = this.type;
         this.type = 'day';
+        this.eventstart = new Date(this.today).toISOString().substr(0, 16);
+        this.eventend = new Date(this.today).toISOString().substr(0, 16)
       },
+
+
       updateRange ({ start, end }) {
         // You could load events from an outside source (like database) now that we have the start and end dates on the calendar
         this.start = start
@@ -245,6 +443,7 @@ import firebase from "firebase";
       },
     },
     mounted () {
+      this.getEvents()
       this.$refs.calendar.checkChange()
     },
 
