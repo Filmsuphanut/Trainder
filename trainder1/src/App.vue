@@ -14,6 +14,10 @@
 *{
   box-sizing: border-box !important;
 }
+[class*='col-'],[class*='row-']{
+  padding: 0 !important;
+}
+
 </style>
 
 
