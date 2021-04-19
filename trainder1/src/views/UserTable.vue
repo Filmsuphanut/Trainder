@@ -104,10 +104,11 @@
     <v-container>
       <v-form ref="addEventform" @submit.prevent="addEvent">
         <v-text-field v-model="eventname" type="text" label="ชื่อกิจกรรม" :rules="checkdata"></v-text-field>
-        <v-text-field v-model="eventdetails" type="text" label="details" :rules="checkdata"></v-text-field>
-        <v-text-field v-model="eventstart" type="datetime-local" label="start" ></v-text-field>
-        <v-text-field v-model="eventend" type="datetime-local" label="end" ></v-text-field>
-        <v-text-field v-model="eventcolor" type="color" label="color" :rules="checkdata"></v-text-field>
+        <v-text-field v-model="eventdetails" type="text" label="รายละเอียด" :rules="checkdata"></v-text-field>
+        <v-text-field v-model="eventstart" type="datetime-local" label="วันและเวลาเริ่มต้น" ></v-text-field>
+        <v-text-field v-model="eventend" type="datetime-local" label="วันและเวลาสุดท้าย" ></v-text-field>
+        <p style="font-size:20%;color:red;" v-if="eventstart >= eventend">**วันและเวลาสุดท้ายต้องมากกว่าเริ่มต้น</p>
+        <v-text-field v-model="eventcolor" type="color" label="เลือกสีสำหรับกิจกรรมของคุณ" :rules="checkdata"></v-text-field>
         <v-btn type="submit" color="primay" class="mr-4" >สร้างกิจกรรมใหม่</v-btn>
       </v-form>
     </v-container>
@@ -180,7 +181,9 @@ import firebase from "firebase";
             value: new Date().toISOString().substr(0, 10),
             today: new Date().toISOString().substr(0, 10),
             events: [],
-
+            start:null,
+            end:null,
+            
 //////////////////// event
             userDocid:null,
             eventname: null,
@@ -260,6 +263,7 @@ import firebase from "firebase";
 
             console.log(this.events);
           }else{
+
             console.log("มีบางอย่างไม่ถูกต้อง...");
           }
       },
