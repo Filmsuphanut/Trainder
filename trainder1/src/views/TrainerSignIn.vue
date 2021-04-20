@@ -171,24 +171,24 @@
                         <template v-for="(inp, index) in 3">
                           <v-file-input 
                             :key="index"
-                            :rules="rules"
+                            :rules="index==0? checkimage:rules"
                             accept="image/png, image/jpeg, image/jpg"
                             :placeholder="'Certificate ' + (index==0?' (required)':' (optional)')"
                             filled
                             prepend-icon="mdi-camera"
                             dense
                             rounded
+                            :disabled="index==0? false:(index==1? (checkurl.length == 0):(index==2? (checkurl.length <= 1):true))"
                             :required="index==0"
-                            @change="onUpload($event, index)"
+                            @change="onUpload($event, index),loading = true"
+                            @click:clear="checkurl.pop()"
                           ></v-file-input>
                         
                         </template>
                     </div>
                     <!-- Done Upload Certificate -->
-
                     <br /><br />
                     <p align="left">ข้อมูลทางการเงิน</p>
-
                     <v-select
                       :items="banklist"
                       label="ธนาคาร"
@@ -320,6 +320,8 @@ export default {
       // Upload Picture Variables
       picture: [null, null, null],
       imageData: [null, null, null],
+      checkurl:[],
+      checkimage:[value => (value && (value.size < 4000000))  || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป และ ไฟล์ไม่เกิน 4 mb'] ,
     };
   },
   methods: {
@@ -329,6 +331,7 @@ export default {
       this.loading = true;
 
       if (this.$refs.form.validate()) {
+        console.log("validate");
         let uid = firebase.auth().currentUser.uid;
 
         let db = firebase.firestore();
@@ -336,9 +339,12 @@ export default {
 
         let userData = await userRef.where("uid", "==", uid).get();
         console.log(uid);
-
+        let docId = null;
+        
         userData.forEach((doc) => {
-          let docId = doc.id;
+          docId = doc.id;
+        });
+
           userRef.doc(docId).update({
             PersonalID: this.userdata.personalID,
             Address: this.userdata.address,
@@ -354,34 +360,9 @@ export default {
             cert2: this.picture[1],
             cert3: this.picture[2],
           });
-        });
 
         this.$router.push("/TrainerHome");
         console.log(this.userdata);
-
-        //ไม่เกี่ยว
-
-        // userRef.add({
-        // fullName: [this.userdata.firstname, this.userdata.lastname].join(" "),
-        // role: "normal",
-        // uid: user.uid,
-        // });
-
-        ///เก็บไว้ใน database
-
-        //     firebase.auth().createUserWithEmailAndPassword(this.userdata.email, this.userdata.pass)
-        //     .then((userCredential) => {
-        //         var user = userCredential.user
-        //         console.log(user)
-        //         this.$router.push('/')
-        //     })
-        //     .catch((error) => {
-        //         var errorCode = error.code
-        //         var errorMessage = error.message
-        //         console.log(errorCode,errorMessage)
-        //         this.snacktext = this.snackalert.false
-        //         this.snackbar = true
-        //     });
 
         e.preventDefault();
       }else{
@@ -390,25 +371,37 @@ export default {
 
     },
 
-    test() {
-      console.log(parseInt(this.userdata.personalID) <= 0);
-    },
-
     // Upload Picture method
     onUpload(e, index) {
+      //this.loading = true;
       this.imageData[index] = e;
+      this.checkurl.push(URL.createObjectURL(e));
+      console.log(this.checkurl)
       this.picture[index] = null;
       const storageRef = firebase
-        .storage()
+        storageRef.storage()
         .ref(`${this.imageData[index].name}`)
-        .put(this.imageData[index]);
-      storageRef.on(`state_changed`, () =>
-        storageRef.snapshot.ref.getDownloadURL().then((url) => {
-          this.picture[index] = url;
-          console.log(this.imageData[index]);
-          console.log(this.picture[index]);
-        })
-      );
+        .put(this.imageData[index]).then(data => {
+            data.ref.getDownloadURL().then(url => {
+              this.picture[index] = url;
+              console.log(this.imageData[index]);
+              console.log(this.picture[index]);
+              this.loading = false;
+          });
+        }).catch(error => {
+            console.log(error);
+            this.loading = false;
+        });
+
+
+      // storageRef.on(`state_changed`, () =>
+      //   storageRef.snapshot.ref.getDownloadURL().then((url) => {
+      //     this.picture[index] = url;
+      //     // console.log(this.imageData[index]);
+      //     // console.log(this.picture[index]);
+      //   })
+      // );
+
     },
   },
 };

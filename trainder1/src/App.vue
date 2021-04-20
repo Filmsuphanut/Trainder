@@ -5,6 +5,7 @@
       rel="stylesheet"
     />
     <v-main>
+      <Toolbar></Toolbar>
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -23,12 +24,15 @@
 
 <script>
 //import Index from './views/index';
+import Toolbar from './components/Toolbar.vue'
 
 export default {
   name: "App",
 
   components: {
-    //  Index,
+    Toolbar
+  //  Index,
+
   },
 
   data: () => ({

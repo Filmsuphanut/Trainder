@@ -168,10 +168,7 @@ export default {
   },
   methods: {
     async regissubmit(e) {
-
-
       let rou = this.$router
-      
       if (this.$refs.form.validate()) {
         //const response = await axios.post('todos',this.userdata)
         this.loading = true;     
@@ -204,18 +201,33 @@ export default {
             Bank: null ,
             BankAccountNumber: null ,
             Purpose: null,
-
+            profilePic:"https://firebasestorage.googleapis.com/v0/b/fir-b9dbd.appspot.com/o/people.jpg?alt=media&token=c73c8c03-fed9-4eda-a5d4-f2fb81a552f8",
+            
             uid: user.uid,
             });
 
+            ///addTable
+            let tableRef = db.collection("Table");
+            tableRef.add({
+                uid: user.uid,
+              });
+
+            this.addTable(user,tableRef)
+
+
+
+
+            ////updateProfile
             user.updateProfile({
               displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
             }).then(function() {
-              rou.push("/UserHome");///////////////////////
+
+              rou.push("/register/auth");///////////////////////
             }).catch(function(error) {
                 console.log(error)
             });    
-            
+
+
           })
           .catch((error) => {
             var errorCode = error.code;
@@ -225,10 +237,22 @@ export default {
             this.snackbar = true;
             this.loading = false;
           });
-
         e.preventDefault();
-
       }
+    },
+    
+    async addTable(user,tableRef){
+
+        let userData = await tableRef.where("uid", "==", user.uid).get();
+
+        let docid = null;
+
+        userData.forEach(doc => {
+          docid = doc.id;
+          console.log(doc.id, '=>', doc.data());
+        });
+
+        tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
     },
 
   },
@@ -244,7 +268,7 @@ export default {
   text-align: center;
   width: 100%;
   height: 100%;
-  box-shadow: ;
+  box-shadow: 2;
   /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),

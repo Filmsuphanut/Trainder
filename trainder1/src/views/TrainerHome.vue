@@ -1,7 +1,7 @@
 <template>
 
    <v-container>
-        <h1>สวัสดี Trainer</h1>
+        <h1>สวัสดี {{callname()}}</h1>
         <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
         <v-btn @click="logout">ออกจากระบบ</v-btn>
     </v-container>
@@ -34,7 +34,16 @@ export default {
             });  
 
         },
+        callname(){////หาชื่อ user
 
+            let user = firebase.auth().currentUser
+            let displayname
+
+            if (user != null) {
+                displayname = user.displayName
+            return displayname
+            }
+        },
         setPrevious(){
             if(this.$store.state.previous.pre !== "/TrainerHome"){
                 this.$store.commit("setPreviousPage","/TrainerHome");

@@ -90,11 +90,12 @@ export default {
                 console.log(user.uid)
                 //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
 
+                //Create user data and push to next page*************************************************
                 this.CreateUserData(user)
 
-                this.$router.push('/UserHome')
+                
 
-            }).catch((error) => {//////////////////////////////////////////////***** */
+            }).catch((error) => {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -140,9 +141,23 @@ export default {
                 Bank: null ,
                 BankAccountNumber: null,
                 Purpose: null,
+                profilePic:"https://firebasestorage.googleapis.com/v0/b/fir-b9dbd.appspot.com/o/people.jpg?alt=media&token=c73c8c03-fed9-4eda-a5d4-f2fb81a552f8",
                 
                 uid: user.uid,
                 });
+                this.$router.push('/register/auth')
+
+                ///addTable
+                let tableRef = db.collection("Table");
+                tableRef.add({
+                    uid: user.uid,
+                });
+
+                this.addTable(user.uid,tableRef)
+
+
+            }else{
+                this.$router.push('/user')
             }
          },
 
@@ -163,10 +178,23 @@ export default {
                     this.$router.push('/TrainerHome');
                 }else{
                     this.loading = false;
-                    this.$router.push('/UserHome');
+                    this.$router.push('/User');
                 }
             });
 
+        },
+        async addTable(useruid,tableRef){
+
+            let userData = await tableRef.where("uid", "==", useruid).get();
+
+            let docid = null;
+
+            userData.forEach(doc => {
+            docid = doc.id;
+            console.log(doc.id, '=>', doc.data());
+            });
+
+            tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
         },
 
 
