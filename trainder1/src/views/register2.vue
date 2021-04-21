@@ -264,7 +264,7 @@
 import firebase from "firebase";
 
 export default {
-  name: "Setting",
+  name: "register2",
   data() {
     return {
       userData: {

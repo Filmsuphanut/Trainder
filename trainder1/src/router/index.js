@@ -13,6 +13,8 @@ import MainCreateRoom from '../views/MainCreateRoom.vue'
 import ProfileSetting from '../views/Setting.vue'
 import VDOC from '../views/VdoCall.vue'
 import CVDOC from '../views/customCall.vue'
+import UserTable from '../views/UserTable.vue'
+import register2 from '../views/register2.vue'
 
 Vue.use(VueRouter)
 
@@ -31,12 +33,12 @@ const routes = [{
         name: 'Trainerregister',
         component: Trainerregister
     },
-    // {
-    //   path: '/login',
-    //   name: 'login',
-    //   component: Login
+    {
+      path: '/register/auth',
+      name: 'register2',
+      component: register2
 
-    // },
+    },
     {
         path: '/vdoc',
         name: 'videocall',
@@ -48,7 +50,7 @@ const routes = [{
         component: CVDOC
     },
     {
-        path: '/UserHome',
+        path: '/User',
         name: 'UserHome',
         component: UserHome
     },
@@ -63,7 +65,7 @@ const routes = [{
         component: TrainerSignIn
     },
     {
-        path: '/FindTrainer',
+        path: '/User/FindTrainer',
         name: 'FindTrainer',
         component: FindTrainer
     },
@@ -81,6 +83,11 @@ const routes = [{
         path: '/ProfileSetting',
         name: 'ProfileSetting',
         component: ProfileSetting
+    },
+    {
+        path: '/Table',
+        name: 'UserTable',
+        component: UserTable
     },
     // {
     //   path: '/about',
