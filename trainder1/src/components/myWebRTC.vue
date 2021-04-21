@@ -351,6 +351,7 @@ export default {
       var Ovideo = document.getElementById(id);
       if (!Ovideo) {
         Ovideo = document.createElement("video");
+        Ovideo.classList.add("rounded-xl")
         Ovideo.id = id;
         Ovideo.autoplay = true;
         Ovideo.height = 320;

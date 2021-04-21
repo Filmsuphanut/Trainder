@@ -109,7 +109,9 @@
               hide-details
               >Input</v-text-field
             >
-            <v-btn class="ml-3" color="info" @click="join(inputRoom)">join</v-btn>
+            <v-btn class="ml-3" color="info" @click="join(inputRoom)"
+              >join</v-btn
+            >
           </div>
         </v-menu>
         <v-spacer></v-spacer>
@@ -169,6 +171,21 @@
             @keydown.enter="onInputName"
             prepend-inner-icon="mdi-identifier"
           ></v-text-field>
+          <v-row class="mt-3" justify="space-around">
+            <v-switch
+              v-model="devices.cam"
+              label="camera"
+              color="success"
+              inset
+            ></v-switch>
+            <v-switch
+              inset
+              v-model="devices.mic"
+              label="microphone"
+              color="success"
+              hide-details
+            ></v-switch>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -245,17 +262,13 @@ export default {
       nameInput: true,
       roomMemCount: 0,
       streams: [],
+      devices: {
+        mic: true,
+        cam: false,
+      },
     };
   },
   computed: {
-    micStatus() {
-      const video = document.getElementById("myVdo");
-      if (video) {
-        const stream = video.srcObject;
-        return stream.getAudioTracks()[0].enabled;
-      }
-      return false;
-    },
     peers() {
       return Object.keys(this.peerConnections);
     },
@@ -283,10 +296,14 @@ export default {
         .getUserMedia(constraints)
         .then((stream) => {
           video.srcObject = stream;
-          this.streams.push(stream);
+          if (!this.devices.cam) {
+            this.camera();
+          }
+          if (!this.devices.mic) {
+            this.mute();
+          }
         })
         .catch((error) => console.error(error));
-      this.streams.push();
     },
     closeCamera(id) {
       const video = document.getElementById(id);
@@ -339,6 +356,7 @@ export default {
       var Ovideo = document.getElementById(id);
       if (!Ovideo) {
         Ovideo = document.createElement("video");
+        Ovideo.classList.add("rounded-xl");
         Ovideo.id = id;
         Ovideo.autoplay = true;
         Ovideo.height = 320;
@@ -400,6 +418,7 @@ export default {
         });
     },
     async join(room) {
+      if (!room) return alert("Room name must not empty");
       // if (this.room == this.inputRoom) return alert("Already inside the room.");
       this.leave();
       this.room = room;
