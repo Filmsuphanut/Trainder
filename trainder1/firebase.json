@@ -1,0 +1,11 @@
+{
+    "hosting": {
+        "public": "dist",
+        "target": "webrtc-test-8bef3",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ]
+    }
+}

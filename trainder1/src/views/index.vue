@@ -3,6 +3,9 @@
         <br>
         <div class="bigbox">
         <table class="tab" border="0">
+            <tr><td><img src="../images/Logo.png" width="80" height="80"  align="left"></td></tr><br>
+            <router-link to="/vdoc">vdoc</router-link> |
+            <router-link to="/custom-vdoc">custom-vdoc</router-link>
             <tr>
                 <td>
                     <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
@@ -26,7 +29,7 @@
                 หรือว่า อยากร่วมเป็น&nbsp;
 
                 <router-link to="/Trainerregister">Trainer</router-link>
-                
+                 
                 </div>
                 </td>
             </tr>

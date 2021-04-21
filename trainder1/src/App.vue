@@ -1,6 +1,9 @@
 <template>
-  <v-app id='v-application'>
-<link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
+  <v-app id="v-application">
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons"
+      rel="stylesheet"
+    />
     <v-main>
       <Toolbar></Toolbar>
       <router-view></router-view>
@@ -8,12 +11,23 @@
   </v-app>
 </template>
 
-<script >
+<style>
+*{
+  box-sizing: border-box !important;
+}
+[class*='col-'],[class*='row-']{
+  padding: 0 !important;
+}
+
+</style>
+
+
+<script>
 //import Index from './views/index';
 import Toolbar from './components/Toolbar.vue'
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     Toolbar
@@ -26,7 +40,6 @@ export default {
   }),
 };
 </script>
-
 
 <style scoped>
 #v-application {
