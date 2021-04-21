@@ -72,7 +72,7 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <v-btn rounded block large class="mt-6 pa-10" color="blue lighten-3" to="/User/Table">
+              <v-btn rounded block large class="mt-6 pa-10" color="blue lighten-3" to="/Table">
                 <h3>Table</h3>
               </v-btn>
             </v-col>
