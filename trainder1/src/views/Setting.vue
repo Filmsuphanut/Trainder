@@ -6,7 +6,7 @@
         <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
       </v-row>
       <br />
-      <table class="tab" border="1">
+      <table class="tab" border="0">
         <tr>
           <td width="700" height="700px">
             <div class="box">

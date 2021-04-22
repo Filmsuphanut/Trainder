@@ -253,7 +253,7 @@ background-color: rgb(255, 255, 255);
     height:100%;
     border: 2px solid rgb(152, 152, 255); 
     border-radius: 10px;
-      box-shadow:
+      box-shadow: 2
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),

@@ -165,11 +165,12 @@ export default {
       ////หาชื่อ user
 
       let user = firebase.auth().currentUser;
-      let displayname;
-      //const vm = this.$store
+
+
+      let name;
 
       if (user != null) {
-        displayname = user.displayName;
+        name = user.displayName;
 
         // var admin = require('firebase-admin');
         // const uid = user.uid;
@@ -188,7 +189,7 @@ export default {
 
         //vm.commit("setToken",idToken)
 
-        return displayname;
+        return name;
       }
       //else{
 

@@ -337,8 +337,7 @@ export default {
         let db = firebase.firestore();
         let userRef = db.collection("userData");
 
-        let userData = await userRef.where("uid", "==", uid).get();
-        console.log(uid);
+        let userData = await userRef.where("uid", "==", uid).get();///////หาเพื่อเอา doc.id
         let docId = null;
         
         userData.forEach((doc) => {
@@ -359,10 +358,13 @@ export default {
             cert1: this.picture[0],
             cert2: this.picture[1],
             cert3: this.picture[2],
-          });
+          }).then(()=> {
 
-        this.$router.push("/TrainerHome");
-        console.log(this.userdata);
+            this.push_store_and_go(userRef,uid,"/TrainerHome");//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+            //console.log(this.userdata);
+          })
+
+
 
         e.preventDefault();
       }else{
@@ -402,6 +404,17 @@ export default {
       //   })
       // );
 
+    },
+    async push_store_and_go(userRef,uid,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+        let userData = await userRef.where("uid", "==", uid).get();
+          userData.forEach((doc) => {
+            let form = {
+            uid: doc.id,
+            data: doc.data(),
+          };
+          this.$store.commit("setUserData", form);
+        });
+        this.$router.push(taget);
     },
   },
 };

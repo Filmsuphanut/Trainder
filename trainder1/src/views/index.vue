@@ -25,7 +25,6 @@
                 <div>ยังไม่ได้เข้าร่วมกับ Trainder อีกเหรอ ?</div><br>
                 <v-btn to="/register">สมัครสมาชิกเลย</v-btn><br><br>
                 หรือว่า อยากร่วมเป็น&nbsp;
-
                 <router-link to="/Trainerregister">Trainer</router-link>
                  
                 </div>
@@ -39,9 +38,6 @@
 <script>
 
 import Login from './login'
-
-
-
 
 export default {
      name : 'index',

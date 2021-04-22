@@ -109,11 +109,14 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     // // if logged in no access to index page
     // // console.log(firebase.auth().currentUser)
+    //console.log(store.getters["userData"]!=null);
     if (store.getters["userData"]) {
+        
         if (to.path == "/") return
         next()
     } else {
-        if (to.path != "/")
+
+        if (to.path != "/" && to.path != "/register" && to.path != "/register/auth" && to.path !="/Trainerregister" && to.path != "/TrainerSignIn")
             next("/")
         else
             next()
