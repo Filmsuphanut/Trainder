@@ -332,7 +332,8 @@ export default {
 
       if (this.$refs.form.validate()) {
         console.log("validate");
-        let uid = firebase.auth().currentUser.uid;
+        let user = firebase.auth().currentUser
+        let uid = user.uid;
 
         let db = firebase.firestore();
         let userRef = db.collection("userData");
@@ -360,7 +361,7 @@ export default {
             cert3: this.picture[2],
           }).then(()=> {
 
-            this.push_store_and_go(userRef,uid,"/TrainerHome");//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+            this.push_store_and_go(userRef,user,"/TrainerHome");//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
             //console.log(this.userdata);
           })
 
@@ -405,12 +406,13 @@ export default {
       // );
 
     },
-    async push_store_and_go(userRef,uid,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
-        let userData = await userRef.where("uid", "==", uid).get();
+    async push_store_and_go(userRef,user,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+        let userData = await userRef.where("uid", "==", user.uid).get();
           userData.forEach((doc) => {
             let form = {
-            uid: doc.id,
-            data: doc.data(),
+              uid: doc.id,
+              data: doc.data(),
+              email: user.email,
           };
           this.$store.commit("setUserData", form);
         });

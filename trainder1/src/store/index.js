@@ -8,7 +8,7 @@ export default new Vuex.Store({
     state: {
         //data
         user: {
-            token: null,
+            // token: null,
             data: "",
         },
         previous: {
@@ -17,10 +17,10 @@ export default new Vuex.Store({
     },
     mutations: {
         //
-        setToken(state, value) {
-            Vue.set(state.user, "token", value);
-            console.log("user store = " + value);
-        },
+        // setToken(state, value) {
+        //     Vue.set(state.user, "token", value);
+        //     console.log("user store = " + value);
+        // },
         setPreviousPage(state, value) {
             Vue.set(state.previous, "pre", value);
             console.log("previous store = " + value);
@@ -36,7 +36,7 @@ export default new Vuex.Store({
         //methods
         logout(context) {
             context.commit("setUser", {
-                token: null,
+                // token: null,
                 data: "",
             });
         },

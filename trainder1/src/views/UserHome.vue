@@ -165,12 +165,12 @@ export default {
       ////หาชื่อ user
 
       let user = firebase.auth().currentUser;
-
+      let test = this.$store.getters["userData"];
 
       let name;
-
+      console.log(test)
       if (user != null) {
-        name = user.displayName;
+        name = user;
 
         // var admin = require('firebase-admin');
         // const uid = user.uid;

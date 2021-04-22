@@ -39,7 +39,10 @@ export default {
 
             let user = firebase.auth().currentUser
             let displayname
+            let test = this.$store.getters["userData"];
 
+
+            console.log(test)
             if (user != null) {
                 displayname = user.displayName
             return displayname
