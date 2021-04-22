@@ -162,6 +162,7 @@ export default {
             let form = {
               uid: doc.id,
               data: doc.data(),
+              email:user.email,
             };
             this.$store.commit("setUserData", form);
           });
@@ -176,6 +177,7 @@ export default {
           let form = {
             uid: doc.id,
             data: doc.data(),
+            email:user.email,
           };
            this.$store.commit("setUserData", form);
          });
@@ -187,7 +189,8 @@ export default {
     },
 
     async getRole() {
-      let uid = firebase.auth().currentUser.uid;
+      let user = firebase.auth().currentUser;
+      let uid = user.uid;
 
       let db = firebase.firestore();
       let userRef = db.collection("userData");
@@ -198,20 +201,21 @@ export default {
         let form = {
           uid: doc.id,
           data: doc.data(),
+          email:user.email,
         };
         this.$store.commit("setUserData", form);
       });
 
         userData.forEach((doc) => {
         let role = doc.data().role;
-        console.log(role);
-        if (role === "trainer") {
-          this.loading = false;
-          this.$router.push("/TrainerHome");
-        } else {
-          this.loading = false;
-          this.$router.push("/User");
-        }
+          console.log(role);
+          if (role === "trainer") {
+            this.loading = false;
+            this.$router.push("/TrainerHome");
+          } else {
+            this.loading = false;
+            this.$router.push("/User");
+          }
       });
 
 

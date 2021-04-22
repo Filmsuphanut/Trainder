@@ -365,7 +365,9 @@ export default {
       if (this.$refs.form.validate()) {
           console.log("function")
         this.loading = true;
-        let uid = firebase.auth().currentUser.uid;
+        let user = firebase.auth().currentUser
+        let uid = user.uid;
+
         console.log("called method");
 
         let db = firebase.firestore();
@@ -398,7 +400,7 @@ export default {
           })
           .then(() => {
             console.log("save userProfile successfully !!");
-            this.push_store_and_go(userRef,uid,"/User");
+            this.push_store_and_go(userRef,user,"/User");
 
             //////////////////////////////////////////////////////////
             this.loading = false;
@@ -453,20 +455,19 @@ export default {
       console.log(this.uploadimage);
     },    
     
-    async push_store_and_go(userRef,uid,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+    async push_store_and_go(userRef,user,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
 
-        let userData = await userRef.where("uid", "==", uid).get();
+        let userData = await userRef.where("uid", "==", user.uid).get();
           userData.forEach((doc) => {
             let form = {
-            uid: doc.id,
-            data: doc.data(),
+              uid: doc.id,
+              data: doc.data(),
+              email: user.email,
           };
           this.$store.commit("setUserData", form);
         })
           console.log("save successfully !!");
           this.$router.push(taget)
-
-        
     },
 
   },
