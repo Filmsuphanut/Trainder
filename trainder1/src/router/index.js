@@ -116,7 +116,7 @@ router.beforeEach((to, from, next) => {
         next()
     } else {
 
-        if (to.path != "/" && to.path != "/register" && to.path != "/register/auth" && to.path !="/Trainerregister" && to.path != "/TrainerSignIn")
+        if (to.path != "/" && to.path != "/register"  && to.path !="/Trainerregister" )
             next("/")
         else
             next()

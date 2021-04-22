@@ -37,16 +37,12 @@ export default {
         },
         callname(){////หาชื่อ user
 
-            let user = firebase.auth().currentUser
-            let displayname
-            let test = this.$store.getters["userData"];
+            //let user = firebase.auth().currentUser
 
+            let user = this.$store.getters["userData"];
 
-            console.log(test)
-            if (user != null) {
-                displayname = user.displayName
-            return displayname
-            }
+            return user.data.fullName
+            //}
         },
         setPrevious(){
             if(this.$store.state.previous.pre !== "/TrainerHome"){
