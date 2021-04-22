@@ -1,35 +1,20 @@
 <template>
   <div class="black vdoScreen">
     <div
-      v-if="online"
       class="d-flex flex-row flex-wrap justify-center align-center vdoScreen"
       id="vdoList"
     >
-      <v-card class="black ma-5 rounded-xl" height="320">
-        <video
-          width="auto"
-          height="320"
-          id="myVdo"
-          playsinline
-          autoplay
-          muted
-        ></video>
-      </v-card>
-
-      <!-- <template v-for="(peer, idx) in peers">
-        <v-card
-          class="black ma-5 rounded-xl"
-          :id="peer"
-          :key="idx"
-          height="320"
-        >
-        </v-card>
-      </template> -->
-      <!-- <template v-for="(stream, idx) in streams">
-            <video :key="idx" :srcObject.prop="stream" />
-        </template> -->
+      <video
+        class="rounded-xl"
+        width="auto"
+        height="320"
+        id="myVdo"
+        playsinline
+        autoplay
+        muted
+      ></video>
     </div>
-
+    <!-- chat -->
     <v-navigation-drawer app right width="456" v-model="chatBar" temporary>
       <v-card
         class="d-flex flex-column"
@@ -54,9 +39,44 @@
             style="overflow-y: scroll; height: 500px; max-height: 100%"
           >
             <template v-for="(log, idx) in roomChats">
-              <p :class="isCurrentUser(log) ? 'text-right' : ''" :key="idx">
-                {{ log }}
-              </p>
+              <div
+                :key="idx"
+                :class="
+                  isCurrentUser(log.sender)
+                    ? 'd-flex justify-end text-right'
+                    : ''
+                "
+              >
+                <div
+                  style="width: fit-content;
+                  height: fit-content;
+                  border : thin solid #2196f3
+                  "
+                  :style="
+                    isCurrentUser(log.sender)
+                      ? 'border-right-width : thick'
+                      : 'border-left-width : thick'
+                  "
+                  class="mb-2 pa-2 rounded-lg"
+                >
+                  <p class="info--text font-weight-bold ma-0">
+                    <span
+                      v-if="isCurrentUser(log.sender)"
+                      class="text-caption"
+                      >{{ log.date }}</span
+                    >
+                    {{ log.sender }}
+                    <span
+                      v-if="!isCurrentUser(log.sender)"
+                      class="text-caption"
+                      >{{ log.date }}</span
+                    >
+                  </p>
+                  <p class="ma-0">
+                    {{ log.msg }}
+                  </p>
+                </div>
+              </div>
             </template>
           </div>
           <div
@@ -82,52 +102,36 @@
         </v-sheet>
       </v-card>
     </v-navigation-drawer>
-
+    <!-- footer -->
     <v-footer app height="80">
       <div
         class="d-flex justify-center align-center"
         style="height: 100%; width: 100%; position: relative"
       >
-        <v-menu
-          offset-y
-          top
-          :close-on-click="false"
-          :close-on-content-click="false"
+        <a @click="copy" class="ma-0 pa-0">
+          <v-icon class="info--text">mdi-link-variant</v-icon> Invite link</a
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark v-bind="attrs" v-on="on"> Room </v-btn>
-          </template>
-
-          <div
-            style="width: 300px"
-            class="d-flex justify-center align-center pa-3 white"
-          >
-            <v-text-field
-              outlined
-              label="Input room's name "
-              v-model="inputRoom"
-              hide-details
-              >Input</v-text-field
-            >
-            <v-btn class="ml-3" color="info" @click="join(inputRoom)"
-              >join</v-btn
-            >
-          </div>
-        </v-menu>
         <v-spacer></v-spacer>
         <v-btn
-          icon
           fab
           color="success"
           class="vdoIcon"
-          @click="camera"
-          outlined
+          @click="devices.cam = !devices.cam"
+          :outlined="!devices.cam"
         >
           <v-icon>mdi-video</v-icon>
         </v-btn>
-        <v-btn icon fab color="warning" class="vdoIcon" @click="mute" outlined>
+        <v-btn
+          fab
+          dark
+          color="warning"
+          class="vdoIcon"
+          @click="devices.mic = !devices.mic"
+          :outlined="!devices.mic"
+        >
           <v-icon>mdi-microphone</v-icon>
         </v-btn>
+
         <v-btn icon fab color="error" class="vdoIcon" @click="leave" outlined>
           <v-icon>mdi-phone-hangup</v-icon>
         </v-btn>
@@ -144,34 +148,16 @@
         </v-btn>
       </div>
     </v-footer>
-
-    <!-- input -->
-    <v-overlay :absolute="false" :value="nameInput" opacity="0.95">
+    <!-- before join -->
+    <v-overlay :absolute="false" :value="overlays.devices" opacity="0.95">
       <v-card width="500" light>
         <v-card-title class="info white--text">
           <v-icon large left> mdi-twitter </v-icon>
           <span class="title font-weight-light">Trainder</span>
         </v-card-title>
         <v-card-text class="pa-5">
-          <label class="text-h6">Please fill your name</label>
-          <v-text-field
-            outlined
-            placeholder="david..."
-            hide-details
-            v-model="username"
-            @keydown.enter="onInputName"
-            prepend-inner-icon="mdi-account"
-          ></v-text-field>
-          <label class="text-h6">Please fill your UID</label>
-          <v-text-field
-            outlined
-            placeholder="xa9wq;dk-ds213zmdpas"
-            hide-details
-            v-model="uid"
-            @keydown.enter="onInputName"
-            prepend-inner-icon="mdi-identifier"
-          ></v-text-field>
-          <v-row class="mt-3" justify="space-around">
+          <label class="text-h6">Devices</label>
+          <v-row class="" justify="space-around">
             <v-switch
               v-model="devices.cam"
               label="camera"
@@ -189,16 +175,56 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            class="pa-6"
-            block
-            v-if="username && uid"
-            color="success"
-            @click="onInputName"
-            >Proceed</v-btn
+          <v-btn class="pa-6" block color="success" @click="onSelectDevice"
+            >Join Room</v-btn
           >
           <v-spacer></v-spacer>
         </v-card-actions>
+      </v-card>
+    </v-overlay>
+
+    <!-- input -->
+    <v-overlay :absolute="false" :value="overlays.nameInput" opacity="0.95">
+      <v-card width="500" light>
+        <v-card-title class="info white--text">
+          <v-icon large left> mdi-weight-lifter </v-icon>
+          <span class="title font-weight-light">Trainder Video Chat</span>
+        </v-card-title>
+        <v-card-text class="mt-3 pa-5 px-8">
+          <p class="text-h5 info--text">Join</p>
+          <v-row justify="center" align="center">
+            <v-col class="pa-1">
+              <v-text-field
+                outlined
+                placeholder="Ex. gECE43px3C"
+                hide-details
+                label="Room Id"
+                v-model="room"
+                prepend-inner-icon="mdi-rename-box"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="4" class="pa-1">
+              <v-btn
+                class="pa-6"
+                style="height:56px"
+                block
+                :disabled="room == ''"
+                color="success"
+                @click="joinRoom"
+                >Join</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-text class="py-0">
+          <p class="text-h6   text-center ma-0">- - - OR - - -</p>
+        </v-card-text>
+        <v-card-text class="px-8 py-1 pb-5">
+          <v-btn class="pa-8 my-2" block color="warning" @click="createRoom"
+            >Create</v-btn
+          >
+        </v-card-text>
       </v-card>
     </v-overlay>
   </div>
@@ -217,6 +243,7 @@
 video {
   width: auto;
   max-height: 100%;
+  border: 2px solid white;
 }
 </style>
 
@@ -236,7 +263,7 @@ const config = {
 };
 
 import io from "socket.io-client";
-
+import { mapGetters } from "vuex";
 // let endpoint = "https://floating-island-08423.herokuapp.com";
 // let endpoint = "https://api.evera.cloud";
 // let endpoint = "http://191.101.184.233:3001/"
@@ -247,41 +274,97 @@ export default {
   data() {
     return {
       peerConnections: {},
-      connectedPeers: {},
-      socketId: "",
       inputRoom: "",
-      room: "",
-      currentRoom: "",
-      roomLogs: [],
       chat: "",
       roomChats: [],
       chatBar: false,
       online: false,
-      username: "",
-      uid: "",
-      nameInput: true,
+      // uid: "",
       roomMemCount: 0,
       streams: [],
       devices: {
         mic: true,
-        cam: false,
+        cam: true,
       },
+      overlays: {
+        nameInput: true,
+        devices: false,
+      },
+      rooms: {
+        name: "",
+        objective: "",
+      },
+      room: "",
     };
+  },
+  watch: {
+    micStatus() {
+      console.log("mic", this.micStatus);
+      if (this.micStatus) {
+        this.openMic();
+      } else this.closeMic();
+    },
+    camStatus() {
+      console.log("cam", this.camStatus);
+      if (this.camStatus) {
+        this.openCam();
+      } else this.closeCam();
+    },
   },
   computed: {
     peers() {
       return Object.keys(this.peerConnections);
     },
+    ...mapGetters({
+      userData: "userData",
+    }),
+    uid() {
+      return this.userData ? this.userData.uid : "";
+    },
+    username() {
+      return this.userData ? this.userData.data.fullName : "";
+    },
+    micStatus() {
+      return this.devices.mic;
+    },
+    camStatus() {
+      return this.devices.cam;
+    },
   },
   methods: {
-    isCurrentUser(text) {
-      return this.username == text.split(" ")[0];
+    copy() {
+      const text = `${window.location.host}/custom-vdoc/${this.room}`;
+      navigator.clipboard.writeText(text).then(
+        function() {
+          alert("Copy Room Url Success;");
+        },
+        function(err) {
+          console.error("Async: Could not copy text: ", err);
+        }
+      );
     },
-    onInputName() {
-      if (this.username && this.uid) {
-        this.initRTC();
-        this.nameInput = false;
-      }
+    isCurrentUser(text) {
+      return this.username == text;
+    },
+    onSelectDevice() {
+      this.overlays.devices = false;
+      this.join(this.room);
+    },
+    createRoom() {
+      this.room = this.makeid(10);
+      this.initRTC();
+      this.initCamera();
+      this.overlays.nameInput = false;
+      this.overlays.devices = true;
+    },
+    joinRoom() {
+      this.initRTC();
+      this.initCamera();
+      this.overlays.nameInput = false;
+      this.overlays.devices = true;
+    },
+    onHangup() {
+      this.overlays.nameInput = true;
     },
     async initCamera() {
       const video = document.getElementById("myVdo");
@@ -296,35 +379,35 @@ export default {
         .getUserMedia(constraints)
         .then((stream) => {
           video.srcObject = stream;
-          if (!this.devices.cam) {
-            this.camera();
-          }
-          if (!this.devices.mic) {
-            this.mute();
-          }
         })
         .catch((error) => console.error(error));
     },
-    closeCamera(id) {
-      const video = document.getElementById(id);
-      video.srcObject = null;
-    },
-    camera() {
+    openCam() {
       const video = document.getElementById("myVdo");
       if (video) {
         const stream = video.srcObject;
-        if (stream)
-          stream.getVideoTracks()[0].enabled = !stream.getVideoTracks()[0]
-            .enabled;
+        if (stream) stream.getVideoTracks()[0].enabled = true;
       }
     },
-    mute() {
+    closeCam() {
       const video = document.getElementById("myVdo");
       if (video) {
         const stream = video.srcObject;
-        if (stream)
-          stream.getAudioTracks()[0].enabled = !stream.getAudioTracks()[0]
-            .enabled;
+        if (stream) stream.getVideoTracks()[0].enabled = false;
+      }
+    },
+    openMic() {
+      const video = document.getElementById("myVdo");
+      if (video) {
+        const stream = video.srcObject;
+        if (stream) stream.getAudioTracks()[0].enabled = true;
+      }
+    },
+    closeMic() {
+      const video = document.getElementById("myVdo");
+      if (video) {
+        const stream = video.srcObject;
+        if (stream) stream.getAudioTracks()[0].enabled = false;
       }
     },
     initRTC() {
@@ -334,7 +417,7 @@ export default {
       });
       socket.on("connect", () => {
         // console.log(socket.id);
-        socket.emit("deliver-info", {
+        socket.emit("deliver-info-custom", {
           uid: this.uid,
           name: this.username,
         });
@@ -343,8 +426,12 @@ export default {
       socket.on("connected", (id) => {
         this.online = true;
       });
-      socket.on("chat messaged", (_, userData, msg) => {
-        this.roomChats.push(`${userData.name} : ${msg}`);
+      socket.on("chat messaged", (_, userData, msg, date) => {
+        this.roomChats.push({
+          sender: userData.name,
+          msg: msg,
+          date: date,
+        });
       });
 
       window.onunload = window.onbeforeunload = () => {
@@ -420,19 +507,31 @@ export default {
     async join(room) {
       if (!room) return alert("Room name must not empty");
       // if (this.room == this.inputRoom) return alert("Already inside the room.");
-      this.leave();
       this.room = room;
-      await this.initCamera();
+      // await this.initCamera();
       socket.emit("join-room", this.room);
 
       socket.on("joined", (data) => {
         this.roomChats = [];
-        this.roomChats.push("your has joined rooms : " + this.room);
-        this.roomChats.push("user inside room :" + data.users.join(", "));
+        this.roomChats.push({
+          sender: "System",
+          msg: `You has joined a room ${this.room}`,
+          date: new Date().toLocaleTimeString(),
+        });
+        this.roomChats.push({
+          sender: "System",
+          msg: `People inside this room : ${data.users.join(", ")}`,
+          date: new Date().toLocaleTimeString(),
+        });
       });
 
       socket.on("user-joined-room", (id, userData) => {
-        this.roomChats.push(`user ${userData.name} joined`);
+        let form = {
+          sender: "System",
+          msg: `User ${userData.name} joined`,
+          date: new Date().toLocaleTimeString(),
+        };
+        this.roomChats.push(form);
         console.log(`offering to user : ${id}`);
         this.offer(id);
       });
@@ -463,7 +562,12 @@ export default {
       });
 
       socket.on("user-leaved-room", (id, userData) => {
-        this.roomChats.push(`user ${userData.name} has leaved rooms.`);
+        let form = {
+          sender: "System",
+          msg: `User ${userData.name} has leaved rooms.`,
+          date: new Date().toLocaleTimeString(),
+        };
+        this.roomChats.push(form);
         const video = document.getElementById(id);
         if (video) video.remove();
         this.peerConnections[id].close();
@@ -472,7 +576,8 @@ export default {
     },
     leave() {
       if (this.room) socket.emit("leave-room", this.room);
-      this.closeCamera("myVdo");
+      this.devices.mic = false
+      this.devices.cam = false
       //clear all listener
       socket.on("user-leaved-room", () => {});
       socket.on("user-joined-room", () => {});
@@ -487,6 +592,7 @@ export default {
       this.roomChats = [];
       this.chat = "";
       this.room = "";
+      this.overlays.nameInput = true
     },
     // async shareScreen() {
     //   const video = document.getElementById("myVdo");
@@ -504,7 +610,12 @@ export default {
     //     .catch((error) => console.error(error));
     // },
     sendChat() {
-      socket.emit("chat message", this.room, this.chat);
+      socket.emit(
+        "chat message",
+        this.room,
+        this.chat,
+        new Date().toLocaleTimeString()
+      );
       this.chat = "";
     },
     makeid(length) {
@@ -521,6 +632,11 @@ export default {
     },
   },
   mounted() {
+    if (this.$route.params.id == "new-room") {
+      this.room = "";
+    } else {
+      this.room = this.$route.params.id;
+    }
     // this.streamingInit();
   },
 };

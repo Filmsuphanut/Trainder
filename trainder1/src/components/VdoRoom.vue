@@ -8,7 +8,7 @@
 // ISSUE 5: https://github.com/westonsoftware/vue-webrtc/issues/5
 // import * as io from "socket.io-client";
 // import ChatRoom from './ChatRoom.vue';
-import MyWebRTC from './myWebRTC.vue';
+import MyWebRTC from './randomRoom.vue';
 // import Watcher from './watcher.vue';
 // window.io = io;
 //

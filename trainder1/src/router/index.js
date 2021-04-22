@@ -15,6 +15,7 @@ import VDOC from '../views/VdoCall.vue'
 import CVDOC from '../views/customCall.vue'
 import UserTable from '../views/UserTable.vue'
 import register2 from '../views/register2.vue'
+import store from "../store/index"
 
 Vue.use(VueRouter)
 
@@ -34,9 +35,9 @@ const routes = [{
         component: Trainerregister
     },
     {
-      path: '/register/auth',
-      name: 'register2',
-      component: register2
+        path: '/register/auth',
+        name: 'register2',
+        component: register2
 
     },
     {
@@ -45,8 +46,8 @@ const routes = [{
         component: VDOC
     },
     {
-        path: '/custom-vdoc',
-        name: 'custom-videocall',
+        path: '/custom-vdoc/:id',
+        name: 'link-videocall',
         component: CVDOC
     },
     {
@@ -104,5 +105,20 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 })
+
+router.beforeEach((to, from, next) => {
+    // // if logged in no access to index page
+    // // console.log(firebase.auth().currentUser)
+    if (store.getters["userData"]) {
+        if (to.path == "/") return
+        next()
+    } else {
+        if (to.path != "/")
+            next("/")
+        else
+            next()
+    }
+    // next()
+});
 
 export default router
