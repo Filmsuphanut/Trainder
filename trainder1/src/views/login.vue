@@ -93,8 +93,8 @@ export default {
           //var token = credential.accessToken;
           var user = result.user;
           //console.log(credential,token,user.email)
-          console.log(result);
-          console.log(user.uid);
+          // console.log(result);
+          // console.log(user.uid);
 
           //Create user data and push to next page*************************************************
           this.CreateUserData(user);
