@@ -26,6 +26,7 @@ export default {
             firebase.auth().signOut().then(() => {
             // Sign-out successful.
             console.log("logout")
+            this.$store.dispatch("logout")
             this.$router.push('/')
 
             }).catch((error) => {

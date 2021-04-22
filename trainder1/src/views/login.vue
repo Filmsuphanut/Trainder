@@ -68,6 +68,7 @@ export default {
             this.getRole();
           })
           .catch((error) => {
+            this.loading = false;
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode, errorMessage);
@@ -76,6 +77,7 @@ export default {
           });
         e.preventDefault();
       }
+      
     },
     async signinpopup(e) {
       var provider = new firebase.auth.GoogleAuthProvider();
@@ -91,9 +93,8 @@ export default {
           //var token = credential.accessToken;
           var user = result.user;
           //console.log(credential,token,user.email)
-          console.log(result);
-          console.log(user.uid);
-          //sessionStorage.setItem('name',JSON.stringify(this.userCredential.user.displayName))
+          // console.log(result);
+          // console.log(user.uid);
 
           //Create user data and push to next page*************************************************
           this.CreateUserData(user);
@@ -121,11 +122,10 @@ export default {
       let userData = await userRef.where("uid", "==", user.uid).get();
       let docID = null;
 
-      userData.forEach((doc) => {
+      userData.forEach(doc => {
         docID = doc.id;
       });
 
-      console.log(docID);
       if (docID == null) {
         console.log("add");
         userRef.add({
@@ -147,7 +147,7 @@ export default {
 
           uid: user.uid,
         });
-        this.$router.push("/register/auth");
+        
 
         ///addTable
         let tableRef = db.collection("Table");
@@ -156,18 +156,34 @@ export default {
         });
 
         this.addTable(user.uid, tableRef);
+
+        let userData = await userRef.where("uid", "==", user.uid).get();
+          userData.forEach((doc) => {
+            let form = {
+              uid: doc.id,
+              data: doc.data(),
+            };
+            this.$store.commit("setUserData", form);
+          });
+
+      this.$router.push("/register/auth");
+
       } else {
-        let userData = await db.collection("userData").where("uid", "==", user.uid).get();
+        
+
+        // let userData = await db.collection("userData").where("uid", "==", user.uid).get();
         userData.forEach((doc) => {
           let form = {
             uid: doc.id,
             data: doc.data(),
           };
-          this.$store.commit("setUserData", form);
-        });
+           this.$store.commit("setUserData", form);
+         });
 
         this.$router.push("/user");
       }
+
+
     },
 
     async getRole() {
@@ -179,6 +195,14 @@ export default {
       let userData = await userRef.where("uid", "==", uid).get();
 
       userData.forEach((doc) => {
+        let form = {
+          uid: doc.id,
+          data: doc.data(),
+        };
+        this.$store.commit("setUserData", form);
+      });
+
+        userData.forEach((doc) => {
         let role = doc.data().role;
         console.log(role);
         if (role === "trainer") {
@@ -189,7 +213,11 @@ export default {
           this.$router.push("/User");
         }
       });
+
+
     },
+
+
     async addTable(useruid, tableRef) {
       let userData = await tableRef.where("uid", "==", useruid).get();
 
@@ -203,7 +231,7 @@ export default {
       tableRef
         .doc(docid)
         .collection("Event")
-        .add({}); /////////////////////////////////รอแก้
+        .add({}); 
     },
   },
 };
