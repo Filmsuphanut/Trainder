@@ -115,7 +115,7 @@
                 large
                 class="mt-6 pa-10"
                 color="blue lighten-3"
-                to="/stat"
+                to="/Stats"
               >
                 <h3>Your Stat</h3>
               </v-btn>
