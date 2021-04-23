@@ -17,6 +17,9 @@ import UserTable from '../views/UserTable.vue'
 import register2 from '../views/register2.vue'
 import store from "../store/index"
 import Stats from "../views/Stats.vue"
+import Course from '../views/Course.vue'
+import CreateCourse from '../views/CreateCourse.vue'
+import EditCoures from '../views/EditCourse.vue'
 
 Vue.use(VueRouter)
 
@@ -95,6 +98,21 @@ const routes = [{
         path: '/Stats',
         name: 'Stats',
         component: Stats
+    },
+    {
+        path: '/Course',
+        name: 'Course',
+        component: Course
+    },
+    {
+        path: '/Course/CreateCourse',
+        name: 'CreateCourse',
+        component: CreateCourse
+    },
+    {
+        path: '/Course/EditCourse',
+        name: 'EditCoures',
+        component: EditCoures
     },
     // {
     //   path: '/about',

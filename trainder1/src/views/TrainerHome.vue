@@ -3,6 +3,8 @@
    <v-container>
         <h1>สวัสดี {{callname()}}</h1>
         <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
+        <router-link to="/Table"><v-btn>ตารางออกกำลังกาย</v-btn></router-link>
+        <router-link to="/Course"><v-btn>Course Detail</v-btn></router-link>
         <v-btn @click="logout">ออกจากระบบ</v-btn>
     </v-container>
 </template>
@@ -36,13 +38,8 @@ export default {
 
         },
         callname(){////หาชื่อ user
-
-            //let user = firebase.auth().currentUser
-
             let user = this.$store.getters["userData"];
-
             return user.data.fullName
-            //}
         },
         setPrevious(){
             if(this.$store.state.previous.pre !== "/TrainerHome"){
