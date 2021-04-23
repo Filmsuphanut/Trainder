@@ -236,10 +236,41 @@ import firebase from "firebase";
         });
 
       },
+      isCollision(newEvent_Start,newEvent_End){
+         let userData = await tableRef.where("uid", "==", uid).get();
+        userData.forEach(doc => {
+          this.userDocid = doc.id;
+          //console.log(doc.id, '=>', doc.data());
+        });
+          let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
+          let allEvent = []
+          userEvent.forEach(doc => {
+            console.log(doc.id, " => ", doc.data());
+            if(JSON.stringify(doc.data()) != "{}"){
 
-      async addEvent(){///// บัค start กี่โมงก็ได้แต่ end เที่ยงคืน = ไม่ขึ้น
+              let EventData = doc.data()
+              EventData.id = doc.id
+              allEvent.push(EventData)
+            }
+        });
+        for (const oldEvent of allEvent){
+          if((newEvent_Start>oldEvent.start &&newEvent_Start < oldEvent.end)||
+          newEvent_End>oldEvent.start && newEvent_End<oldEvent.end){
+            return true
+          }
+          
+        }
+        return false 
 
-          if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend)) {
+
+
+        
+
+      },
+
+      async addEvent(Creator = 'owner'){///// บัค start กี่โมงก็ได้แต่ end เที่ยงคืน = ไม่ขึ้น
+
+          if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend) && !this.isCollision(this.eventstart,this.eventend)) {
             this.addEventDialog = false
             
             let db = firebase.firestore();
@@ -261,6 +292,7 @@ import firebase from "firebase";
               end:ed,
               details: this.eventdetails,       
               color: this.eventcolor,
+              creator : Creator
             });
             
             this.getEvents()
@@ -280,7 +312,13 @@ import firebase from "firebase";
             console.log(this.events);
           }else{
 
+
             console.log("มีบางอย่างไม่ถูกต้อง...");
+            if(this.isCollision(this.eventstart,this.eventend)) console.log('Collision')
+              
+            
+
+            
           }
       },
       showEvent ({ nativeEvent, event }) {
