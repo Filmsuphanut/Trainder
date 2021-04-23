@@ -43,11 +43,6 @@
       <v-toolbar-title outlined
         class="ma-3">{{ title }}</v-toolbar-title>
 
-
-
-
-
-
       <v-spacer></v-spacer>
 
       <!-- <v-select v-if="type!='day'"
@@ -109,7 +104,7 @@
         <v-text-field v-model="eventdetails" type="text" label="รายละเอียด" :rules="checkdata"></v-text-field>
         <v-text-field v-model="eventstart" type="datetime-local" label="วันและเวลาเริ่มต้น" ></v-text-field>
         <v-text-field v-model="eventend" type="datetime-local" label="วันและเวลาสุดท้าย" ></v-text-field>
-        <p style="font-size:20%;color:red;" v-if="eventstart >= eventend">**วันและเวลาสุดท้ายต้องมากกว่าเริ่มต้น</p>
+        <p style="font-size:15px;color:red;" v-if="eventstart >= eventend">**วันและเวลาสุดท้ายต้องมากกว่าเริ่มต้น</p>
         <v-text-field v-model="eventcolor" type="color" label="เลือกสีสำหรับกิจกรรมของคุณ" :rules="checkdata"></v-text-field>
         <v-btn type="submit" color="primay" class="mr-4" >สร้างกิจกรรมใหม่</v-btn>
       </v-form>
@@ -216,7 +211,8 @@ import firebase from "firebase";
       async getEvents(){
 
         this.fetchEvent();
-        let user = firebase.auth().currentUser;
+        //let user = firebase.auth().currentUser;
+        let user = this.$store.getters["userData"].data;
         let uid = user.uid;
         let db = firebase.firestore();
         let tableRef = db.collection("Table");
@@ -409,13 +405,13 @@ import firebase from "firebase";
 
 
     callname(){
-        let user = firebase.auth().currentUser
-        let displayname
+        let user = this.$store.getters["userData"];
+        //let displayname
 
-        if (user != null) {
-            displayname = user.displayName
-        return displayname
-        }
+        // if (user != null) {
+        //     displayname = user.displayName
+        return user.data.fullName
+        // }
     },
     back() {
         let previous = this.$store.state.previous.pre;

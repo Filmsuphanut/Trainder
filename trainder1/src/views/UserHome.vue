@@ -164,13 +164,12 @@ export default {
     callname() {
       ////หาชื่อ user
 
-      let user = firebase.auth().currentUser;
-      let test = this.$store.getters["userData"];
+      //let user = firebase.auth().currentUser;
+      let user = this.$store.getters["userData"];
 
-      let name;
-      console.log(test)
-      if (user != null) {
-        name = user;
+
+      //console.log(test.data.fullName)
+        
 
         // var admin = require('firebase-admin');
         // const uid = user.uid;
@@ -189,8 +188,8 @@ export default {
 
         //vm.commit("setToken",idToken)
 
-        return name;
-      }
+        return user.data.fullName;
+
       //else{
 
       //let token = vm.state.user.token

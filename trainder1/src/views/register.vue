@@ -168,7 +168,7 @@ export default {
   },
   methods: {
     async regissubmit(e) {
-      let rou = this.$router
+      //let rou = this.$router
       if (this.$refs.form.validate()) {
         //const response = await axios.post('todos',this.userdata)
         this.loading = true;     
@@ -214,18 +214,15 @@ export default {
 
             this.addTable(user,tableRef)
 
-
-
-
             ////updateProfile
             user.updateProfile({
               displayName: [this.userdata.firstname, this.userdata.lastname].join(" "),
-            }).then(function() {
+            })
 
-              rou.push("/register/auth");///////////////////////
-            }).catch(function(error) {
-                console.log(error)
-            });    
+            this.push_store_and_go(userRef,user,"/register/auth")
+
+              //rou.push("/register/auth");///////////////////////
+ 
 
 
           })
@@ -253,6 +250,20 @@ export default {
         });
 
         tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
+    },
+    async push_store_and_go(userRef,user,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+
+        let userData = await userRef.where("uid", "==", user.uid).get();
+          userData.forEach((doc) => {
+            let form = {
+              uid: doc.id,
+              data: doc.data(),
+              email: user.email,
+          };
+          this.$store.commit("setUserData", form);
+        })
+          console.log("save successfully !!");
+          this.$router.push(taget)
     },
 
   },

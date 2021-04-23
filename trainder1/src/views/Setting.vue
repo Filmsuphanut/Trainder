@@ -361,8 +361,10 @@ export default {
       if (this.$refs.form.validate()) 
       {
         this.loading = true;
-        let user = firebase.auth().currentUser;
-        let uid = firebase.auth().currentUser.uid;
+        //let user = firebase.auth().currentUser;
+        //let uid = firebase.auth().currentUser.uid;
+        let user = this.$store.getters["userData"].data;
+        let uid = user.uid
         console.log("called method");
         let db = firebase.firestore();
         let userRef = db.collection("userData");
@@ -394,13 +396,15 @@ export default {
           })
           .then(() => {
             console.log("update userProfile successfully !!");
-            user.updateProfile({
-              displayName: [
-                this.userData.firstname,
-                this.userData.lastname,
-              ].join(" "),
-            });
-            console.log("update displayname successfully !!");
+
+            // user.updateProfile({
+            //   displayName: [
+            //     this.userData.firstname,
+            //     this.userData.lastname,
+            //   ].join(" "),
+            // });
+            this.update_store(userRef,user);
+            // console.log("update displayname successfully !!");
             this.snacktext = "อัพเดทข้อมูลผู้ใช้เรียบร้อย";
             this.snackbar = true;
             this.loading = false;
@@ -449,15 +453,29 @@ export default {
       this.userData.profilePic = this.altPic;
       this.uploadimage = false;
       console.log(this.uploadimage);
-    }
+    },
+    async update_store(userRef,user){
+
+        let userData = await userRef.where("uid", "==", user.uid).get();
+          userData.forEach((doc) => {
+            let form = {
+              uid: doc.id,
+              data: doc.data(),
+              email: user.email,
+          };
+          this.$store.commit("setUserData", form);
+        })
+    },
+
   },
   async mounted() {
-    let uid = firebase.auth().currentUser.uid;
+    //let uid = firebase.auth().currentUser.uid;
+    let uid = this.$store.getters["userData"].data.uid;
     console.log(uid);
     let db = firebase.firestore();
     let userRef = db.collection("userData");
     let userData = await userRef.where("uid", "==", uid).get();
-    this.userData.email = firebase.auth().currentUser.email;
+    this.userData.email = this.$store.getters["userData"].email;//firebase.auth().currentUser.email;
     userData.forEach((doc) => {
       //console.log(doc.id, '=>', doc.data());
       this.userData.firstname =

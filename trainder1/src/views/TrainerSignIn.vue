@@ -332,7 +332,8 @@ export default {
 
       if (this.$refs.form.validate()) {
         console.log("validate");
-        let user = firebase.auth().currentUser
+        //let user = firebase.auth().currentUser
+        let user = this.$store.getters["userData"].data;
         let uid = user.uid;
 
         let db = firebase.firestore();

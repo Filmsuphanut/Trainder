@@ -16,6 +16,7 @@ import CVDOC from '../views/customCall.vue'
 import UserTable from '../views/UserTable.vue'
 import register2 from '../views/register2.vue'
 import store from "../store/index"
+import Stats from "../views/Stats.vue"
 
 Vue.use(VueRouter)
 
@@ -90,6 +91,11 @@ const routes = [{
         name: 'UserTable',
         component: UserTable
     },
+    {
+        path: '/Stats',
+        name: 'Stats',
+        component: Stats
+    },
     // {
     //   path: '/about',
     //   name: 'About',
@@ -111,12 +117,12 @@ router.beforeEach((to, from, next) => {
     // // console.log(firebase.auth().currentUser)
     //console.log(store.getters["userData"]!=null);
     if (store.getters["userData"]) {
-        
+
         if (to.path == "/") return
         next()
     } else {
 
-        if (to.path != "/" && to.path != "/register" && to.path != "/register/auth" && to.path !="/Trainerregister" && to.path != "/TrainerSignIn")
+        if (to.path != "/" && to.path != "/register" && to.path != "/Trainerregister")
             next("/")
         else
             next()

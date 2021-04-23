@@ -171,15 +171,16 @@ export default {
 
                             this.addTable(user,tableRef)
 
-                        user.updateProfile({
-                            displayName: [
-                            this.userdata.firstname,
-                            this.userdata.lastname,
-                            ].join(" "),
-                        });
+                            user.updateProfile({
+                                displayName: [
+                                this.userdata.firstname,
+                                this.userdata.lastname,
+                                ].join(" "),
+                            });
                         
                         //this.$store.commit("setUid",user.uid)
-                        this.$router.push('/TrainerSignIn')
+                        this.push_store_and_go(userRef,user,'/TrainerSignIn')////////// <----
+                        //this.$router.push('/TrainerSignIn')
 
                     })
                     .catch((error) => {
@@ -219,6 +220,20 @@ export default {
 
             tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
         },
+        async push_store_and_go(userRef,user,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
+
+            let userData = await userRef.where("uid", "==", user.uid).get();
+            userData.forEach((doc) => {
+                let form = {
+                uid: doc.id,
+                data: doc.data(),
+                email: user.email,
+            };
+            this.$store.commit("setUserData", form);
+            })
+            console.log("save successfully !!");
+            this.$router.push(taget)
+        },
 
     },
 
@@ -236,7 +251,7 @@ background-color: rgb(255, 255, 255);
     text-align: center;
      width: 100%;
     height: 100%;
-      box-shadow:
+      box-shadow:1
   /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),

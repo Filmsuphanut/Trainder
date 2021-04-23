@@ -365,7 +365,8 @@ export default {
       if (this.$refs.form.validate()) {
           console.log("function")
         this.loading = true;
-        let user = firebase.auth().currentUser
+        //let user = firebase.auth().currentUser
+        let user = this.$store.getters["userData"].data;
         let uid = user.uid;
 
         console.log("called method");
@@ -474,7 +475,8 @@ export default {
 //// end method
 
   async mounted() {
-    let uid = firebase.auth().currentUser.uid;
+    //let uid = firebase.auth().currentUser.uid;
+    let uid = this.$store.getters["userData"].data.uid;
     console.log(uid);
 
     let db = firebase.firestore();
@@ -482,7 +484,7 @@ export default {
 
     let userData = await userRef.where("uid", "==", uid).get();
 
-    this.userData.email = firebase.auth().currentUser.email;
+    this.userData.email = this.$store.getters["userData"].email//firebase.auth().currentUser.email;
 
     userData.forEach((doc) => {
       //console.log(doc.id, '=>', doc.data());
