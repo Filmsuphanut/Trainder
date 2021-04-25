@@ -293,10 +293,10 @@ import firebase from "firebase";
         for (const oldEvent of allEvent){
           
           console.log('Old = > start : ',oldEvent.start , 'End :', oldEvent.end)
-          if((newEvent_start > oldEvent.start  && newEvent_start < oldEvent.end)
-          || (newEvent_end >oldEvent.start && newEvent_end < oldEvent.end)
-          || (oldEvent.start >newEvent_start&& oldEvent.start < newEvent_end )
-          || (oldEvent.end > newEvent_start && oldEvent.end < newEvent_end)){
+          if((newEvent_start >= oldEvent.start  && newEvent_start <= oldEvent.end)
+          || (newEvent_end >=oldEvent.start && newEvent_end <= oldEvent.end)
+          || (oldEvent.start >=newEvent_start&& oldEvent.start <= newEvent_end )
+          || (oldEvent.end >= newEvent_start && oldEvent.end <= newEvent_end)){
             console.log('%c Collide', 'background: #222 ;color: #bada55')
             return true
           }
