@@ -90,6 +90,7 @@
                 large
                 class="mt-6 pa-10"
                 color="blue lighten-3"
+                to="/Course"
               >
                 <h3>Course Detail</h3>
               </v-btn>
@@ -149,54 +150,10 @@ export default {
     callname() {
       ////หาชื่อ user
 
-      //let user = firebase.auth().currentUser;
       let user = this.$store.getters["userData"];
-
-
-      //console.log(test.data.fullName)
-        
-
-        // var admin = require('firebase-admin');
-        // const uid = user.uid;
-        // console.log(uid)
-
-        // admin
-        // .auth()
-        // .createCustomToken(uid)
-        // .then((customToken) => {
-        //     console.log(customToken)
-
-        // })
-        // .catch((error) => {
-        //     console.log('Error creating custom token:', error);
-        // });
-
-        //vm.commit("setToken",idToken)
-
         return user.data.fullName;
 
-      //else{
 
-      //let token = vm.state.user.token
-      //console.log('else + ' + token)
-
-      // firebase.auth().signInWithCustomToken(token)
-      // .then((userCredential) => {
-      //     // Signed in
-      //     var user = userCredential.user;
-      //     console.log(user)
-      //     return user.displayName
-      //     // ...
-      // })
-      // .catch((error) => {
-      //     var errorCode = error.code;
-      //     var errorMessage = error.message;
-      //     console.log(errorCode,errorMessage)
-      // });
-
-      //}
-
-      //********************************************
     },
 
     logout() {
@@ -216,8 +173,8 @@ export default {
     },
 
     setPrevious() {
-      if (this.$store.state.previous.pre !== "/User") {
-        this.$store.commit("setPreviousPage", "/User");
+      if (this.$store.state.previous.pre !== "/TrainerHome") {
+        this.$store.commit("setPreviousPage", "/TrainerHome");
       }
     },
     createRoom() {
