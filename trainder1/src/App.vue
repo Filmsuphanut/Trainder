@@ -15,10 +15,10 @@
 *{
   box-sizing: border-box !important;
 }
-.col,.row,[class*='col-'],[class*='row-']{
+/* .col,.row,[class*='col-'],[class*='row-']{
   padding: 0 !important;
   margin: 0 !important;
-}
+} */
 
 </style>
 
