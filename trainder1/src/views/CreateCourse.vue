@@ -6,21 +6,44 @@
             <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
         </v-row>
         <br>
-
-
       <table class="tab" border="0">
         <tr>
           <td width="700" height="700px">
             <div class="box">
                 <br>
-                <h2 align="left">สร้างคอร์สออกกำลังกายของคุณ</h2>
+                <h2 align="left">สร้างคอร์สออกกำลังกายของคุณ</h2><br><br>
 
+                <v-form ref="Courseform" @submit.prevent="CourseCreate">  
+                    <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
+                    <v-textarea v-model="CourseData.details" type="text" label="รายละเอียดคอร์ส" :rules="checkdata"></v-textarea>
 
-                <v-form ref="Courseform">
-                    <v-text-field v-model="eventname" type="text" label="ชื่อ Course" :rules="checkdata"></v-text-field>
-                    <v-text-field v-model="eventdetails" type="text" label="รายละเอียด Course" :rules="checkdata"></v-text-field>
-                    <v-text-field v-model="eventstart" type="datetime-local" label="วันเริ่ม Course" ></v-text-field>
-                    <v-text-field v-model="eventend" type="datetime-local" label="วันจบ Course" ></v-text-field>
+                    <v-select
+                      v-model="CourseData.purpose"
+                      :items="[
+                        'ลดน้ำหนัก',
+                        'เพิ่มกล้ามเนื้อ',
+                        'หุ่นที่ดี',
+                        'เพื่อสุขภาพ',]"
+                      label="เป้าหมายของคอร์ส"
+                      :rules="checkdata"
+                    ></v-select>
+
+                    <v-select
+                      v-model="CourseData.genre"
+                      :items="[
+                        'เวทเทรนนิ่ง',
+                        'แอโรบิค',
+                        'ออกกำลังกายทั่วไป',
+                        'โยคะ',
+                        'คาร์ดิโอ',
+                        'อื่นๆ']"
+                      label="ประเภทของคอร์ส"
+                      :rules="checkdata"
+                    ></v-select>
+
+                    <!-- อย่าลืมแก้ วันเริ่ม กับ วันจบ ตรงนี้ด้วย -->
+                    <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" ></v-text-field>
+                    <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" ></v-text-field>
                     <v-btn @click="Table_dia=true">สร้างตาราง</v-btn>
                     <v-btn type="submit" color="primay" class="mr-4" >สร้างคอร์ส</v-btn>
                 </v-form>
@@ -30,11 +53,63 @@
         </tr>
       </table>
 
+
+<!-- table dialog -->
+
+
 <v-dialog v-model="Table_dia" width="1000" height="1000"><v-card>
-
 <table class="tab" border="0"><tr><td width="1400" ><div class="diabox">
+<v-sheet
+      tile
+      height="54"
+      class="d-flex"
+    >
+    
+      <v-btn
+        icon
+        class="ma-2"
+        @click="$refs.calendar.prev()"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
 
-<v-btn @click="addEventDialog=true">เพิ่มกิจกรรม</v-btn>
+      <v-btn         
+        outlined
+        class="ma-2"
+        @click="addEventDialog=true">
+        เพิ่มกิจกรรมใหม่
+      </v-btn>
+
+      <v-toolbar-title outlined
+        class="ma-3">{{ title }}</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <!-- <v-select v-if="type!='day'"
+        v-model="type"
+        :items="types"
+        dense
+        outlined
+        hide-details
+        class="ma-2"
+        label="ตัวเลือกการดู"
+      ></v-select> -->
+
+      <v-btn v-if="type=='day'"
+        outlined
+        class="ma-2"
+        @click="backViewDay">
+        กลับ
+      </v-btn>
+
+      <v-btn
+        icon
+        class="ma-2"
+        @click="$refs.calendar.next()"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
+    </v-sheet>
 
     <v-sheet height="600" width="100%">
       <v-calendar
@@ -49,13 +124,13 @@
         :event-overlap-mode="mode"
         :event-overlap-threshold="30"
         :event-color="getEventColor"
-        @change="getEvents"
+        @change="updateRange"
         @click:event="showEvent"
         @click:more="viewDay"
         @click:date="viewDay"
       ></v-calendar>
-    </v-sheet> 
-    
+    </v-sheet>
+    <!-- $store.state.events -->
  </div></td></tr></table>
 </v-card></v-dialog>
 
@@ -70,10 +145,60 @@
         <p style="font-size:15px;color:red;" v-if="eventstart >= eventend">**วันและเวลาสุดท้ายต้องมากกว่าเริ่มต้น</p>
         <v-text-field v-model="eventcolor" type="color" label="เลือกสีสำหรับกิจกรรมของคุณ" :rules="checkdata"></v-text-field>
         <v-btn type="submit" color="primay" class="mr-4" >สร้างกิจกรรมใหม่</v-btn>
+        <p style="font-size:15px;color:red;" v-if="!((CourseData.start <= this.eventstart) && (eventstart <  this.CourseData.end)
+        && (CourseData.start < this.eventend) && (eventend <  this.CourseData.end))"
+        >**กิจกรรมต้องอยู่ในช่วงเวลาของคอร์สเท่านั้น</p>
       </v-form>
     </v-container>
   </v-card>
 </v-dialog>
+
+
+
+<!-- clickevent -->
+        <v-dialog
+          v-model="selectedOpen"
+          max-width="500"
+        >
+          <v-card
+            color="grey lighten-4"
+            min-width="350px"
+            flat
+          >
+
+          <v-toolbar :color="selectedEvent.color" dark>
+            <v-btn icon @click="deleteEvent(selectedEvent)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        <v-card-text>
+          <br>
+          <v-form v-if="currentlyEditing !== selectedEvent.id">
+             {{selectedEvent.details}}
+          </v-form>
+
+          <v-form v-else>
+            <v-text-field v-model="selectedEvent.name" type="text" label="name"></v-text-field>
+            <textarea 
+              v-model="selectedEvent.details" type="text" style="width: 100%" :min-height="100" placeholder="add note">
+            </textarea>
+          </v-form>
+
+        </v-card-text>
+
+            
+        <v-card-actions>
+          <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">แก้ไขกิจกรรม</v-btn>
+          <!-- <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">บันทึก</v-btn> -->
+          <v-btn text color="secondary" @click="selectedOpen = false,currentlyEditing= null">ปิด</v-btn>
+        </v-card-actions>
+
+          </v-card>
+        </v-dialog>
+
+
 
     </div>
   </v-container>
@@ -84,96 +209,268 @@ export default {
     name:"CreateCourse",
     data(){
         return{
-            CourseData:{id:null,name:null,},
+            CourseData:{id:null,name:null,details:null,purpose:null,genre:null
+            ,start:new Date().toISOString().substr(0, 10)
+            ,end:new Date().toISOString().substr(0, 10)},
+            
+            ////dialog 
             Table_dia:false,
-            type: 'month',
-            types: ['month', 'week', 'day', '4day'],
-            mode: 'stack',
-            modes: ['stack', 'column'],
-            weekday: [0, 1, 2, 3, 4, 5, 6],
-            weekdays: [
-                { text: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
-                { text: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
-                { text: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
-                { text: 'Mon, Wed, Fri', value: [1, 3, 5] },
-            ],
-            value: '',
-            events: [],
-            colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-            names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
             addEventDialog:false,
+
+            ///////////////table
+            type: 'month',
+            pre_type:'month',
+            types: ['month', 'week'],
+            mode: 'stack',
+            value: new Date().toISOString().substr(0, 10),
+            today: new Date().toISOString().substr(0, 10),
+            events: [],
+            start:null,
+            end:null,
+
+
+            ////////// event
+            userDocid:null,
+            eventname: null,
+            eventstart: new Date().toISOString().substr(0, 16),
+            eventdetails: null,
+            eventcolor:null,
+            eventend: new Date().toISOString().substr(0, 16),
+            addEventDialog:false,
+
+            selectedEvent: {},
+            selectedElement: null,
+            selectedOpen: false,
+            currentlyEditing: null,
+
+            pre_eventname:null,
+            pre_eventdetails:null,
+
+////////////////// rule
+          checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+
         }
     },
     methods:{
-      getEvents ({ start, end }) {
-        const events = []
+/////////////////////////////////////////// table
+      // async getEvents(){
 
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
+      //   this.fetchEvent();
+      //   //let user = firebase.auth().currentUser;
+      //   let user = this.$store.getters["userData"].data;
+      //   let uid = user.uid;
+      //   let db = firebase.firestore();
+      //   let tableRef = db.collection("Table");
+      //   let userData = await tableRef.where("uid", "==", uid).get();
 
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
+      //   userData.forEach(doc => {
+      //     this.userDocid = doc.id;
+      //     //console.log(doc.id, '=>', doc.data());
+      //   });
 
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
-          })
+      //   let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
+
+      //   userEvent.forEach(doc => {
+      //       console.log(doc.id, " => ", doc.data());
+      //       if(JSON.stringify(doc.data()) != "{}"){
+
+      //         let EventData = doc.data()
+      //         EventData.id = doc.id
+      //         this.events.push(EventData);
+      //       }
+      //   });
+
+      // },
+
+      addEvent(){/////
+
+          if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend) 
+          && (this.CourseData.start <= this.eventstart) && (this.eventstart <  this.CourseData.end)
+          && (this.CourseData.start < this.eventend) && (this.eventend <  this.CourseData.end)
+          ) {//+"T00:00"
+
+            this.addEventDialog = false
+            let st = this.eventstart;
+            let ed = this.eventend;
+
+            if( (this.eventstart.substr(11, 16) == "00:00") && (this.eventend.substr(11, 16) == "00:00") && (this.eventstart.substr(11, 16) == this.eventend.substr(11, 16)) ) {
+              st = this.eventstart.substr(11, 16)!="00:00"? this.eventstart:this.eventstart.substr(0, 10);
+              ed = this.eventend.substr(11, 16)!="00:00"? this.eventend:this.eventend.substr(0, 10);
+            }else if((this.eventend.substr(11, 16) == "00:00")){
+              ed = this.eventend.substr(0, 15) + "1";
+            }
+            
+            let eventObj = {id:this.makeid(20),name:this.eventname,start:st,end:ed,details:this.eventdetails,color:this.eventcolor};
+
+            this.events.push(eventObj);
+
+            this.eventname = null;
+            //this.eventstart = new Date().toISOString().substr(0, 16);
+            this.eventdetails = null;
+            //this.eventend  = new Date().toISOString().substr(0, 16);
+            this.eventcolor = null;
+
+          }else{
+            
+            console.log("มีบางอย่างไม่ถูกต้อง...");
+          }
+      },
+      showEvent ({ nativeEvent, event }) {
+        const open = () => {
+          this.selectedEvent = event;
+          this.selectedElement = nativeEvent.target;
+          setTimeout(() => this.selectedOpen = true, 10)
+        }
+        
+        if (this.selectedOpen) {
+          this.selectedOpen = false;
+          setTimeout(open, 10)
+        } else {
+          open()
         }
 
-        this.events = events
+        nativeEvent.stopPropagation()
       },
+
+      editEvent(ev){
+        this.currentlyEditing = ev.id;
+      },
+
+      deleteEvent(ev){
+        
+        for (let key in this.events){
+          if(this.events[key].id == ev.id){
+            console.log("hello")
+            this.events.splice(key, 1);
+            break;
+          }
+        }
+
+
+        this.selectedOpen = false;
+
+        console.log('delete successfully');
+      },
+
+
+      fetchEvent(){
+        this.events = [];
+      },
+
       getEventColor (event) {
         return event.color
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
+      viewDay ({ date }) {
+        this.value = date;
+        this.pre_type = this.type;
+        this.type = 'day';
+        this.eventstart = new Date(date).toISOString().substr(0, 16);
+        this.eventend = new Date(date).toISOString().substr(0, 16)
+
+      },
+      backViewDay(){
+        this.value = this.today;
+        this.type = this.pre_type;
+      },
+
+      updateRange ({ start, end }) {
+        this.start = start
+        this.end = end
+      },
+      nth (d) {
+        return d > 3 && d < 21
+          ? 'th'
+          : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
+      },
+
+      /////////////////// course create
 
 
 
+      async CourseCreate(){
+
+        console.log("create course function");
+
+      },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        back() {
-            let previous = this.$store.state.previous.pre;
-            this.$router.push(previous);
-        },
-        makeid(length) {
-                let result = [];
-                let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                let charactersLength = characters.length;
-                for ( let i = 0; i < length; i++ ) {
-                result.push(characters.charAt(Math.floor(Math.random() * 
-                charactersLength)));
-            }
-        return result.join('');
-        },
+///////////////////////////// default method
+      back() {
+          let previous = this.$store.state.previous.pre;
+          this.$router.push(previous);
+      },
+      makeid(length) {
+              let result = [];
+              let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+              let charactersLength = characters.length;
+              for ( let i = 0; i < length; i++ ) {
+              result.push(characters.charAt(Math.floor(Math.random() * 
+              charactersLength)));
+          }
+      return result.join('');
+      },
     },
+
+
+
+
+    ///////////////////////// When create
     mounted(){
         //console.log(this.makeid(20));
-    }
+        //this.$refs.calendar.checkChange()
+
+    },
+    computed: {
+      title () {
+
+        const { start, end } = this
+        if (!start || !end) {
+          
+          return ''
+        }
+      
+        const startMonth = this.monthFormatter(start)
+        const endMonth = this.monthFormatter(end)
+        const suffixMonth = startMonth === endMonth ? '' : endMonth
+
+        const startYear = start.year
+        const endYear = end.year
+        const suffixYear = startYear === endYear ? '' : endYear
+
+        const startDay = start.day //+ this.nth(start.day)
+        const endDay = end.day //+ this.nth(end.day)
+
+        switch (this.type) {
+          case 'month':
+            return `${startMonth} ${startYear}`
+          case 'week':
+            if((this.monthFormatter(start)==this.monthFormatter(end)) && (start.year==end.year)){
+              return `${startDay} - ${endDay} ${startMonth}  ${startYear}`
+            }else if((this.monthFormatter(start)!=this.monthFormatter(end)) && (start.year==end.year)){
+              return `${startDay} ${startMonth} ${startYear} - ${endDay} ${suffixMonth} ${startYear}` 
+            }else{
+              return `${startDay} ${startMonth} ${startYear} - ${endDay} ${suffixMonth} ${suffixYear}`
+            }
+
+            //return `${startDay} ${startMonth}  ${startYear} - ${endDay} ${suffixMonth} ${suffixYear}`
+
+            
+          case 'day':
+            return `${startDay} ${startMonth}  ${startYear}`
+        }
+        return ''
+      },
+      monthFormatter () {
+        return this.$refs.calendar.getFormatter({
+          timeZone: 'UTC', month: 'long',
+        })
+      },
+    },
+
+
 
 }
 </script>

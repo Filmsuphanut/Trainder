@@ -35,22 +35,24 @@ export default {
             let user = this.$store.getters["userData"].data; 
             let db = firebase.firestore()
             let courseRef = db.collection("Course");
-            let trainerCourse = await courseRef.where("uid","==",user.uid).get();
-            let CourseDocid;
+            let trainerCourse = await courseRef.where("creator","==",user.uid).get();
+            //let CourseDocid;
 
             trainerCourse.forEach(doc => {
-                CourseDocid = doc.id;
+                this.list.push(doc.data())
+                console.log(doc.id,doc.data())
+               // CourseDocid = doc.id;
             })
 
-            let CourseList = await courseRef.doc(CourseDocid).collection("List").get();
-            console.log(CourseList)
+            // let CourseList = await courseRef.doc(CourseDocid).collection("List").get();
+            // console.log(CourseList)
 
-            CourseList.forEach(doc => {
-               console.log(doc.id," => ",doc.data())
-               if(JSON.stringify(doc.data()) != "{}"){
-                   this.list.push(doc.data())
-               }
-            })
+            // CourseList.forEach(doc => {
+            //    console.log(doc.id," => ",doc.data())
+            //    if(JSON.stringify(doc.data()) != "{}"){
+            //        this.list.push(doc.data())
+            //    }
+            // })
 
         },
 

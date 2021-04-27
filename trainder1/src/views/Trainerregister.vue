@@ -172,12 +172,12 @@ export default {
                             this.addTable(user,tableRef);
 
                             //addCourse
-                            let courseRef = db.collection("Course");
-                            courseRef.add({
-                                uid: user.uid,
-                            });
+                            // let courseRef = db.collection("Course");
+                            // courseRef.add({
+                            //     uid: user.uid,
+                            // });
 
-                            this.addCourse(user,courseRef);
+                            //this.addCourse(user,courseRef);
 
                             user.updateProfile({
                                 displayName: [
@@ -228,20 +228,20 @@ export default {
 
             tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////
         },
-            async addCourse(user,courseRef){
+        //     async addCourse(user,courseRef){
 
-            let userData = await courseRef.where("uid", "==", user.uid).get();
+        //     let userData = await courseRef.where("uid", "==", user.uid).get();
 
-            let docid = null;
+        //     let docid = null;
 
-            userData.forEach(doc => {
-                docid = doc.id;
-                console.log(doc.id, '=>', doc.data());
-            });
+        //     userData.forEach(doc => {
+        //         docid = doc.id;
+        //         console.log(doc.id, '=>', doc.data());
+        //     });
 
-            courseRef.doc(docid).collection('List').add({}); /////////////////////////////////
+        //     courseRef.doc(docid).collection('List').add({}); /////////////////////////////////
             
-        },
+        // },
         async push_store_and_go(userRef,user,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
 
             let userData = await userRef.where("uid", "==", user.uid).get();

@@ -30,7 +30,7 @@ export default new Vuex.Store({
         },
         setUser(state, value) {
             Vue.set(state, "user", value)
-        }
+        },
     },
     actions: {
         //methods
