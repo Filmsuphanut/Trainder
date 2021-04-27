@@ -171,7 +171,7 @@
                         <template v-for="(inp, index) in 3">
                           <v-file-input 
                             :key="index"
-                            :rules="index==0? checkimage:rules"
+                            :rules="index==0 ? checkimage:checkimage_size_only"
                             accept="image/png, image/jpeg, image/jpg"
                             :placeholder="'Certificate ' + (index==0?' (required)':' (optional)')"
                             filled
@@ -236,6 +236,23 @@
 </template>
 
 <script>
+
+function personalID_check(id){
+  let i=0, sum=0;
+  for(i=0, sum=0; i < 12; i++)
+    sum += parseFloat(id.charAt(i)) * (13 - i);
+    if((11 - sum % 11) % 10 != parseFloat(id.charAt(12))){
+      // console.log(sum);
+      // console.log((11 - sum % 11) % 10);
+      // console.log(id.charAt(12));
+      console.log("wrong personal id!");
+      return false;
+    }
+    console.log("this is personal id!");
+    return true;
+  
+}
+
 //import axios from 'axios'
 import firebase from "firebase";
 
@@ -273,15 +290,23 @@ export default {
         (value) =>
           (value &&
             value.length == 13 &&
-            typeof parseInt(value) == "number" &&
-            parseInt(value) >= 0) ||
+            value.match(/^[0-9]+$/) &&
+          personalID_check(value)) ||
           "หมายเลขบัตรประชาชนต้องเป็นตัวเลข และ เท่ากับ 13 ตัว",
       ],
 
       AddressRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
-          (value && value.length <= 100) || "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร",
+          (value && value.length <= 100 && 
+          (!value.match("\'") &&
+           !value.match("\"") &&
+          !value.match("#") &&
+          !value.match("AND") &&
+          !value.match("OR") &&
+          !value.match("—") &&
+          !value.match(";"))) ||
+          "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร และ ไม่มีอัขระพิเศษดังนี้ (\' \" # AND OR — ;)",
       ],
 
       bankaccountNumberRule: [
@@ -302,9 +327,12 @@ export default {
         (value) =>
           (value &&
             value.length == 10 &&
-            typeof parseInt(value) == "number" &&
-            parseInt(value) >= 0) ||
-          "เบอร์โทรศัพท์ต้องเป็นตัวเลข และ มี 10 หลัก",
+            value.match(/^[0-9]+$/) &&
+            (value[0] == '0' && 
+            value[1] == '6' || 
+            value[1] == '8' ||
+            value[1] == '9')) ||
+          "เบอร์โทรศัพท์มือถือต้องมีเลขขึ้นต้นเป็น 06, 08, 09 และ มี 10 หลัก",
       ],
 
       checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
@@ -321,7 +349,8 @@ export default {
       picture: [null, null, null],
       imageData: [null, null, null],
       checkurl:[],
-      checkimage:[value => (value && (value.size < 4000000))  || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป และ ไฟล์ไม่เกิน 4 mb'] ,
+      checkimage:[value => (value && (value.size /1024 /1024 < 4))  || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป และ ไฟล์ไม่เกิน 4 MB'] ,
+      checkimage_size_only : [value => !value || (value.size /1024 /1024 < 4) || 'คุณต้องใส่รูปภาพอย่างน้อย 1 รูป และ ไฟล์ไม่เกิน 4 MB'],
     };
   },
   methods: {
@@ -421,6 +450,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style scoped>
