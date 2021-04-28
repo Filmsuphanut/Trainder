@@ -187,6 +187,17 @@
     </v-menu>
 
     <!--- v card -->
+
+<!-- snack bar -->
+    <v-snackbar v-model="snackbar" :timeout="2000">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+
   </v-container>
 </template>
 
@@ -230,6 +241,7 @@ import firebase from "firebase";
 
 ////////////////// rule
           checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+          snackbar:false,
 
         }
     },
@@ -337,7 +349,9 @@ import firebase from "firebase";
               creator : Creator 
             });
             }else {
-              //  Notication to user 
+              //  Notication to user
+              // nice ! ! !
+              this.snackbar = true;
               console.log('%c Get collision', 'background: #222 ;color: #bada55')
             }
             
