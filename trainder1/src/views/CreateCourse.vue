@@ -15,7 +15,7 @@
 
                 <v-form ref="Courseform" @submit.prevent="CourseCreate">  
                     <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
-                    <v-textarea v-model="CourseData.details" type="text" label="รายละเอียดคอร์ส" :rules="checkdata"></v-textarea>
+                    <v-textarea v-model="CourseData.details" type="text" label="รายละเอียดคอร์ส" ></v-textarea>
 
                     <v-select
                       v-model="CourseData.purpose"
@@ -53,7 +53,7 @@
                     <p align="left" style="font-size:12px;color:gray;">**หากต้องการแก้ไขวันเริ่มและจบคอร์ส กรุณาล้างตารางเดิมก่อน</p>
                     <br><br>
                     <v-row justify="end">
-                    <v-btn type="submit" color="primay" class="mr-4" :disabled="events.length == 0" >สร้างคอร์ส</v-btn>
+                    <v-btn type="submit" color="primay" class="mr-4" :disabled="events.length == 0" :loading="loading" >สร้างคอร์ส</v-btn>
                     </v-row>
                     
                 </v-form>
@@ -90,20 +90,17 @@
         เพิ่มกิจกรรมใหม่
       </v-btn>
 
+      <v-btn v-if="type!='day'"
+        outlined
+        class="ma-2"
+        @click="events=[]">
+        ล้างกิจกรรมทั้งหมด
+      </v-btn>
+
       <v-toolbar-title outlined
         class="ma-3">{{ title }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <!-- <v-select v-if="type!='day'"
-        v-model="type"
-        :items="types"
-        dense
-        outlined
-        hide-details
-        class="ma-2"
-        label="ตัวเลือกการดู"
-      ></v-select> -->
 
       <v-btn v-if="type=='day'"
         outlined
@@ -158,6 +155,8 @@
         <p style="font-size:15px;color:red;" v-if="!((CourseData.start <= this.eventstart) && (eventstart <  this.CourseData.end)
         && (CourseData.start < this.eventend) && (eventend <  this.CourseData.end))"
         >**กิจกรรมต้องอยู่ในช่วงเวลาของคอร์สเท่านั้น</p>
+
+        
       </v-form>
     </v-container>
   </v-card>
@@ -207,14 +206,32 @@
 
           </v-card>
         </v-dialog>
-
-
-
     </div>
+
+
+    <v-snackbar v-model="snackbar" :timeout="2000">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <v-snackbar v-model="snacksuccess" :timeout="2000">เพิ่มคอร์สใหม่เรียบร้อย กรุณาตรวจสอบที่หน้าคอร์สของท่าน
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
 <script>
+import firebase from 'firebase';
+
+
 export default {
     name:"CreateCourse",
     data(){
@@ -258,20 +275,23 @@ export default {
 
 ////////////////// rule
           checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+          snackbar:false,
+          snacksuccess:false,
+          loading:false
 
         }
     },
     methods:{
 /////////////////////////////////////////// table
 
-      addEvent(){///// อย่าลืมมาเพิ่มโค้ดเช็คชนด้วย
+      async addEvent(){
 
           if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend) 
           && (this.CourseData.start <= this.eventstart) && (this.eventstart <  this.CourseData.end)
           && (this.CourseData.start < this.eventend) && (this.eventend <  this.CourseData.end)
           ) {//+"T00:00"
 
-            this.addEventDialog = false
+            
             let st = this.eventstart;
             let ed = this.eventend;
 
@@ -282,9 +302,17 @@ export default {
               ed = this.eventend.substr(0, 15) + "1";
             }
             
-            let eventObj = {id:this.makeid(20),name:this.eventname,start:st,end:ed,details:this.eventdetails,color:this.eventcolor};
 
-            this.events.push(eventObj);
+            var collision = await this.isCollision(this.eventstart,this.eventend);
+
+            if(!collision){
+              this.addEventDialog = false
+              let eventObj = {id:this.makeid(20),name:this.eventname,start:st,end:ed,details:this.eventdetails,color:this.eventcolor};
+              this.events.push(eventObj);
+            }else{
+              console.log("is collide ! ! !");
+              this.snackbar = true;
+            }
 
             this.eventname = null;
             //this.eventstart = new Date().toISOString().substr(0, 16);
@@ -319,7 +347,6 @@ export default {
       },
 
       deleteEvent(ev){
-        
         for (let key in this.events){
           if(this.events[key].id == ev.id){
             console.log("hello")
@@ -327,17 +354,30 @@ export default {
             break;
           }
         }
-
-
         this.selectedOpen = false;
-
         console.log('delete successfully');
       },
 
+      async isCollision(newEvent_start , newEvent_end){
 
-      fetchEvent(){
-        this.events = [];
+        let allEvent = this.events;
+
+        for (const oldEvent of allEvent){
+          
+          console.log('Old = > start : ',oldEvent.start , 'End :', oldEvent.end)
+          if((newEvent_start >= oldEvent.start  && newEvent_start <= oldEvent.end)
+          || (newEvent_end >=oldEvent.start && newEvent_end <= oldEvent.end)
+          || (oldEvent.start >=newEvent_start&& oldEvent.start <= newEvent_end )
+          || (oldEvent.end >= newEvent_start && oldEvent.end <= newEvent_end)){
+            console.log('%c Collide', 'background: #222 ;color: #bada55')
+            return true
+          }
+        }
+        return false
+
       },
+
+
 
       getEventColor (event) {
         return event.color
@@ -373,13 +413,77 @@ export default {
 
 
       async CourseCreate(){
+        this.loading = true;
 
-        console.log("create course function");
+        if(this.$refs.Courseform.validate()){
+            console.log("create course function");
 
+            let user = this.$store.getters["userData"].data;
+            let db = firebase.firestore();
+            let courseRef = db.collection("Course");
+
+            let course_docid; 
+            this.CourseData.id = this.makeid(20);
+
+            courseRef.add({
+              creator:user.uid,
+              description:this.CourseData.details,
+              genre:this.CourseData.genre,
+              id: this.CourseData.id,
+              name: this.CourseData.name,
+              purpose: this.CourseData.purpose,
+              member:[""],
+            })
+              
+              let courseData = await courseRef.where("id","==",this.CourseData.id).get();
+
+              courseData.forEach(doc => {
+                course_docid = doc.id;
+              });
+
+              let eventRef = courseRef.doc(course_docid).collection("Event");
+
+              eventRef.add({}).then(() => {
+
+                for(let key in this.events){
+                  eventRef.add({
+                    name: this.events[key].name,
+                    start:this.events[key].start,
+                    end:this.events[key].end,
+                    details: this.events[key].details,       
+                    color: this.events[key].color,
+                    creator : user.uid,
+                  });
+                }
+
+              this.snacksuccess = true;
+              //this.back();
+              this.ClearEvent();
+              this.loading = false;
+              })
+
+
+        }else{
+          this.loading = false;
+        }
+        
+
+      },
+      ClearEvent(){
+        this.events = [];
+        this.CourseData = {id:null,name:null,details:null,purpose:null,genre:null
+                          ,start:new Date().toISOString().substr(0, 10)
+                          ,end:new Date().toISOString().substr(0, 10)};
+
+        this.eventstart= new Date().toISOString().substr(0, 16);
+        this.eventdetails= null;
+        this.eventcolor=null;
+        this.eventend= new Date().toISOString().substr(0, 16);
       },
 
 
 ///////////////////////////// default method
+
       back() {
           let previous = this.$store.state.previous.pre;
           this.$router.push(previous);

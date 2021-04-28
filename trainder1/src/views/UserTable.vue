@@ -300,6 +300,7 @@ import firebase from "firebase";
               allEvent.push(EventData)
             }
         }); 
+        
         console.log('newStart :', newEvent_start , 'new Event end :', newEvent_end)
         console.log('%c In loop check collide! ', 'background: #222; color: #bada55');
         for (const oldEvent of allEvent){
@@ -322,7 +323,7 @@ import firebase from "firebase";
       async addEvent(){///// บัค start กี่โมงก็ได้แต่ end เที่ยงคืน = ไม่ขึ้น
           
           if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend) ) {
-            this.addEventDialog = false        
+                    
         
             let db = firebase.firestore();
             let tableRef = db.collection("Table");
@@ -336,8 +337,10 @@ import firebase from "firebase";
             }else if((this.eventend.substr(11, 16) == "00:00")){
               ed = this.eventend.substr(0, 15) + "1";
             }
+
             var collision = await this.isCollision(this.eventstart,this.eventend)
             console.log('It is >>>>> ' + collision)
+
             if(!collision){
               
               tableRef.doc(this.userDocid).collection("Event").add({
@@ -348,9 +351,13 @@ import firebase from "firebase";
               color: this.eventcolor,
               creator : Creator 
             });
+
+            this.addEventDialog = false
+
             }else {
               //  Notication to user
               // nice ! ! !
+              
               this.snackbar = true;
               console.log('%c Get collision', 'background: #222 ;color: #bada55')
             }
