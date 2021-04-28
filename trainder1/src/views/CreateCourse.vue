@@ -155,8 +155,6 @@
         <p style="font-size:15px;color:red;" v-if="!((CourseData.start <= this.eventstart) && (eventstart <  this.CourseData.end)
         && (CourseData.start < this.eventend) && (eventend <  this.CourseData.end))"
         >**กิจกรรมต้องอยู่ในช่วงเวลาของคอร์สเท่านั้น</p>
-
-        
       </v-form>
     </v-container>
   </v-card>
