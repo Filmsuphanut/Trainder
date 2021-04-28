@@ -41,11 +41,21 @@
                       :rules="checkdata"
                     ></v-select>
 
-                    <!-- อย่าลืมแก้ วันเริ่ม กับ วันจบ ตรงนี้ด้วย -->
-                    <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" ></v-text-field>
-                    <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" ></v-text-field>
-                    <v-btn @click="Table_dia=true">สร้างตาราง</v-btn>
-                    <v-btn type="submit" color="primay" class="mr-4" >สร้างคอร์ส</v-btn>
+
+                    <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" :disabled="events.length != 0"></v-text-field>
+                    <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" :disabled="events.length != 0"></v-text-field>
+                    <p align="left" style="font-size:15px;color:red;" v-if="CourseData.start >= CourseData.end">**วันเริ่มคอร์สต้องน้อยกว่าวันจบคอร์ส</p>
+                    <v-text-field label="สร้างตารางออกกำลังกายที่นี่" readonly prepend-inner-icon="mdi-calendar" 
+                    :disabled="CourseData.start >= CourseData.end" @click="Table_dia=true"
+                    :value="events.length == 0? '':'กดที่นี่เพื่อแก้ไขตารางกิจกรรม'"
+                    ></v-text-field>
+
+                    <p align="left" style="font-size:12px;color:gray;">**หากต้องการแก้ไขวันเริ่มและจบคอร์ส กรุณาล้างตารางเดิมก่อน</p>
+                    <br><br>
+                    <v-row justify="end">
+                    <v-btn type="submit" color="primay" class="mr-4" :disabled="events.length == 0" >สร้างคอร์ส</v-btn>
+                    </v-row>
+                    
                 </v-form>
 
             </div>
@@ -253,36 +263,8 @@ export default {
     },
     methods:{
 /////////////////////////////////////////// table
-      // async getEvents(){
 
-      //   this.fetchEvent();
-      //   //let user = firebase.auth().currentUser;
-      //   let user = this.$store.getters["userData"].data;
-      //   let uid = user.uid;
-      //   let db = firebase.firestore();
-      //   let tableRef = db.collection("Table");
-      //   let userData = await tableRef.where("uid", "==", uid).get();
-
-      //   userData.forEach(doc => {
-      //     this.userDocid = doc.id;
-      //     //console.log(doc.id, '=>', doc.data());
-      //   });
-
-      //   let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
-
-      //   userEvent.forEach(doc => {
-      //       console.log(doc.id, " => ", doc.data());
-      //       if(JSON.stringify(doc.data()) != "{}"){
-
-      //         let EventData = doc.data()
-      //         EventData.id = doc.id
-      //         this.events.push(EventData);
-      //       }
-      //   });
-
-      // },
-
-      addEvent(){/////
+      addEvent(){///// อย่าลืมมาเพิ่มโค้ดเช็คชนด้วย
 
           if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend) 
           && (this.CourseData.start <= this.eventstart) && (this.eventstart <  this.CourseData.end)
