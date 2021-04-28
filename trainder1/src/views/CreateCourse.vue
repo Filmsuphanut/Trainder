@@ -432,6 +432,8 @@ export default {
               id: this.CourseData.id,
               name: this.CourseData.name,
               purpose: this.CourseData.purpose,
+              start:this.CourseData.start,
+              end:this.CourseData.end,
               member:[""],
             })
               

@@ -7,9 +7,12 @@
     <br><br>
 
     <table border="1">
-    <tr><td>ชื่อคอร์ส</td><td></td></tr>
+    <tr><td>ชื่อคอร์ส</td><td>รายละเอียด</td><td>วันเริ่มคอร์ส</td><td>วันจบคอร์ส</td><td>ประเภทของคอร์ส</td><td>ความสนใจ</td></tr>
     <tr v-for="course in list" :key="course.id" border="1">
-        <td>{{course.name}}</td><td><v-btn @click="Router_EditCourse(course.id)">ดูรายละเอียด</v-btn></td>
+        <td>{{course.name}}</td><td>{{course.description}}</td>
+        <td>{{course.start}}</td><td>{{course.end}}</td>
+        <td>{{course.genre}}</td><td>{{course.purpose}}</td>
+        <td><v-btn @click="Router_EditCourse(course.id)">ดูรายละเอียด</v-btn></td>
     </tr>
     </table>
 
