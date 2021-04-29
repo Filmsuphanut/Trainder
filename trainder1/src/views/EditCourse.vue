@@ -136,7 +136,7 @@ export default {
     
         ///////////////////////////table
         type: "month",
-        pre_type: "month",
+        //pre_type: "month",
         types: ["month", "week"],
         mode: "stack",
         value: new Date().toISOString().substr(0, 10),
@@ -252,14 +252,15 @@ export default {
     },
     viewDay({ date }) {
       this.value = date;
-      this.pre_type = this.type;
+      //this.pre_type = this.type;
       this.type = "day";
       this.eventstart = new Date(date).toISOString().substr(0, 16);
       this.eventend = new Date(date).toISOString().substr(0, 16);
     },
     backViewDay() {
       this.value = this.today;
-      this.type = this.pre_type;
+      //this.type = this.pre_type;
+      this.type = 'month';
     },
 
     updateRange({ start, end }) {

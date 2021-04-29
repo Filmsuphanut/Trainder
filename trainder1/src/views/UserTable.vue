@@ -448,7 +448,7 @@ import firebase from "firebase";
       },
       viewDay ({ date }) {
         this.value = date;
-        this.pre_type = this.type;
+        //this.pre_type = this.type;
         this.type = 'day';
         this.eventstart = new Date(date).toISOString().substr(0, 16);
         this.eventend = new Date(date).toISOString().substr(0, 16)
@@ -456,7 +456,7 @@ import firebase from "firebase";
       },
       backViewDay(){
         this.value = this.today;
-        this.type = this.pre_type;
+        this.type = 'month';
       },
       setToday () {
         this.value = this.today;
