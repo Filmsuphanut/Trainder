@@ -173,16 +173,17 @@
             color="secondary"
             @click="
               (selectedOpen = false),
-                (currentlyEditing = null),
-                (selectedEvent.name = pre_eventname),
-                (selectedEvent.details = pre_eventdetails),
-                (pre_eventname = null),
-                (pre_eventdetails = null)
-            "
-            >ปิด</v-btn
-          >
+              (currentlyEditing = null),
+              (selectedEvent.name = pre_eventname),
+              (selectedEvent.details = pre_eventdetails)"
+            >ปิด</v-btn>
         </v-card-actions>
-        <!--บัคนิดหน่อย -->
+
+        <!--บัคนิดหน่อย 
+        เอาส่วนนี้ออกเพราะเกิดบัค
+        (pre_eventname = null),
+        (pre_eventdetails = null)-->
+
       </v-card>
     </v-menu>
 
@@ -388,6 +389,8 @@ import firebase from "firebase";
         const open = () => {
           this.selectedEvent = event;
           this.selectedElement = nativeEvent.target;
+          this.pre_eventname = event.name;
+          this.pre_eventdetails = event.details;
           setTimeout(() => this.selectedOpen = true, 10)
         }
         
