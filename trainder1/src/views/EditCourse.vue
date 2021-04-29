@@ -13,69 +13,39 @@
           <td width="600" height="700px">
               <div class="box">
         <br>
-        <h3 align="left">แก้ไขคอร์สของคุณ</h3><br><br>
+        <h3 align="left">รายละเอียดคอร์สของคุณ</h3><br><br>
 
         <v-form ref="Courseform" @submit.prevent="updateCourse">
-          <v-text-field
-            v-model="CourseData.name"
-            type="text"
-            label="ชื่อคอร์ส"
-            :rules="checkdata"
-          ></v-text-field>
-          <v-textarea
-            v-model="CourseData.details"
-            type="text"
-            label="รายละเอียดคอร์ส"
-          ></v-textarea>
+          <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
+          <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส"></v-textarea>
 
-          <v-select
-            v-model="CourseData.purpose"
-            :items="[
-              'ลดน้ำหนัก',
+          <v-select v-model="CourseData.purpose"
+            :items="['ลดน้ำหนัก',
               'เพิ่มกล้ามเนื้อ',
               'หุ่นที่ดี',
-              'เพื่อสุขภาพ',
-            ]"
+              'เพื่อสุขภาพ',]"
             label="เป้าหมายของคอร์ส"
             :rules="checkdata"
           ></v-select>
 
-          <v-select
-            v-model="CourseData.genre"
-            :items="[
+          <v-select v-model="CourseData.genre"
+             :items="[
               'เวทเทรนนิ่ง',
               'แอโรบิค',
               'ออกกำลังกายทั่วไป',
               'โยคะ',
               'คาร์ดิโอ',
-              'อื่นๆ',
-            ]"
+              'อื่นๆ',]"
             label="ประเภทของคอร์ส"
             :rules="checkdata"
           ></v-select>
 
-          <v-text-field
-            v-model="CourseData.start"
-            type="date"
-            label="วันเริ่มคอร์ส"
-            disabled
-          ></v-text-field>
-          <v-text-field
-            v-model="CourseData.end"
-            type="date"
-            label="วันจบคอร์ส"
-            disabled
-          ></v-text-field>
+          <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" disabled></v-text-field>
+          <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" disabled></v-text-field>
 
           <br><br>
           <v-row justify="end">
-            <v-btn
-              type="submit"
-              color="primay"
-              class="mr-4"
-              :loading="loading"
-              >อัพเดทข้อมูลคอร์ส</v-btn
-            >
+            <v-btn type="submit" color="primay" class="mr-4" :loading="loading">อัพเดทข้อมูลคอร์ส</v-btn>
           </v-row>
         </v-form>
 </div></td></tr></table>
@@ -84,19 +54,17 @@
         <br><br>
         <!-- course table -->
         <v-sheet tile height="54" class="d-flex">
+          <v-toolbar-title outlined class="ma-1">ตารางออกกำลังกายใน Course ของคุณ</v-toolbar-title></v-sheet>
+        <v-sheet tile height="54" class="d-flex">
           <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
           <v-toolbar-title outlined class="ma-3">{{ title }}</v-toolbar-title>
+
+
           <v-spacer></v-spacer>
-          <v-btn
-            v-if="type == 'day'"
-            outlined
-            class="ma-2"
-            @click="backViewDay"
-          >
-            กลับ
-          </v-btn>
+
+          <v-btn v-if="type == 'day'" outlined class="ma-2" @click="backViewDay">กลับ</v-btn>
           <v-btn icon class="ma-2" @click="$refs.calendar.next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
@@ -121,6 +89,8 @@
             @click:date="viewDay"
           ></v-calendar>
         </v-sheet>
+
+
       </div>
     </div>
 
@@ -139,8 +109,6 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-
-
 
 <!-- snackbar -->
     <v-snackbar v-model="snackupdate" :timeout="2000">อัพเดทข้อมูลคอร์สเรียบร้อย
@@ -164,6 +132,7 @@ export default {
     return {
     ////////////course
         CourseData:null,
+        courseid:null,
     
         ///////////////////////////table
         type: "month",
@@ -231,8 +200,26 @@ export default {
 
         this.loading = true;
         if(this.$refs.Courseform.validate()){
-            this.snackupdate = true;
-            this.loading = false;
+
+            let db = firebase.firestore()
+            let courseRef = db.collection("Course");
+            let trianerCourse = await courseRef.where("id","==",this.courseid).get();
+            let course_docid;
+
+            trianerCourse.forEach(doc => {
+              course_docid = doc.id;
+            })
+
+            courseRef.doc(course_docid).update({
+              name:this.CourseData.name,
+              description:this.CourseData.description,
+              genre:this.CourseData.genre,
+              purpose:this.CourseData.purpose,
+            }).then(() =>{
+              this.snackupdate = true;
+              this.loading = false;
+            })
+
         }else{
             this.loading = false;
         }
@@ -288,8 +275,9 @@ export default {
     //////////////////mounted
   },
   mounted() {
-    let id = this.$route.query.id;
-    this.CallCourse(id);
+    this.courseid = this.$route.query.id;
+
+    this.CallCourse(this.courseid);
   },
   computed: {
     title() {

@@ -15,7 +15,7 @@
 
                 <v-form ref="Courseform" @submit.prevent="CourseCreate">  
                     <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
-                    <v-textarea v-model="CourseData.details" type="text" label="รายละเอียดคอร์ส" ></v-textarea>
+                    <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส" ></v-textarea>
 
                     <v-select
                       v-model="CourseData.purpose"
@@ -234,7 +234,7 @@ export default {
     name:"CreateCourse",
     data(){
         return{
-            CourseData:{id:null,name:null,details:null,purpose:null,genre:null
+            CourseData:{id:null,name:null,description:null,purpose:null,genre:null
             ,start:new Date().toISOString().substr(0, 10)
             ,end:new Date().toISOString().substr(0, 10)},
             
@@ -425,7 +425,7 @@ export default {
 
             courseRef.add({
               creator:user.uid,
-              description:this.CourseData.details,
+              description:this.CourseData.description,
               genre:this.CourseData.genre,
               id: this.CourseData.id,
               name: this.CourseData.name,
