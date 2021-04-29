@@ -53,7 +53,7 @@
                     {{ course.genre }}
                   </v-col>
                   <v-col cols="1" class="text-center">
-                    <v-btn fab small dark color="lime">
+                    <v-btn fab small dark color="lime" @click="Router_EditCourse(course.id)">
                       <v-icon>mdi-pencil</v-icon>
                     </v-btn>
                   </v-col>

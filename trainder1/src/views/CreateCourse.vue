@@ -3,7 +3,7 @@
 
     <div class="bigbox">
         <v-row justify="start">
-            <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
+            <!-- <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn> -->
         </v-row>
         <br>
       <table class="tab" border="0">

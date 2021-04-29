@@ -1,4 +1,4 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = "https://asia-east2-fir-b9dbd.cloudfunctions.net/api/"
+// axios.defaults.baseURL = "http://localhost:5000/"
 //axios.defaults.headers['Authorization'] = sessionStorage.getItem('token')
