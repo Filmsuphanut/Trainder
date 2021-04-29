@@ -44,6 +44,6 @@ export default {
 
 <style scoped>
 #v-application {
-  background-color: #c3ffff;
+  background-color: #FEEDED;
 }
 </style>

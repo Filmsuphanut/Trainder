@@ -65,7 +65,7 @@
               large
               block
               class="mt-7 pa-10"
-              color="blue lighten-3"
+              color="primary"
               to="/User/FindTrainer"
             >
               <h3>Excercise With Trainer</h3>
@@ -77,7 +77,7 @@
               large
               block
               class="mt-6 pa-10"
-              color="blue lighten-3"
+              color="primary"
               to="/vdoc"
             >
               <h3>Excercise With People</h3>
@@ -89,7 +89,7 @@
               large
               block
               class="mt-6 pa-10"
-              color="blue lighten-3"
+              color="primary"
               @click="createRoom"
             >
               <h3>Excercise With Your Friend</h3>
@@ -102,7 +102,7 @@
                 block
                 large
                 class="mt-6 pa-10"
-                color="blue lighten-3"
+                color="primary"
                 to="/Table"
               >
                 <h3>Table</h3>
@@ -114,7 +114,7 @@
                 block
                 large
                 class="mt-6 pa-10"
-                color="blue lighten-3"
+                color="primary"
                 to="/Stats"
               >
                 <h3>Your Stat</h3>
