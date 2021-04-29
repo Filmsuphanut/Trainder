@@ -1,23 +1,23 @@
 <template>
   <v-container>
-    <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
-    <h1>hello world welcome to Course detail</h1>
-    <p>{{ callname() }}</p>
-    <v-btn @click="Router_CreCourse">Create Course</v-btn>
-    <br /><br />
 
+    <!-- <v-btn @click="back" fab><v-icon center>arrow_back_ios</v-icon></v-btn><br><br> -->
     <v-row>
       <v-col cols="12">
         <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
           <v-row class="ma-2">
+            
             <h2>
-              <v-avatar color="white"
-                ><v-icon color="accent">mdi-folder-multiple</v-icon></v-avatar
-              >
+              <v-avatar color="white"><v-icon color="accent">mdi-folder-multiple</v-icon></v-avatar>
               Course Detail
             </h2>
+
+            <v-spacer></v-spacer>
+            <v-btn rounded="xl" class="text-center pa-2" color="accent" @click="Router_CreCourse">Create Course</v-btn>
           </v-row>
+        
           <!-- Grid title -->
+
           <v-row class="my-3">
             <v-col
               v-for="(t, index) in title"
@@ -29,6 +29,7 @@
               </v-card>
             </v-col>
           </v-row>
+
           <v-row v-for="course in courses" :key="course">
             <v-col cols="12">
               <v-card rounded="xl" color="secondary">
@@ -37,7 +38,7 @@
                     {{ course.name }}
                   </v-col>
                   <v-col cols="4" class="pl-6">
-                    {{ course.detail }}
+                    {{ course.description }}
                   </v-col>
                   <v-col cols="1" class="text-center">
                     {{ course.start }}
@@ -46,10 +47,10 @@
                     {{ course.end }}
                   </v-col>
                   <v-col cols="1" class="pl-6">
-                    {{ course.type }}
+                    {{ course.purpose }}
                   </v-col>
                   <v-col cols="1" class="pl-6">
-                    {{ course.goal }}
+                    {{ course.genre }}
                   </v-col>
                   <v-col cols="1" class="text-center">
                     <v-btn fab small dark color="lime">
@@ -65,6 +66,8 @@
               </v-card>
             </v-col>
           </v-row>
+
+
         </v-card>
       </v-col>
     </v-row>
@@ -89,18 +92,17 @@ export default {
         "Edit",
         "Delete",
       ],
-      courses: [
-        {
-          name: "นัดยิ้มที่ริมบึง",
-          detail: "I love pussy and ass",
-          start: "2020-04-29",
-          end: "2020-05-29",
-          type: "Arobic in the bed",
-          goal: "pussy",
-          edit: "Yes",
-          delete: "hello",
-        },
-      ],
+    //   courses: [
+    //     {
+    //       name: "นัดยิ้มที่ริมบึง",
+    //       description: "I love pussy and ass",
+    //       start: "2020-04-29",
+    //       end: "2020-05-29",
+    //       purpose: "Arobic in the bed",
+    //       genre: "pussy",
+    //     },
+    //  ],
+    courses:[],
     };
   },
   methods: {
@@ -114,7 +116,7 @@ export default {
       //let CourseDocid;
 
       trainerCourse.forEach((doc) => {
-        this.list.push(doc.data());
+        this.courses.push(doc.data());
         console.log(doc.id, doc.data());
         // CourseDocid = doc.id;
       });
