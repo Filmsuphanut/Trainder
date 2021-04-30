@@ -10,7 +10,7 @@
           transition="scale-transition"
           width="40"
         />
-        <span>Trainder</span>
+        <span>Trainder by Dragon</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon>
