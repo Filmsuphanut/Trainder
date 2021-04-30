@@ -5,7 +5,7 @@
       rel="stylesheet"
     />
     <v-main>
-      <Toolbar></Toolbar>
+      <Toolbar v-if="$route.name!='Index' && $route.name!='/register'"></Toolbar>
       <router-view></router-view>
     </v-main>
   </v-app>
