@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersistence from "vuex-persist";
+import firebase from "firebase";
+import fb from './firebase'
 
 Vue.use(Vuex);
 
@@ -33,7 +35,6 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        //methods
         logout(context) {
             context.commit("setUser", {
                 // token: null,
@@ -46,6 +47,8 @@ export default new Vuex.Store({
             return state.user.data;
         },
     },
-    modules: {},
+    modules: {
+        fb
+    },
     plugins: [new VuexPersistence().plugin],
 });

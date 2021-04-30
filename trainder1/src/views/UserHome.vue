@@ -24,10 +24,10 @@
             </v-row>
           </v-card>
           <!-- Profile Settings -->
-          <v-card rounded="xl">
+          <v-card style="cursor:pointer" class="rounded-lg" @click="$router.push('/ProfileSetting')" >
             <v-row>
               <v-col cols="6" class="pl-5">
-                <h2 @click="$router.push('/ProfileSetting')">
+                <h2  >
                   Profile Setting
                 </h2>
               </v-col>

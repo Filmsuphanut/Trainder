@@ -133,6 +133,7 @@
           <v-icon>mdi-phone-hangup</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
+         
         <v-btn
           icon
           fab
@@ -175,9 +176,11 @@ video {
 import {config,endpoint} from '../websocket'
 import io from "socket.io-client";
 import { mapGetters } from "vuex";
+import addFriend from './addFriend.vue';
 var socket;
 
 export default {
+  components: { addFriend },
   data() {
     return {
       peerConnections: {},

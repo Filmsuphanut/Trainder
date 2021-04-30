@@ -14,16 +14,21 @@
           v-bind="attrs"
           v-on="on"
         >
-          <v-icon>mdi-chat</v-icon>
+          <v-icon>mdi-account-multiple</v-icon>
         </v-btn>
       </template>
 
       <v-card max-width="450" max-height="550" class="mx-auto">
         <v-toolbar color="primary" dark>
-          <v-btn v-if="tab" @click="tab = 0" icon class="hidden-xs-only">
+          <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
-          <v-toolbar-title>{{ tab ? target.target.name : "Inbox"}}</v-toolbar-title>
+          <v-toolbar-title>{{
+            tab ? target.target.name : "Friends"
+          }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <add-friend  v-if="!tab" />
+          <chat-option :user="target" v-if="tab" />
         </v-toolbar>
         <v-tabs-items v-model="tab">
           <!-- list -->
@@ -84,8 +89,13 @@
 
 <script>
 import chat from "./chat.vue";
+import ChatOption from "./chatOption.vue";
+
+import { mapGetters } from "vuex";
+import AddFriend from './addFriend.vue';
+
 export default {
-  components: { chat },
+  components: { chat, ChatOption, AddFriend },
   data() {
     return {
       tab: 0,
@@ -118,22 +128,32 @@ export default {
             "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
         },
       ],
-      current: {
-        name: "Felix",
-        uid: "",
-        img:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4e-wP2Sy2tAIVZ-cLQYvKJtB5sUz6Sj9O9g&usqp=CAU",
-      },
-      target: "",
+      target: { target: "", current: "" },
     };
   },
+  computed: {
+    ...mapGetters({
+      userData: "userData",
+    }),
+    current() {
+      return {
+        name: this.userData.data.fullName,
+        uid: this.userData.uid,
+        img: this.userData.data.profilePic,
+      };
+    },
+  },
   methods: {
+    back() {
+      this.tab = 0;
+      this.$set(this.target, "target", "");
+    },
     openChat(user) {
       this.tab = 1;
       this.target = {
         target: {
           name: user.name,
-          uid: "",
+          uid: "1",
           img: user.img,
         },
         current: this.current,

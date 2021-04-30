@@ -57,7 +57,7 @@
 
     <v-card-actions class="pa-0 ma-0">
       <div
-        class="white d-flex justify-center align-center elevation-5 px-5"
+        class="rounded-b-lg white d-flex justify-center align-center elevation-5 px-5"
         style="height: 70px;width:100%"
       >
         <v-text-field
@@ -87,12 +87,12 @@ export default {
     return {
       logs: [
         {
-          sender: "Felix",
+          sender: "WONGVARIT PANCHAROEN",
           msg: "hello friend.",
           date: new Date().toLocaleTimeString(),
         },
         {
-          sender: "Felix",
+          sender: "WONGVARIT PANCHAROEN",
           msg: "my name is pew~diepie",
           date: new Date().toLocaleTimeString(),
         },
@@ -102,7 +102,7 @@ export default {
           date: new Date().toLocaleTimeString(),
         },
         {
-          sender: "Felix",
+          sender: "WONGVARIT PANCHAROEN",
           msg: "send me your meme.",
           date: new Date().toLocaleTimeString(),
         },

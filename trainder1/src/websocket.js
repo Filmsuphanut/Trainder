@@ -11,4 +11,4 @@ export const config = {
     ],
 };
 
-export const endpoint = process.env.NODE_ENV === "development" ? "http://localhost:5000" : "https://api.evera.cloud";
+export const endpoint = process.env.VUE_APP_ENDPOINT
