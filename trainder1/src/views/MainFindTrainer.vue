@@ -209,7 +209,7 @@ export default {
             docId = doc.id;
           })
 
-          let traineruid = await axios.get("http://localhost:5000/findTrainer/"+docId)
+          let traineruid = await axios.get("findTrainer/"+docId)
 
           this.trainer_uid = traineruid.data;
           console.log(this.trainer_uid);
