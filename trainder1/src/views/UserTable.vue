@@ -1,51 +1,33 @@
 <template>
   <v-container>
-
-<div class="bigbox">
-    <v-row justify="start">
+    <div class="bigbox">
+      <v-row justify="start">
         <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
-    </v-row>
+      </v-row>
 
-    <br><br>
-    <h3 align="left">ตารางออกกำลังกายของคุณ {{callname()}} </h3><br>
+      <br /><br />
+      <h3 align="left">ตารางออกกำลังกายของคุณ {{ callname() }}</h3>
+      <br />
 
-  <div>
-    
-    <v-sheet
-      tile
-      height="54"
-      class="d-flex"
-    >
-    
-      <v-btn
-        icon
-        class="ma-2"
-        @click="$refs.calendar.prev()"
-      >
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
+      <div>
+        <v-sheet tile height="54" class="d-flex">
+          <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
 
-      <v-btn         
-        outlined
-        class="ma-2"
-        @click="addEventDialog=true">
-        เพิ่มกิจกรรมใหม่
-      </v-btn>
+          <v-btn outlined class="ma-2" @click="addEventDialog = true">
+            เพิ่มกิจกรรมใหม่
+          </v-btn>
 
-      <v-btn         
-        outlined
-        class="ma-2"
-        @click="setToday">
-        ดูกิจกรรมวันนี้
-      </v-btn>
+          <v-btn outlined class="ma-2" @click="setToday">
+            ดูกิจกรรมวันนี้
+          </v-btn>
 
+          <v-toolbar-title outlined class="ma-3">{{ title }}</v-toolbar-title>
 
-      <v-toolbar-title outlined
-        class="ma-3">{{ title }}</v-toolbar-title>
+          <v-spacer></v-spacer>
 
-      <v-spacer></v-spacer>
-
-      <!-- <v-select v-if="type!='day'"
+          <!-- <v-select v-if="type!='day'"
         v-model="type"
         :items="types"
         dense
@@ -55,111 +37,167 @@
         label="ตัวเลือกการดู"
       ></v-select> -->
 
-      <v-btn v-if="type=='day'"
-        outlined
-        class="ma-2"
-        @click="backViewDay">
-        กลับ
-      </v-btn>
-
-      <v-btn
-        icon
-        class="ma-2"
-        @click="$refs.calendar.next()"
-      >
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-sheet>
-
-    <v-sheet height="600">
-      <v-calendar
-        ref="calendar"
-        v-model="value"
-        color="primary"
-        :short-intervals="false"
-        :weekdays="[0, 1, 2, 3, 4, 5, 6]"
-        :type="type"
-        :events="events"
-        :now="today"
-        :event-overlap-mode="mode"
-        :event-overlap-threshold="30"
-        :event-color="getEventColor"
-        @change="updateRange"
-        @click:event="showEvent"
-        @click:more="viewDay"
-        @click:date="viewDay"
-      ></v-calendar>
-    </v-sheet>
-
-  </div>
-
-<!--@change=""-->
-</div>
-
-<v-dialog v-model="addEventDialog" max-width="500">
-  <v-card>
-    <v-container>
-      <v-form ref="addEventform" @submit.prevent="addEvent">
-        <v-text-field v-model="eventname" type="text" label="ชื่อกิจกรรม" :rules="checkdata"></v-text-field>
-        <v-text-field v-model="eventdetails" type="text" label="รายละเอียด" :rules="checkdata"></v-text-field>
-        <v-text-field v-model="eventstart" type="datetime-local" label="วันและเวลาเริ่มต้น" ></v-text-field>
-        <v-text-field v-model="eventend" type="datetime-local" label="วันและเวลาสุดท้าย" ></v-text-field>
-        <p style="font-size:15px;color:red;" v-if="eventstart >= eventend">**วันและเวลาสุดท้ายต้องมากกว่าเริ่มต้น</p>
-        <v-text-field v-model="eventcolor" type="color" label="เลือกสีสำหรับกิจกรรมของคุณ" :rules="checkdata"></v-text-field>
-        <v-btn type="submit" color="primay" class="mr-4" >สร้างกิจกรรมใหม่</v-btn>
-      </v-form>
-    </v-container>
-  </v-card>
-</v-dialog>
-
-<!-- clickevent -->
-        <v-menu
-          v-model="selectedOpen"
-          :close-on-content-click="false"
-          :activator="selectedElement"
-          offset-x
-        >
-          <v-card
-            color="grey lighten-4"
-            min-width="350px"
-            flat
+          <v-btn
+            v-if="type == 'day'"
+            outlined
+            class="ma-2"
+            @click="backViewDay"
           >
+            กลับ
+          </v-btn>
 
-          <v-toolbar :color="selectedEvent.color" dark>
-            <v-btn icon @click="deleteEvent(selectedEvent)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar>
+          <v-btn icon class="ma-2" @click="$refs.calendar.next()">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </v-sheet>
+
+        <v-sheet height="600">
+          <v-calendar
+            ref="calendar"
+            v-model="value"
+            color="primary"
+            :short-intervals="false"
+            :weekdays="[0, 1, 2, 3, 4, 5, 6]"
+            :type="type"
+            :events="events"
+            :now="today"
+            :event-overlap-mode="mode"
+            :event-overlap-threshold="30"
+            :event-color="getEventColor"
+            @change="updateRange"
+            @click:event="showEvent"
+            @click:more="viewDay"
+            @click:date="viewDay"
+          ></v-calendar>
+        </v-sheet>
+      </div>
+
+      <!--@change=""-->
+    </div>
+
+    <v-dialog v-model="addEventDialog" max-width="500">
+      <v-card>
+        <v-container>
+          <v-form ref="addEventform" @submit.prevent="addEvent">
+            <v-text-field
+              v-model="eventname"
+              type="text"
+              label="ชื่อกิจกรรม"
+              :rules="checkdata"
+            ></v-text-field>
+            <v-text-field
+              v-model="eventdetails"
+              type="text"
+              label="รายละเอียด"
+              :rules="checkdata"
+            ></v-text-field>
+            <v-text-field
+              v-model="eventstart"
+              type="datetime-local"
+              label="วันและเวลาเริ่มต้น"
+            ></v-text-field>
+            <v-text-field
+              v-model="eventend"
+              type="datetime-local"
+              label="วันและเวลาสุดท้าย"
+            ></v-text-field>
+            <p
+              style="font-size: 15px; color: red"
+              v-if="eventstart >= eventend"
+            >
+              **วันและเวลาสุดท้ายต้องมากกว่าเริ่มต้น
+            </p>
+            <v-text-field
+              v-model="eventcolor"
+              type="color"
+              label="เลือกสีสำหรับกิจกรรมของคุณ"
+              :rules="checkdata"
+            ></v-text-field>
+            <v-btn type="submit" color="primay" class="mr-4"
+              >สร้างกิจกรรมใหม่</v-btn
+            >
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <!-- clickevent -->
+    <v-menu
+      v-model="selectedOpen"
+      :close-on-content-click="false"
+      :activator="selectedElement"
+      offset-x
+    >
+      <v-card color="grey lighten-4" min-width="350px" flat>
+        <v-toolbar :color="selectedEvent.color" dark>
+          <v-btn icon @click="deleteEvent(selectedEvent)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+          <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
         <v-card-text>
           <v-form v-if="currentlyEditing !== selectedEvent.id">
-             {{selectedEvent.details}}
+            {{ selectedEvent.details }}
           </v-form>
 
-          <v-form v-else> 
-            <v-text-field v-model="selectedEvent.name" type="text" label="name"></v-text-field>
-            <textarea 
-              v-model="selectedEvent.details" type="text" style="width: 100%" :min-height="100" placeholder="add note">
+          <v-form v-else>
+            <v-text-field
+              v-model="selectedEvent.name"
+              type="text"
+              label="name"
+            ></v-text-field>
+            <textarea
+              v-model="selectedEvent.details"
+              type="text"
+              style="width: 100%"
+              :min-height="100"
+              placeholder="add note"
+            >
             </textarea>
           </v-form>
-
         </v-card-text>
 
-            
         <v-card-actions>
-          <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">แก้ไขกิจกรรม</v-btn>
-          <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">บันทึก</v-btn>
-          <v-btn text color="secondary" @click="selectedOpen = false,currentlyEditing= null,selectedEvent.name = pre_eventname,selectedEvent.details=pre_eventdetails
-          ,pre_eventname=null,pre_eventdetails=null">ปิด</v-btn>
+          <v-btn
+            text
+            v-if="currentlyEditing !== selectedEvent.id"
+            @click.prevent="editEvent(selectedEvent)"
+            >แก้ไขกิจกรรม</v-btn
+          >
+          <v-btn text v-else @click.prevent="updateEvent(selectedEvent)"
+            >บันทึก</v-btn
+          >
+          <v-btn
+            text
+            color="secondary"
+            @click="
+              (selectedOpen = false),
+              (currentlyEditing = null),
+              (selectedEvent.name = pre_eventname),
+              (selectedEvent.details = pre_eventdetails)"
+            >ปิด</v-btn>
         </v-card-actions>
-<!--บัคนิดหน่อย -->
 
-          </v-card>
-        </v-menu>
+        <!--บัคนิดหน่อย 
+        เอาส่วนนี้ออกเพราะเกิดบัค
+        (pre_eventname = null),
+        (pre_eventdetails = null)-->
 
+      </v-card>
+    </v-menu>
 
-<!--- v card -->
+    <!--- v card -->
+
+<!-- snack bar -->
+    <v-snackbar v-model="snackbar" :timeout="2000">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
 
   </v-container>
 </template>
@@ -204,6 +242,7 @@ import firebase from "firebase";
 
 ////////////////// rule
           checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+          snackbar:false,
 
         }
     },
@@ -236,15 +275,60 @@ import firebase from "firebase";
         });
 
       },
+      async isCollision(newEvent_start , newEvent_end){
+
+        this.fetchEvent();
+        //let user = firebase.auth().currentUser;
+        let user = this.$store.getters["userData"].data;
+        let uid = user.uid;
+        let db = firebase.firestore();
+        let tableRef = db.collection("Table");
+        let userData = await tableRef.where("uid", "==", uid).get();
+
+        userData.forEach(doc => {
+          this.userDocid = doc.id;
+          //console.log(doc.id, '=>', doc.data());
+        });
+
+        let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
+        let allEvent  = []
+        userEvent.forEach(doc => {
+            console.log(doc.id, " => ", doc.data());
+            if(JSON.stringify(doc.data()) != "{}"){
+
+              let EventData = doc.data()
+              EventData.id = doc.id
+              allEvent.push(EventData)
+            }
+        }); 
+        
+        console.log('newStart :', newEvent_start , 'new Event end :', newEvent_end)
+        console.log('%c In loop check collide! ', 'background: #222; color: #bada55');
+        for (const oldEvent of allEvent){
+          
+          console.log('Old = > start : ',oldEvent.start , 'End :', oldEvent.end)
+          if((newEvent_start >= oldEvent.start  && newEvent_start <= oldEvent.end)
+          || (newEvent_end >=oldEvent.start && newEvent_end <= oldEvent.end)
+          || (oldEvent.start >=newEvent_start&& oldEvent.start <= newEvent_end )
+          || (oldEvent.end >= newEvent_start && oldEvent.end <= newEvent_end)){
+            console.log('%c Collide', 'background: #222 ;color: #bada55')
+            return true
+          }
+        }
+        return false
+
+      },
+
+ 
 
       async addEvent(){///// บัค start กี่โมงก็ได้แต่ end เที่ยงคืน = ไม่ขึ้น
-
-          if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend)) {
-            this.addEventDialog = false
-            
+          
+          if (this.$refs.addEventform.validate() && (this.eventstart < this.eventend) ) {
+                    
+        
             let db = firebase.firestore();
             let tableRef = db.collection("Table");
-
+            var Creator  = 'Owner'
             let st = this.eventstart;
             let ed = this.eventend;
 
@@ -255,13 +339,29 @@ import firebase from "firebase";
               ed = this.eventend.substr(0, 15) + "1";
             }
 
-            tableRef.doc(this.userDocid).collection("Event").add({
+            var collision = await this.isCollision(this.eventstart,this.eventend)
+            console.log('It is >>>>> ' + collision)
+
+            if(!collision){
+              
+              tableRef.doc(this.userDocid).collection("Event").add({
               name: this.eventname,
               start:st,
               end:ed,
               details: this.eventdetails,       
               color: this.eventcolor,
+              creator : Creator 
             });
+
+            this.addEventDialog = false
+
+            }else {
+              //  Notication to user
+              // nice ! ! !
+              
+              this.snackbar = true;
+              console.log('%c Get collision', 'background: #222 ;color: #bada55')
+            }
             
             this.getEvents()
 
@@ -270,13 +370,15 @@ import firebase from "firebase";
             this.eventdetails = null;
             //this.eventend  = new Date().toISOString().substr(0, 16);
             this.eventcolor = null;
-            // this.events.push({
-            //   name: this.eventname,
-            //   start: this.eventstart,
-            //   end: this.eventend,
-            //   color: this.eventcolor,
-            // })
-
+            /*
+            this.events.push({
+              name: this.eventname,
+              start: this.eventstart,
+              end: this.eventend,
+              color: this.eventcolor,
+            })
+            */
+ 
             console.log(this.events);
           }else{
 
@@ -287,6 +389,8 @@ import firebase from "firebase";
         const open = () => {
           this.selectedEvent = event;
           this.selectedElement = nativeEvent.target;
+          this.pre_eventname = event.name;
+          this.pre_eventdetails = event.details;
           setTimeout(() => this.selectedOpen = true, 10)
         }
         
@@ -338,33 +442,7 @@ import firebase from "firebase";
       fetchEvent(){
         this.events = [];
       },
-      // getEvents ({ start, end }) {
-      //   const events = []
-
-      //   const min = new Date(`${start.date}T00:00:00`)
-      //   const max = new Date(`${end.date}T23:59:59`)
-      //   const days = (max.getTime() - min.getTime()) / 86400000
-      //   const eventCount = this.rnd(days, days + 20)
-
-      //   for (let i = 0; i < eventCount; i++) {
-      //     const allDay = this.rnd(0, 3) === 0
-      //     const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-      //     const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-      //     const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-      //     const second = new Date(first.getTime() + secondTimestamp)
-
-      //     events.push({
-      //       name: this.names[this.rnd(0, this.names.length - 1)],
-      //       start: first,
-      //       end: second,
-      //       color: this.colors[this.rnd(0, this.colors.length - 1)],
-      //       timed: !allDay,
-      //     })
-      //   }
-
-      //   this.events = events
-      //   console.log(this.events)
-      // },
+      
       getEventColor (event) {
         return event.color
       },
@@ -373,7 +451,7 @@ import firebase from "firebase";
       },
       viewDay ({ date }) {
         this.value = date;
-        this.pre_type = this.type;
+        //this.pre_type = this.type;
         this.type = 'day';
         this.eventstart = new Date(date).toISOString().substr(0, 16);
         this.eventend = new Date(date).toISOString().substr(0, 16)
@@ -381,7 +459,7 @@ import firebase from "firebase";
       },
       backViewDay(){
         this.value = this.today;
-        this.type = this.pre_type;
+        this.type = 'month';
       },
       setToday () {
         this.value = this.today;
@@ -471,6 +549,39 @@ import firebase from "firebase";
     },
 
   }
+
+
+
+
+
+ /* Comment 
+getEvents ({ start, end }) {
+        const events = []
+
+        const min = new Date(`${start.date}T00:00:00`)
+        const max = new Date(`${end.date}T23:59:59`)
+        const days = (max.getTime() - min.getTime()) / 86400000
+        const eventCount = this.rnd(days, days + 20)
+
+        for (let i = 0; i < eventCount; i++) {
+          const allDay = this.rnd(0, 3) === 0
+          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+          const second = new Date(first.getTime() + secondTimestamp)
+
+          events.push({
+            name: this.names[this.rnd(0, this.names.length - 1)],
+            start: first,
+            end: second,
+            color: this.colors[this.rnd(0, this.colors.length - 1)],
+            timed: !allDay,
+          })
+        }
+
+        this.events = events
+        console.log(this.events)
+      },*/
 </script>
 
 <style scoped>
@@ -488,5 +599,8 @@ import firebase from "firebase";
     0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
-
 </style>
+
+
+
+

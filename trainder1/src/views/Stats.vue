@@ -4,18 +4,18 @@
       <v-row class="d-flex">
         <v-col cols="6">
           <!-- Current Stats -->
-          <v-card class="ma-5 pa-6" rounded="xl" color="indigo" dark>
+          <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
             <v-row class="ma-2 mt-1">
               <h2>
                 <v-avatar color="white" class="mr-2"
-                  ><v-icon color="indigo">mdi-account-heart</v-icon></v-avatar
+                  ><v-icon color="accent">mdi-account-heart</v-icon></v-avatar
                 >Current Status
               </h2>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog_status" width="400">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    color="primary"
+                    color="secondary"
                     class="mt-1"
                     rounded
                     v-bind="attrs"
@@ -90,18 +90,18 @@
           </v-card>
 
           <!-- Eating History && Update Eating -->
-          <v-card class="ma-5 pa-6" rounded="xl" color="indigo" dark>
+          <v-card class="ma-5 pa-6" rounded="xl" color="primary" dark>
             <v-row class="ma-2 mt-1">
               <h2>
                 <v-avatar color="white" class="mr-2"
-                  ><v-icon color="indigo">mdi-rice</v-icon></v-avatar
+                  ><v-icon color="accent">mdi-rice</v-icon></v-avatar
                 >Eating History
               </h2>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog_status1" width="400">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    color="primary"
+                    color="secondary"
                     class="mt-1"
                     rounded
                     v-bind="attrs"
@@ -175,11 +175,11 @@
         </v-col>
         <v-col cols="6">
           <!-- Next Goal -->
-          <v-card class="ma-5 pa-6" rounded="xl" color="indigo" dark>
+          <v-card class="ma-5 pa-6" rounded="xl" color="primary" dark>
             <v-row class="ma-2 mt-1">
               <h2>
                 <v-avatar color="white" class="mr-2"
-                  ><v-icon color="indigo">mdi-bullseye-arrow</v-icon></v-avatar
+                  ><v-icon color="accent">mdi-bullseye-arrow</v-icon></v-avatar
                 >Goals
               </h2>
             </v-row>
@@ -194,7 +194,7 @@
                 <v-card
                   rounded="xl"
                   dark
-                  color="light-green darken-1"
+                  color="secondary"
                   class="pa-3 text-center elevation-5 flex d-flex flex-column"
                 >
                   <v-row class="pa-3" justify="center">
@@ -209,18 +209,18 @@
           </v-card>
 
           <!-- Exercise History && Update Exercise -->
-          <v-card class="ma-5 pa-6" rounded="xl" color="indigo" dark>
+          <v-card class="ma-5 pa-6" rounded="xl" color="primary" dark>
             <v-row class="ma-2 mt-1">
               <h2>
                 <v-avatar color="white" class="mr-2"
-                  ><v-icon color="indigo">mdi-weight-lifter</v-icon></v-avatar
+                  ><v-icon color="accent">mdi-weight-lifter</v-icon></v-avatar
                 >Exercise History
               </h2>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog_status2" width="400">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    color="primary"
+                    color="secondary"
                     class="mt-1"
                     rounded
                     v-bind="attrs"
@@ -309,20 +309,20 @@ export default {
           title: "Weight",
           icon: "mdi-weight-kilogram",
           measure: "kg",
-          color: "blue",
+          color: '#F98C8C',
         },
         {
           title: "Height",
           icon: "mdi-human-male-height-variant",
           measure: "Cm",
-          color: "green",
+          color: "#F98C8C",
         },
-        { title: "BMI", icon: "mdi-tab-minus", measure: "", color: "red" },
+        { title: "BMI", icon: "mdi-tab-minus", measure: "", color: "#F98C8C" },
         {
           title: "Status",
           icon: "mdi-heart-multiple",
           measure: "",
-          color: "pink",
+          color: "#F98C8C",
         },
       ],
       dialog_status: false,
