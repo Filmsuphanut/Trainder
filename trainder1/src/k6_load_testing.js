@@ -8,6 +8,6 @@ export let options = {
 };
 
 export default function() {
-  http.get('http://test.k6.io');
-  sleep(1);
+  http.get('https://trainder.evera.cloud/');
+  sleep(2);
 }
