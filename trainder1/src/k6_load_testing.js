@@ -9,5 +9,5 @@ export let options = {
 
 export default function() {
   http.get('https://trainder.evera.cloud/');
-  sleep(2);
+  sleep(1);
 }
