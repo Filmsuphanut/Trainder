@@ -1,6 +1,5 @@
 <template>
     <v-toolbar>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-toolbar-title class="d-flex align-center">
           <v-img
           alt="Trainder Logo"
@@ -13,10 +12,8 @@
         <span>Trainder</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon>mdi-message</v-icon>
-      </v-btn>
-      <v-btn icon>
+      <chat-box />
+      <v-btn color="primary" icon>
         <v-icon>mdi-bell</v-icon>
       </v-btn>
       <v-btn icon>
@@ -26,3 +23,12 @@
       </v-btn>
     </v-toolbar>
 </template>
+
+<script>
+import chatBox from './chatBox.vue'
+
+export default {
+  components: { chatBox },
+  
+}
+</script>

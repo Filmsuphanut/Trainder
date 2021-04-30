@@ -135,7 +135,6 @@ router.beforeEach((to, from, next) => {
     // // console.log(firebase.auth().currentUser)
     //console.log(store.getters["userData"]!=null);
     if (store.getters["userData"]) {
-
         if (to.path == "/") return
         next()
     } else {
