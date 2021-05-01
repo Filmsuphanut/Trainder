@@ -16,20 +16,53 @@
       <v-btn color="primary" icon>
         <v-icon>mdi-bell</v-icon>
       </v-btn>
-      <v-btn icon>
+
+      <!-- <v-btn icon>
         <v-avatar>
             <v-img src="../images/hello.png"></v-img>
         </v-avatar>
-      </v-btn>
+      </v-btn> -->
+
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on">
+          <v-avatar>
+            <v-img src="../images/hello.png"></v-img>
+          </v-avatar>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-btn plain @click="logout">
+          logout
+        </v-btn>
+      </v-list>
+    </v-menu>
+
     </v-toolbar>
 </template>
 
 <script>
 import chatBox from './chatBox.vue'
+import firebase from "firebase";
 
 export default {
   components: { chatBox },
-  
-
+    methods: {
+      logout() {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            // Sign-out successful.
+            console.log("logout");
+            this.$store.dispatch("logout")
+            this.$router.push("/");
+          })
+          .catch((error) => {
+            // An error happened.
+            console.log(error);
+          });
+      },
+    },
 }
 </script>
