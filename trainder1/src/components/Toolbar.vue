@@ -30,5 +30,6 @@ import chatBox from './chatBox.vue'
 export default {
   components: { chatBox },
   
+
 }
 </script>
