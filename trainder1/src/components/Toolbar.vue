@@ -31,12 +31,13 @@
           </v-avatar>
         </v-btn>
       </template>
-      <v-list>
-        <v-btn plain @click="logout">
-          logout
-        </v-btn><br>
+      <v-list width="200">
         <v-btn plain @click="$router.push('/ProfileSetting')">
-          Profile Setting
+            Profile Setting
+        </v-btn>
+        <br>
+        <v-btn plain @click="logout">
+            logout
         </v-btn>
       </v-list>
     </v-menu>
