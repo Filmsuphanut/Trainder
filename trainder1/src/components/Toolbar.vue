@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar>
+    <v-toolbar color="#fce5e5">
       <v-toolbar-title class="d-flex align-center">
           <v-img
           alt="Trainder Logo"
@@ -27,13 +27,16 @@
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon v-bind="attrs" v-on="on">
           <v-avatar>
-            <v-img src="../images/hello.png"></v-img>
+            <v-img src="../images/sudlor.jpg"></v-img>
           </v-avatar>
         </v-btn>
       </template>
       <v-list>
         <v-btn plain @click="logout">
           logout
+        </v-btn><br>
+        <v-btn plain @click="$router.push('/ProfileSetting')">
+          Profile Setting
         </v-btn>
       </v-list>
     </v-menu>

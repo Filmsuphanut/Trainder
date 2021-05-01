@@ -2,10 +2,10 @@
   <div id="UserHome">
     <v-container id="ModeSelector" class="mx-auto">
       <v-row class="mx-auto">
-        <!-- Hello User -->
         <v-col cols="6">
+          <!-- Hello User -->
           <v-card rounded="xl">
-            <v-row>
+            <v-row justify="center">
               <v-col cols="7">
                 <v-card-title>
                   <h5>Hello {{ callname() }}!</h5>
@@ -14,51 +14,38 @@
                   It's good to see you again.
                 </v-card-subtitle>
                 <v-card-subtitle class="font-weight-bold primary--text">
-                  Your Friend Id : {{userData.uid}}
+                  Your Friend Id : {{ userData.uid }}
                 </v-card-subtitle>
               </v-col>
               <v-col cols="5" class="">
-                <v-img
-                  src="../images/hello.png"
-                  max-height="250"
-                  max-width="150"
-                ></v-img>
+                <v-card class="pa-0 ma-0" rounded="circle" flat>
+                  <v-img
+                    src="../images/sudlor.jpg"
+                    max-height="150"
+                    max-width="150"
+                  ></v-img>
+                </v-card>
               </v-col>
             </v-row>
           </v-card>
-          <!-- Profile Settings -->
-          <v-card style="cursor:pointer" class="rounded-lg" @click="$router.push('/ProfileSetting')" >
+          <!-- Courses in Progress -->
+          <v-card rounded="xl" class="pa-5">
             <v-row>
-              <v-col cols="6" class="pl-5">
-                <h2  >
-                  Profile Setting
-                </h2>
+              <v-col cols="2" class="d-flex">
+                <h1 id="huge">3</h1>
               </v-col>
-              <!-- <v-col v-for="button in buttons" :key="button" cols="2">
-                <v-btn fab small dark :color=button.color>
-                  <v-icon>{{button.icon}}</v-icon>
-                </v-btn>
-              </v-col> -->
-            </v-row>
-          </v-card>
-          <v-row justify="space-between">
-            <!-- Remaining Task-->
-            <v-col>
-              <v-card class="text-center" rounded="xl">
-                <h1 class="ma-4">11</h1>
-                <h3>Your Task</h3>
-                <span>Weight Training</span>
-              </v-card>
-            </v-col>
-            <!-- Courses in Progress -->
-            <v-col>
-              <v-card class="text-center" rounded="xl">
-                <h1 class="ma-4">3</h1>
+              <v-col cols="5" class="mt-3">
                 <h3>Courses</h3>
                 <span>in progress </span>
-              </v-card>
-            </v-col>
-          </v-row>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col>
+                <v-btn rounded dark color="primary" class="mt-4" to="/Course">
+                  view your course
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card>
         </v-col>
         <v-col cols="6">
           <!-- Buttons -->
@@ -141,32 +128,17 @@
 
 <script>
 import firebase from "firebase";
-import {mapGetters} from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
   name: "index",
   data() {
-    return {
-      buttons: [
-        {
-          icon: "mdi-facebook",
-          color: "indigo",
-        },
-        {
-          icon: "mdi-twitter",
-          color: "cyan",
-        },
-        {
-          icon: "mdi-instagram",
-          color: "pink",
-        },
-      ],
-    };
+    return {};
   },
-  computed : {
+  computed: {
     ...mapGetters({
-      userData : "userData"
-    })
+      userData: "userData",
+    }),
   },
   methods: {
     callname() {
@@ -175,28 +147,26 @@ export default {
       //let user = firebase.auth().currentUser;
       let user = this.$store.getters["userData"];
 
-
       //console.log(test.data.fullName)
-        
 
-        // var admin = require('firebase-admin');
-        // const uid = user.uid;
-        // console.log(uid)
+      // var admin = require('firebase-admin');
+      // const uid = user.uid;
+      // console.log(uid)
 
-        // admin
-        // .auth()
-        // .createCustomToken(uid)
-        // .then((customToken) => {
-        //     console.log(customToken)
+      // admin
+      // .auth()
+      // .createCustomToken(uid)
+      // .then((customToken) => {
+      //     console.log(customToken)
 
-        // })
-        // .catch((error) => {
-        //     console.log('Error creating custom token:', error);
-        // });
+      // })
+      // .catch((error) => {
+      //     console.log('Error creating custom token:', error);
+      // });
 
-        //vm.commit("setToken",idToken)
+      //vm.commit("setToken",idToken)
 
-        return user.data.fullName;
+      return user.data.fullName;
 
       //else{
 
@@ -229,7 +199,7 @@ export default {
         .then(() => {
           // Sign-out successful.
           console.log("logout");
-          this.$store.dispatch("logout")
+          this.$store.dispatch("logout");
           this.$router.push("/");
         })
         .catch((error) => {
@@ -244,7 +214,7 @@ export default {
       }
     },
     createRoom() {
-      this.$router.push(`/custom-vdoc/new-room`)
+      this.$router.push(`/custom-vdoc/new-room`);
     },
   },
   mounted() {
@@ -260,5 +230,8 @@ export default {
 }
 .routerLink {
   text-decoration: none;
+}
+#huge{
+  font-size: 50px;
 }
 </style>
