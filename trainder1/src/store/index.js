@@ -1,10 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersistence from "vuex-persist";
-import firebase from "firebase";
-import fb from './firebase'
-
+import { fb } from "../firebase";
+const db = fb.firestore();
+import axios from "axios";
 Vue.use(Vuex);
+
+let endpoint = process.env.VUE_APP_ENDPOINT
 
 export default new Vuex.Store({
     state: {
@@ -31,7 +33,7 @@ export default new Vuex.Store({
             Vue.set(state.user, "data", value);
         },
         setUser(state, value) {
-            Vue.set(state, "user", value)
+            Vue.set(state, "user", value);
         },
     },
     actions: {
@@ -41,6 +43,31 @@ export default new Vuex.Store({
                 data: "",
             });
         },
+        report(context, value) {
+            let prom = new Promise(async(resolve, reject) => {
+                try {
+                    let docRef = db.collection("report");
+                    let res = await docRef.add(value);
+                    resolve(true);
+                } catch (err) {
+                    console.log(err);
+                    reject(false);
+                }
+            });
+            return prom;
+        },
+        fetchFriends(context) {
+            let prom = new Promise(async(resolve, reject) => {
+                try {
+                    let res = await axios.get(`${endpoint}/allFriends/${context.state.user.data.uid}`);
+                    resolve(res);
+                } catch (err) {
+                    console.log(err);
+                    reject(false);
+                }
+            });
+            return prom;
+        },
     },
     getters: {
         userData(state) {
@@ -48,7 +75,7 @@ export default new Vuex.Store({
         },
     },
     modules: {
-        fb
+        fb,
     },
     plugins: [new VuexPersistence().plugin],
 });

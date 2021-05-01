@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "set VUE_APP_ENDPOINT = https://localhost:5000 && vue-cli-service serve",
-        "build": "set VUE_APP_ENDPOINT = https://api.evera.cloud && vue-cli-service build",
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
         "lint": "vue-cli-service lint",
         "deploy": "vue-cli-service build && firebase deploy"
     },

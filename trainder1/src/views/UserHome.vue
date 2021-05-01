@@ -13,6 +13,9 @@
                 <v-card-subtitle>
                   It's good to see you again.
                 </v-card-subtitle>
+                <v-card-subtitle class="font-weight-bold primary--text">
+                  Your Friend Id : {{userData.uid}}
+                </v-card-subtitle>
               </v-col>
               <v-col cols="5" class="">
                 <v-img
@@ -138,6 +141,7 @@
 
 <script>
 import firebase from "firebase";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "index",
@@ -158,6 +162,11 @@ export default {
         },
       ],
     };
+  },
+  computed : {
+    ...mapGetters({
+      userData : "userData"
+    })
   },
   methods: {
     callname() {

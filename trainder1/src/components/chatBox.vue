@@ -18,7 +18,12 @@
         </v-btn>
       </template>
 
-      <v-card max-width="450" max-height="550" class="mx-auto">
+      <v-card
+        width="450"
+        style="min-height:300px;"
+        max-height="550"
+        class="mx-auto"
+      >
         <v-toolbar color="primary" dark>
           <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
             <v-icon>mdi-arrow-left</v-icon>
@@ -27,13 +32,13 @@
             tab ? target.target.name : "Friends"
           }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <add-friend  v-if="!tab" />
+          <add-friend v-if="!tab" />
           <chat-option :user="target" v-if="tab" />
         </v-toolbar>
         <v-tabs-items v-model="tab">
           <!-- list -->
           <v-tab-item>
-            <v-list three-line>
+            <v-list v-if="items.length" three-line>
               <template v-for="(item, index) in items">
                 <div :key="index">
                   <v-hover v-slot="{ hover }">
@@ -74,6 +79,9 @@
                 </div>
               </template>
             </v-list>
+            <v-card-text class="text-center text-h5 grey--text" v-else>
+              Look Empty Here...
+            </v-card-text>
           </v-tab-item>
           <!-- chat -->
           <v-tab-item>
@@ -92,7 +100,7 @@ import chat from "./chat.vue";
 import ChatOption from "./chatOption.vue";
 
 import { mapGetters } from "vuex";
-import AddFriend from './addFriend.vue';
+import AddFriend from "./addFriend.vue";
 
 export default {
   components: { chat, ChatOption, AddFriend },
@@ -100,33 +108,33 @@ export default {
     return {
       tab: 0,
       items: [
-        {
-          img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          name: "Brunch weekend",
-          subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-        },
-        {
-          img: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          name: "Summer Barbeque",
-          subtitle: `Wish I could come, but I'm out of town this weekend.`,
-        },
-        {
-          img: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          name: "Sandra Adams",
-          subtitle: "Do you have Paris recommendations? Have you ever been?",
-        },
-        {
-          img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-          name: "Trevor Hansen",
-          subtitle:
-            "Have any ideas about what we should get Heidi for her birthday?",
-        },
-        {
-          img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
-          name: "Britta Holt",
-          subtitle:
-            "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
-        },
+        // {
+        //   img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+        //   name: "Brunch weekend",
+        //   subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+        // },
+        // {
+        //   img: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+        //   name: "Summer Barbeque",
+        //   subtitle: `Wish I could come, but I'm out of town this weekend.`,
+        // },
+        // {
+        //   img: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+        //   name: "Sandra Adams",
+        //   subtitle: "Do you have Paris recommendations? Have you ever been?",
+        // },
+        // {
+        //   img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+        //   name: "Trevor Hansen",
+        //   subtitle:
+        //     "Have any ideas about what we should get Heidi for her birthday?",
+        // },
+        // {
+        //   img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
+        //   name: "Britta Holt",
+        //   subtitle:
+        //     "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
+        // },
       ],
       target: { target: "", current: "" },
     };
@@ -159,6 +167,10 @@ export default {
         current: this.current,
       };
     },
+  },
+  async created() {
+    let res = await this.$store.dispatch("fetchFriends");
+    console.log(res);
   },
 };
 </script>
