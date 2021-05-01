@@ -4,7 +4,7 @@
       <v-row class="mx-auto">
         <v-col cols="6">
           <!-- Hello User -->
-          <v-card rounded="xl">
+          <v-card rounded="xl" elevation="6">
             <v-row justify="center">
               <v-col cols="7">
                 <v-card-title>
@@ -29,10 +29,10 @@
             </v-row>
           </v-card>
           <!-- Courses in Progress -->
-          <v-card rounded="xl" class="pa-5">
+          <v-card rounded="xl" class="pa-5 mt-6" elevation="6">
             <v-row>
               <v-col cols="2" class="d-flex">
-                <h1 id="huge">3</h1>
+                <h1 id="huge" class="ml-3">3</h1>
               </v-col>
               <v-col cols="5" class="mt-3">
                 <h3>Courses</h3>
