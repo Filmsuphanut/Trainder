@@ -111,14 +111,24 @@
     </v-dialog>
 
 <!-- snackbar -->
-    <v-snackbar v-model="snackupdate" :timeout="2000">อัพเดทข้อมูลคอร์สเรียบร้อย
-      <template v-slot:action="{ attrs }">
-        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
 
+  <v-dialog v-model="snackupdate" max-width="400">
+    <v-card dark color="white">
+      <v-toolbar color="primary">
+        <v-row>
+          <v-col cols="1">
+            <v-icon color="accent">mdi-check-bold</v-icon>
+          </v-col>
+          <v-col cols="5">
+            แจ้งเตือน
+          </v-col>
+        </v-row>
+      </v-toolbar><br>
+          <v-card-text>
+          <p style="color:gray">อัพเดทข้อมูลคอร์สเรียบร้อย</p>
+          </v-card-text>
+    </v-card>
+  </v-dialog>
 
   </v-container>
 </template>

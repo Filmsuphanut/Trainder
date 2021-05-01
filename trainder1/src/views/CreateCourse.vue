@@ -118,7 +118,7 @@
       </v-btn>
     </v-sheet>
 
-    <v-sheet height="600" width="100%">
+    <v-sheet height="500" width="100%">
       <v-calendar
         ref="calendar"
         v-model="value"
@@ -137,9 +137,14 @@
         @click:date="viewDay"
       ></v-calendar>
     </v-sheet>
+    <v-card-text align="left" color="teal accent-4">**กิจกรรมในคอร์สจะถูกเพิ่มอัตโนมัติในตารางงานของท่าน</v-card-text>
     <!-- $store.state.events -->
  </div></td></tr></table>
-</v-card></v-dialog>
+
+</v-card>
+
+
+</v-dialog>
 
 <v-dialog v-model="addEventDialog" max-width="500">
   <v-card>
@@ -206,22 +211,63 @@
         </v-dialog>
     </div>
 
+<!-- dialog -->
 
-    <v-snackbar v-model="snackbar" :timeout="2000">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น
-      <template v-slot:action="{ attrs }">
-        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
 
-    <v-snackbar v-model="snacksuccess" :timeout="2000">เพิ่มคอร์สใหม่เรียบร้อย กรุณาตรวจสอบที่หน้าคอร์สของท่าน
-      <template v-slot:action="{ attrs }">
-        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+  <v-dialog v-model="snackbar" max-width="400">
+    <v-card dark color="white">
+      <v-toolbar color="primary">
+        <v-row>
+          <v-col cols="1">
+            <v-icon color="accent">mdi-alert</v-icon>
+          </v-col>
+          <v-col cols="5">
+            แจ้งเตือน
+          </v-col>
+        </v-row>
+      </v-toolbar><br>
+          <v-card-text>
+          <p style="color:gray">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น</p>
+          </v-card-text>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="snackcollide" max-width="400">
+    <v-card dark color="white">
+      <v-toolbar color="primary">
+        <v-row>
+          <v-col cols="1">
+            <v-icon color="accent">mdi-alert</v-icon>
+          </v-col>
+          <v-col cols="5">
+            แจ้งเตือน
+          </v-col>
+        </v-row>
+      </v-toolbar><br>
+          <v-card-text>
+          <p style="color:gray">ไม่สามารถสร้างคอร์สได้ เนื่องจากมีกิจกรรมของท่านซ้อนทับกับกิจกรรมในคอร์ส
+          กรุณาปรับเปลี่ยนกิจกรรมใหม่ แล้วลองอีกครั้ง</p>
+          </v-card-text>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="snacksuccess" max-width="400">
+    <v-card dark color="white">
+      <v-toolbar color="primary">
+        <v-row>
+          <v-col cols="1">
+            <v-icon color="accent">mdi-check-bold</v-icon>
+          </v-col>
+          <v-col cols="5">
+            แจ้งเตือน
+          </v-col>
+        </v-row>
+      </v-toolbar><br>
+          <v-card-text>
+          <p style="color:gray">เพิ่มคอร์สใหม่เรียบร้อยแล้ว กรุณาตรวจสอบคอร์สของท่านที่หน้ารายละเอียดคอร์ส</p>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 
   </v-container>
 </template>
@@ -275,6 +321,7 @@ export default {
           checkdata: [(val) => !!val ||(val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
           snackbar:false,
           snacksuccess:false,
+          snackcollide:false,
           loading:false
 
         }
@@ -301,7 +348,7 @@ export default {
             }
             
 
-            var collision = await this.isCollision(this.eventstart,this.eventend);
+            var collision = await this.isCollision(this.eventstart,this.eventend,this.events);
 
             if(!collision){
               this.addEventDialog = false
@@ -356,9 +403,9 @@ export default {
         console.log('delete successfully');
       },
 
-      async isCollision(newEvent_start , newEvent_end){
+      async isCollision(newEvent_start , newEvent_end,allevent){
 
-        let allEvent = this.events;
+        let allEvent = allevent;
 
         for (const oldEvent of allEvent){
           
@@ -408,7 +455,18 @@ export default {
 
       /////////////////// course create
 
+      async checkEventTable(allEvent){
 
+        let eventcollide;
+        for (let key in this.events){
+          console.log(this.events[key]);
+            eventcollide = await this.isCollision(this.events[key].start,this.events[key].end,allEvent);
+            if(eventcollide){
+              return true;
+          }
+        }
+        return false;
+      },
 
       async CourseCreate(){
         this.loading = true;
@@ -419,56 +477,97 @@ export default {
             let user = this.$store.getters["userData"].data;
             let db = firebase.firestore();
             let courseRef = db.collection("Course");
+            let tableRef = db.collection("Table");
 
-            let course_docid; 
-            this.CourseData.id = this.makeid(20);
 
-            courseRef.add({
-              creator:user.uid,
-              description:this.CourseData.description,
-              genre:this.CourseData.genre,
-              id: this.CourseData.id,
-              name: this.CourseData.name,
-              purpose: this.CourseData.purpose,
-              start:this.CourseData.start,
-              end:this.CourseData.end,
-              member:[""],
+            ////////compare event in course with event in usertable
+            let tableData = await tableRef.where("uid","==",user.uid).get();
+            let tableEventid;
+            let userTableEvent= [];
+            let collide;
+
+            tableData.forEach(doc => {
+              tableEventid = doc.id;
+            })
+            
+            let tableEventData = await tableRef.doc(tableEventid).collection("Event").get();
+
+            tableEventData.forEach(doc => {
+              if(JSON.stringify(doc.data()) != "{}"){
+                userTableEvent.push(doc.data());
+              }
             })
               
-              let courseData = await courseRef.where("id","==",this.CourseData.id).get();
+            collide = await this.checkEventTable(userTableEvent);
+            
+            /////////////check collide
+            if(!collide){
 
-              courseData.forEach(doc => {
-                course_docid = doc.id;
-              });
+                let course_docid; 
+                this.CourseData.id = this.makeid(20);
 
-              let eventRef = courseRef.doc(course_docid).collection("Event");
+                courseRef.add({
+                  creator:user.uid,
+                  description:this.CourseData.description,
+                  genre:this.CourseData.genre,
+                  id: this.CourseData.id,
+                  name: this.CourseData.name,
+                  purpose: this.CourseData.purpose,
+                  start:this.CourseData.start,
+                  end:this.CourseData.end,
+                  member:[""],
+                })
+                  
+                  let courseData = await courseRef.where("id","==",this.CourseData.id).get();
 
-              eventRef.add({}).then(() => {
-
-                for(let key in this.events){
-                  eventRef.add({
-                    name: this.events[key].name,
-                    start:this.events[key].start,
-                    end:this.events[key].end,
-                    details: this.events[key].details,       
-                    color: this.events[key].color,
-                    creator : user.uid,
+                  courseData.forEach(doc => {
+                    course_docid = doc.id;
                   });
-                }
 
-              this.snacksuccess = true;
-              //this.back();
-              this.ClearEvent();
+                  let eventRef = courseRef.doc(course_docid).collection("Event");
+                  let user_tableRef = tableRef.doc(tableEventid).collection("Event");
+
+                  eventRef.add({}).then(() => {
+
+                    for(let key in this.events){
+
+                      eventRef.add({
+                        name: this.events[key].name,
+                        start:this.events[key].start,
+                        end:this.events[key].end,
+                        details: this.events[key].details,       
+                        color: this.events[key].color,
+                        creator : user.uid,
+                      });
+
+                      user_tableRef.add({
+                        name: this.events[key].name,
+                        start:this.events[key].start,
+                        end:this.events[key].end,
+                        details: this.events[key].details,       
+                        color: this.events[key].color,
+                        creator : user.uid,
+                        course_id:this.CourseData.id,
+                      });
+
+                    }
+
+                  this.snacksuccess = true;
+                  //this.back();
+                  this.ClearEvent();
+                  this.loading = false;
+                  })
+
+            }else{
+              this.snackcollide = true;
               this.loading = false;
-              })
-
+            }
 
         }else{
           this.loading = false;
         }
-        
-
       },
+
       ClearEvent(){
         this.events = [];
         this.CourseData = {id:null,name:null,details:null,purpose:null,genre:null
