@@ -13,6 +13,9 @@
                 <v-card-subtitle>
                   It's good to see you again.
                 </v-card-subtitle>
+                <v-card-subtitle class="font-weight-bold primary--text">
+                  Your Friend Id : {{userData.uid}}
+                </v-card-subtitle>
               </v-col>
               <v-col cols="5" class="">
                 <v-img
@@ -24,10 +27,10 @@
             </v-row>
           </v-card>
           <!-- Profile Settings -->
-          <v-card rounded="xl">
+          <v-card style="cursor:pointer" class="rounded-lg" @click="$router.push('/ProfileSetting')" >
             <v-row>
               <v-col cols="6" class="pl-5">
-                <h2 @click="$router.push('/ProfileSetting')">
+                <h2  >
                   Profile Setting
                 </h2>
               </v-col>
@@ -138,6 +141,7 @@
 
 <script>
 import firebase from "firebase";
+import {mapGetters} from 'vuex'
 
 export default {
   name: "index",
@@ -158,6 +162,11 @@ export default {
         },
       ],
     };
+  },
+  computed : {
+    ...mapGetters({
+      userData : "userData"
+    })
   },
   methods: {
     callname() {

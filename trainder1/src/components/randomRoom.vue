@@ -133,6 +133,7 @@
           <v-icon>mdi-phone-hangup</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
+         
         <v-btn
           icon
           fab
@@ -172,29 +173,14 @@ video {
 </style>
 
 <script>
-const config = {
-  iceServers: [
-    {
-      // urls: ["stun:stun.l.google.com:19302"],
-      urls: ["stun:stun.evera.cloud:5349"],
-    },
-    {
-      urls: "turn:turn.evera.cloud:5349",
-      username: "test",
-      credential: "test321",
-    },
-  ],
-};
-
+import {config,endpoint} from '../websocket'
 import io from "socket.io-client";
 import { mapGetters } from "vuex";
-// let endpoint = "https://floating-island-08423.herokuapp.com";
-// let endpoint = "https://api.evera.cloud";
-// let endpoint = "http://191.101.184.233:3001/"
-let endpoint = "http://localhost:5000";
+import addFriend from './addFriend.vue';
 var socket;
 
 export default {
+  components: { addFriend },
   data() {
     return {
       peerConnections: {},
@@ -521,6 +507,7 @@ export default {
     this.initRTC();
     this.initCamera();
     // this.streamingInit();
+    
   },
 };
 </script>

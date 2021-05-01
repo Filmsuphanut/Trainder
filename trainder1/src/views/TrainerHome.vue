@@ -109,7 +109,7 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-btn @click="logout">ออกจากระบบ</v-btn>
+      <!-- <v-btn @click="logout">ออกจากระบบ</v-btn> -->
     </v-container>
   </div>
   <!-- <v-container>
