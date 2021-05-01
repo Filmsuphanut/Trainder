@@ -5,7 +5,15 @@
   <v-card class="ma-8 pa-15" rounded="xl" color="#ffb8b8" width="800">
 
               <v-form ref="form" @submit.prevent="updateUserData">
-                <h1 align="left">ตั้งค่าบัญชีผู้ใช้</h1>
+              <v-row justify="start">
+                <v-col cols="1">
+                  <v-icon x-large color="accent">mdi-account-cog</v-icon>
+                </v-col>
+                <v-col cols="5" class="ma-3 pa-1">
+                  <h2 align="left">ตั้งค่าบัญชีผู้ใช้</h2>
+                </v-col>
+                
+              </v-row>
 
               <v-row justify="start">
                 <v-col cols="4">

@@ -1,14 +1,12 @@
 <template>
     <v-container>
 
-    <br>
-        <div class="bigbox">
+
         <v-row justify='start'>
-        <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
         </v-row>
         <br>
         <table class="tab" border="0">
-            <tr><td width="35%" height="700px">
+            <tr><td width="900" height="700px">
             <div class="box">
                 <img src="../images/Logo.png"  align="center"><br><br>
             <v-form ref="form" @submit.prevent="regissubmit">
@@ -51,10 +49,9 @@
             </v-form>
             </div>
             </td></tr>
-            
         </table>
-        </div>
 
+<!-- dialog -->
 
         <v-dialog
             v-model="dialog"
@@ -267,7 +264,7 @@ export default {
 
 .box {
 background-color: rgb(255, 255, 255);
-    border: 2px solid rgb(205, 205, 253); 
+  border: 2px solid rgb(198, 66, 66);
     padding: 5% 15% 10% 15%;
     border-radius: 10px;
     text-align: center;
@@ -288,7 +285,7 @@ background-color: rgb(255, 255, 255);
      padding: 2% 2% 2% 2%;
     width:100%;
     height:100%;
-    border: 2px solid rgb(152, 152, 255); 
+  border: 2px solid rgb(198, 66, 66);
     border-radius: 10px;
       box-shadow: 2
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),

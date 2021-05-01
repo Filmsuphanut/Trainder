@@ -1,16 +1,22 @@
 <template>
   <v-container>
-    <div class="bigbox">
-      <v-row justify="start">
-        <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
-      </v-row>
+    <v-card class="ma-2 pa-5" rounded="xl" color="secondary">
+      <v-card class="ma-2 pa-2" rounded="xl" dark color="primary" width="340">
+    
+    <v-row justify="center">
+      <v-col cols="1" class="ma-4 pa-1">
+       <v-icon x-large >mdi-calendar-blank-multiple</v-icon>
+      </v-col>
 
-      <br /><br />
-      <h3 align="left">ตารางออกกำลังกายของคุณ {{ callname() }}</h3>
-      <br />
+      <v-col class="ma-1 pa-5">
+        <h3 align="center">ตารางออกกำลังกายของคุณ</h3>  
+      </v-col>
+    </v-row>
 
-      <div>
-        <v-sheet tile height="54" class="d-flex">
+      </v-card>
+
+      <div class="bigbox">
+        <v-sheet tile height="54" rounded="xl" class="d-flex">
           <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -26,17 +32,6 @@
           <v-toolbar-title outlined class="ma-3">{{ title }}</v-toolbar-title>
 
           <v-spacer></v-spacer>
-
-          <!-- <v-select v-if="type!='day'"
-        v-model="type"
-        :items="types"
-        dense
-        outlined
-        hide-details
-        class="ma-2"
-        label="ตัวเลือกการดู"
-      ></v-select> -->
-
           <v-btn
             v-if="type == 'day'"
             outlined
@@ -72,11 +67,15 @@
         </v-sheet>
       </div>
 
-      <!--@change=""-->
-    </div>
 
-    <v-dialog v-model="addEventDialog" max-width="500">
-      <v-card>
+
+      <!--@change=""-->
+    </v-card>
+
+    
+    <v-dialog v-model="addEventDialog" max-width="500" >
+      
+      <v-card color="#fce5e5" height="430" >
         <v-container>
           <v-form ref="addEventform" @submit.prevent="addEvent">
             <v-text-field
@@ -113,13 +112,16 @@
               label="เลือกสีสำหรับกิจกรรมของคุณ"
               :rules="checkdata"
             ></v-text-field>
+            <v-row justify="end">
             <v-btn type="submit" color="primay" class="mr-4"
-              >สร้างกิจกรรมใหม่</v-btn
-            >
+              >สร้างกิจกรรมใหม่</v-btn>
+            </v-row>
+
           </v-form>
         </v-container>
       </v-card>
     </v-dialog>
+
 
     <!-- clickevent -->
     <v-menu
@@ -190,13 +192,23 @@
     <!--- v card -->
 
 <!-- snack bar -->
-    <v-snackbar v-model="snackbar" :timeout="2000">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น
-      <template v-slot:action="{ attrs }">
-        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+  <v-dialog v-model="snackbar" max-width="400">
+    <v-card dark color="white">
+      <v-toolbar color="primary">
+        <v-row>
+          <v-col cols="1">
+            <v-icon color="accent">mdi-alert</v-icon>
+          </v-col>
+          <v-col cols="5">
+            แจ้งเตือน
+          </v-col>
+        </v-row>
+      </v-toolbar><br>
+          <v-card-text>
+          <p style="color:gray">ไม่สามารถเพิ่มได้ เนื่องจากเวลาของกิจกรรมซ้ำกับกิจกรรมอื่น</p>
+          </v-card-text>
+    </v-card>
+  </v-dialog>
 
 
   </v-container>
@@ -355,16 +367,6 @@ import firebase from "firebase";
 
             this.addEventDialog = false
 
-            }else {
-              //  Notication to user
-              // nice ! ! !
-              
-              this.snackbar = true;
-              console.log('%c Get collision', 'background: #222 ;color: #bada55')
-            }
-            
-            this.getEvents()
-
             this.eventname = null;
             //this.eventstart = new Date().toISOString().substr(0, 16);
             this.eventdetails = null;
@@ -378,7 +380,16 @@ import firebase from "firebase";
               color: this.eventcolor,
             })
             */
- 
+
+            }else {
+              //  Notication to user
+              // nice ! ! !
+              this.snackbar = true;
+              console.log('%c Get collision', 'background: #222 ;color: #bada55')
+            }
+
+            this.getEvents()
+            
             console.log(this.events);
           }else{
 
@@ -592,12 +603,8 @@ getEvents ({ start, end }) {
   padding: 2% 2% 2% 2%;
   width: 100%;
   height: 100%;
-  border: 2px solid rgb(152, 152, 255);
+  border: 2px solid rgb(198, 66, 66);
   border-radius: 10px;
-  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
-    0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-    0 100px 80px rgba(0, 0, 0, 0.12);
 }
 </style>
 
