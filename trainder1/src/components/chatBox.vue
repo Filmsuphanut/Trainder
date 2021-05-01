@@ -18,7 +18,12 @@
         </v-btn>
       </template>
 
-      <v-card width="450" style="min-height:300px;" max-height="550" class="mx-auto">
+      <v-card
+        width="450"
+        style="min-height:300px;"
+        max-height="550"
+        class="mx-auto"
+      >
         <v-toolbar color="primary" dark>
           <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
             <v-icon>mdi-arrow-left</v-icon>
@@ -27,14 +32,14 @@
             tab ? target.target.name : "Friends"
           }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <add-friend  v-if="!tab" />
+          <add-friend v-if="!tab" />
           <chat-option :user="target" v-if="tab" />
         </v-toolbar>
         <v-tabs-items v-model="tab">
           <!-- list -->
           <v-tab-item>
             <v-list v-if="items.length" three-line>
-              <template  v-for="(item, index) in items">
+              <template v-for="(item, index) in items">
                 <div :key="index">
                   <v-hover v-slot="{ hover }">
                     <v-list-item
@@ -75,7 +80,7 @@
               </template>
             </v-list>
             <v-card-text class="text-center text-h5 grey--text" v-else>
-              Look Empty Here... 
+              Look Empty Here...
             </v-card-text>
           </v-tab-item>
           <!-- chat -->
@@ -95,7 +100,7 @@ import chat from "./chat.vue";
 import ChatOption from "./chatOption.vue";
 
 import { mapGetters } from "vuex";
-import AddFriend from './addFriend.vue';
+import AddFriend from "./addFriend.vue";
 
 export default {
   components: { chat, ChatOption, AddFriend },
@@ -162,6 +167,10 @@ export default {
         current: this.current,
       };
     },
+  },
+  async created() {
+    let res = await this.$store.dispatch("fetchFriends");
+    console.log(res);
   },
 };
 </script>
