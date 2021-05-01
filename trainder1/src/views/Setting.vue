@@ -2,7 +2,7 @@
   <v-container>
 
 <v-row justify="center">
-  <v-card class="ma-8 pa-15" rounded="xl" dark color="secondary" width="800">
+  <v-card class="ma-8 pa-15" rounded="xl" color="#ffb8b8" width="800">
 
               <v-form ref="form" @submit.prevent="updateUserData">
                 <h1 align="left">ตั้งค่าบัญชีผู้ใช้</h1>
@@ -10,7 +10,7 @@
               <v-row justify="start">
                 <v-col cols="4">
 
-                    <v-sheet color="secondary"  width="100"  height="40"></v-sheet>
+                    <v-sheet color="#ffb8b8"  width="100"  height="40"></v-sheet>
 
                   <v-row justify="center">
                     <v-card rounded="xl">
@@ -23,7 +23,7 @@
                   </v-row>
 
                   <v-row justify="center">
-                  <v-sheet color="secondary"  width="50"  height="20"></v-sheet>
+                  <v-sheet color="#ffb8b8"  width="50"  height="20"></v-sheet>
                   </v-row>
 
                   <v-row justify="center">
@@ -66,21 +66,21 @@
               </v-row>
 
               <v-row justify="start">
-                <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+                <v-sheet color="#ffb8b8"  width="50"  height="40"></v-sheet>
               </v-row>
 
 <!-- panels ข้อมูลส่วนตัว-->
       <v-expansion-panels >
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="primary">
+        <v-expansion-panel-header expand-icon="mdi-menu-down" color="secondary">
               <v-row justify="start">
                 <h3 align="left">ข้อมูลส่วนตัว</h3>
               </v-row>
         </v-expansion-panel-header>
 
-        <v-expansion-panel-content dark color="secondary">
+        <v-expansion-panel-content color="#fce5e5">
           <v-row justify="start">
-            <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+            <v-sheet color="#fce5e5"  width="50"  height="40"></v-sheet>
           </v-row>
 
               <v-row justify="start">
@@ -172,16 +172,16 @@
 
       <v-expansion-panels>
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="primary">
+        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="secondary">
               <v-row justify="start">
                 <h3 align="left">ข้อมูลทางการเงิน</h3>
               </v-row>
         </v-expansion-panel-header>
 
-        <v-expansion-panel-content dark color="secondary">
+        <v-expansion-panel-content dark color="#fce5e5">
 
           <v-row justify="start">
-            <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+            <v-sheet color="#fce5e5"  width="50"  height="40"></v-sheet>
           </v-row>
 
               <v-row justify="start">
@@ -208,16 +208,16 @@
 <!-- panel ข้อมูลเกี่ยวกับการออกกำลังกาย -->
       <v-expansion-panels>
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="primary">
+        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="secondary">
               <v-row justify="start">
                 <h3 align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</h3>
               </v-row>
         </v-expansion-panel-header>
 
-        <v-expansion-panel-content dark color="secondary">
+        <v-expansion-panel-content dark color="#fce5e5">
 
           <v-row justify="start">
-            <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+            <v-sheet color="#fce5e5"  width="50"  height="40"></v-sheet>
           </v-row>
 
               <v-row justify="start">
@@ -291,14 +291,14 @@
 
 <!-- end panel -->
 
-                <v-row justify="end">
-                  <v-sheet color="secondary"  width="100"  height="40"></v-sheet>
-                </v-row>
-                <v-row justify="end">
-                  <v-btn :disabled="loading" type="submit" :loading="loading">อัพเดทข้อมูลผู้ใช้</v-btn>
-                </v-row>
-              
-              </v-form>
+        <v-row justify="end">
+          <v-sheet color="#ffb8b8"  width="100"  height="40"></v-sheet>
+        </v-row>
+         <v-row justify="end">
+            <v-btn :disabled="loading" type="submit" :loading="loading">อัพเดทข้อมูลผู้ใช้</v-btn>
+        </v-row>
+         
+    </v-form>
 
 
   </v-card>
