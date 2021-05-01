@@ -1,21 +1,30 @@
 <template>
   <v-container>
-    <div class="bigbox">
-      <v-row justify="start">
-        <!-- <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn> -->
-      </v-row>
-      <br />
-
-      <div class="boxtable">
+  <v-card>
+    <v-tabs background-color="primary" right >
+      <v-sheet rounded="xl" color="primary">
+        <v-card-text>
+          <h3 align="left" style="color:white">รายละเอียดคอร์สของคุณ</h3>
+        </v-card-text>
         
-      <table class="tab" border="0">
-        <tr>
-          <td width="600" height="700px">
-              <div class="box">
-        <br>
-        <h3 align="left">รายละเอียดคอร์สของคุณ</h3><br><br>
+      </v-sheet>
+      <v-spacer></v-spacer>
+      <v-tab><v-icon>mdi-file-multiple-outline</v-icon>ข้อมูลคอร์ส</v-tab>
+      <v-tab><v-icon>mdi-calendar-check-outline</v-icon>ตารางคอร์ส</v-tab>
+
+    <v-tab-item >
+      <v-card color="secondary" flat>
+      <v-row justify="center" align="center" >
+      <v-card elevation="4" class="ma-7 pa-4" width="600" height="650">
+
+        <v-card-title>
+        <v-sheet>
+          <v-toolbar-title>ข้อมูลคอร์สของคุณ</v-toolbar-title>
+        </v-sheet>
+        </v-card-title>
 
         <v-form ref="Courseform" @submit.prevent="updateCourse">
+
           <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
           <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส"></v-textarea>
 
@@ -43,23 +52,37 @@
           <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" disabled></v-text-field>
           <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" disabled></v-text-field>
 
-          <br><br>
+
           <v-row justify="end">
             <v-btn type="submit" color="primay" class="mr-4" :loading="loading">อัพเดทข้อมูลคอร์ส</v-btn>
           </v-row>
+
         </v-form>
-</div></td></tr></table>
+        </v-card>
+        </v-row>
+      </v-card>
+      </v-tab-item>
 
 
-        <br><br>
-        <!-- course table -->
-        <v-sheet tile height="54" class="d-flex">
-          <v-toolbar-title outlined class="ma-1">ตารางออกกำลังกายใน Course ของคุณ</v-toolbar-title></v-sheet>
-        <v-sheet tile height="54" class="d-flex">
+<!-- course table -->
+      <v-tab-item>
+        <v-card color="secondary" flat>
+        <v-row justify="center" align="center" >
+        <v-card elevation="4" class="ma-7 pa-2" width="900" height="650">
+
+        <v-card-title>
+        <v-sheet>
+          <v-toolbar-title>ตารางออกกำลังกายใน Course ของคุณ</v-toolbar-title>
+        </v-sheet>
+        </v-card-title>
+
+
+        <v-card>
+        <v-sheet tile class="d-flex">
           <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title outlined class="ma-3">{{ title }}</v-toolbar-title>
+          <v-toolbar-title outlined class="ma-3"><p style="font-size:18px">{{ title }}</p></v-toolbar-title>
 
 
           <v-spacer></v-spacer>
@@ -70,7 +93,7 @@
           </v-btn>
         </v-sheet>
 
-        <v-sheet height="600" width="100%">
+        <v-sheet height="500" width="100%">
           <v-calendar
             ref="calendar"
             v-model="value"
@@ -89,10 +112,17 @@
             @click:date="viewDay"
           ></v-calendar>
         </v-sheet>
+        </v-card>
 
 
-      </div>
-    </div>
+
+        </v-card>
+        </v-row>
+        </v-card>
+      </v-tab-item>
+
+    </v-tabs>
+</v-card>
 
     <!--  table dialog -->
     <v-dialog v-model="selectedOpen" max-width="500">

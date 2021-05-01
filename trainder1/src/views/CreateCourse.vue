@@ -1,68 +1,100 @@
 <template>
   <v-container>
 
-    <div class="bigbox">
-        <v-row justify="start">
-            <!-- <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn> -->
+<v-row align="center" justify="center">
+  <v-col cols="6">
+      
+      <v-card class="ma-6 pa-6" rounded="xl" dark color="primary" width="600" height="730">
+        <v-row>
+
+          <v-col cols="2">
+            <v-card rounded="xl">
+            <v-img  src="../images/Logo.png"></v-img></v-card>
+          </v-col>
+
+        <v-col>
+          <h2>
+            <v-icon>mdi-arm-flex</v-icon>
+            สร้างคอร์สออกกำลังกายของคุณ
+          </h2>
+        </v-col>
+
         </v-row>
-        <br>
-      <table class="tab" border="0">
-        <tr>
-          <td width="700" height="700px">
-            <div class="box">
-                <br>
-                <h2 align="left">สร้างคอร์สออกกำลังกายของคุณ</h2><br><br>
+        <v-row>
+            <v-card-text>4 อันดับคอร์สที่ประสบความสำเร็จแห่งปีใน Trainder</v-card-text>
+            
+          
+        </v-row>
+        <v-row>
+          
+          <v-card rounded="xl">
+          <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
+            <v-carousel-item 
+              v-for="(item,i) in items"
+                :key="i"
+                :src="item.src"                          
+                width="750px"
+                ></v-carousel-item>
+            </v-carousel>
+          </v-card>
 
-                <v-form ref="Courseform" @submit.prevent="CourseCreate">  
-                    <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
-                    <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส" ></v-textarea>
+        </v-row>
 
-                    <v-select
-                      v-model="CourseData.purpose"
-                      :items="[
-                        'ลดน้ำหนัก',
-                        'เพิ่มกล้ามเนื้อ',
-                        'หุ่นที่ดี',
-                        'เพื่อสุขภาพ',]"
-                      label="เป้าหมายของคอร์ส"
-                      :rules="checkdata"
-                    ></v-select>
+      </v-card>
 
-                    <v-select
-                      v-model="CourseData.genre"
-                      :items="[
-                        'เวทเทรนนิ่ง',
-                        'แอโรบิค',
-                        'ออกกำลังกายทั่วไป',
-                        'โยคะ',
-                        'คาร์ดิโอ',
-                        'อื่นๆ']"
-                      label="ประเภทของคอร์ส"
-                      :rules="checkdata"
-                    ></v-select>
+</v-col>
 
+<v-col cols="6">
+    <v-card class="ma-5 pa-6" rounded="xl" dark color="secondary" width="600" height="730">
 
-                    <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" :disabled="events.length != 0"></v-text-field>
-                    <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" :disabled="events.length != 0"></v-text-field>
-                    <p align="left" style="font-size:15px;color:red;" v-if="CourseData.start >= CourseData.end">**วันเริ่มคอร์สต้องน้อยกว่าวันจบคอร์ส</p>
-                    <v-text-field label="สร้างตารางออกกำลังกายที่นี่" readonly prepend-inner-icon="mdi-calendar" 
-                    :disabled="CourseData.start >= CourseData.end" @click="Table_dia=true"
-                    :value="events.length == 0? '':'กดที่นี่เพื่อแก้ไขตารางกิจกรรม'"
-                    ></v-text-field>
+      <v-form ref="Courseform" @submit.prevent="CourseCreate">  
+    
 
-                    <p align="left" style="font-size:12px;color:gray;">**หากต้องการแก้ไขวันเริ่มและจบคอร์ส กรุณาล้างตารางเดิมก่อน</p>
-                    <br><br>
-                    <v-row justify="end">
-                    <v-btn type="submit" color="primay" class="mr-4" :disabled="events.length == 0" :loading="loading" >สร้างคอร์ส</v-btn>
-                    </v-row>
-                    
-                </v-form>
+        <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
+        <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส" ></v-textarea>
 
-            </div>
-          </td>
-        </tr>
-      </table>
+        <v-select
+        v-model="CourseData.purpose"
+        :items="[
+          'ลดน้ำหนัก',
+          'เพิ่มกล้ามเนื้อ',
+          'หุ่นที่ดี',
+          'เพื่อสุขภาพ',]"
+          label="เป้าหมายของคอร์ส"
+          :rules="checkdata"
+        ></v-select>
 
+          <v-select
+            v-model="CourseData.genre"
+            :items="[
+            'เวทเทรนนิ่ง',
+            'แอโรบิค',
+            'ออกกำลังกายทั่วไป',
+            'โยคะ',
+            'คาร์ดิโอ',
+            'อื่นๆ']"
+            label="ประเภทของคอร์ส"
+            :rules="checkdata"
+          ></v-select>
+    
+          <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" :disabled="events.length != 0"></v-text-field>
+          <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" :disabled="events.length != 0"></v-text-field>
+          <p align="left" style="font-size:15px;color:red;" v-if="CourseData.start >= CourseData.end">**วันเริ่มคอร์สต้องน้อยกว่าวันจบคอร์ส</p>
+
+          <v-text-field label="สร้างตารางออกกำลังกายที่นี่" readonly prepend-inner-icon="mdi-calendar" 
+          :disabled="CourseData.start >= CourseData.end" @click="Table_dia=true"
+          :value="events.length == 0? '':'กดที่นี่เพื่อแก้ไขตารางกิจกรรม'"
+          ></v-text-field>
+          <p align="left" style="font-size:12px;color:black;">**หากต้องการแก้ไขวันเริ่มและจบคอร์ส กรุณาล้างตารางเดิมก่อน</p>
+          <v-row justify="end">
+          <v-btn type="submit" color="primay" class="mr-4" :disabled="events.length == 0" :loading="loading" >สร้างคอร์ส</v-btn>
+          </v-row>        
+    
+ 
+      </v-form>
+    </v-card>
+  </v-col>
+</v-row>
 
 <!-- table dialog -->
 
@@ -197,10 +229,8 @@
               v-model="selectedEvent.details" type="text" style="width: 100%" :min-height="100" placeholder="add note">
             </textarea>
           </v-form>
-
         </v-card-text>
 
-            
         <v-card-actions>
           <v-btn text v-if="currentlyEditing !== selectedEvent.id" @click.prevent="editEvent(selectedEvent)">แก้ไขกิจกรรม</v-btn>
           <!-- <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">บันทึก</v-btn> -->
@@ -209,7 +239,8 @@
 
           </v-card>
         </v-dialog>
-    </div>
+
+
 
 <!-- dialog -->
 
@@ -269,7 +300,9 @@
     </v-card>
   </v-dialog>
 
-  </v-container>
+
+</v-container>
+
 </template>
 
 <script>
@@ -322,8 +355,13 @@ export default {
           snackbar:false,
           snacksuccess:false,
           snackcollide:false,
-          loading:false
+          loading:false,
 
+/////////////////////ui
+          items: [{  src: require("../images/Course1.jpg"),},
+                  {  src: require('../images/Course2.jpg'),},
+                  {  src: require('../images/Course3.jpg'),},
+                  {  src: require('../images/Course4.jpg'),},],
         }
     },
     methods:{
