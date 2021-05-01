@@ -49,16 +49,16 @@ export default {
             items: [
                     {
                         
-                        src: require("../images/Slide1.jpg"),
+                        src: require("../images/Trainder2.png"),
                     },
                     {
-                        src: require('../images/Slide2.jpg'),
+                        src: require('../images/Trainder.png'),
                     },
                     {
-                        src: require('../images/Slide3.jpg'),
+                        src: require('../images/Trainder3.png'),
                     },
                     {
-                        src: require('../images/Slide4.jpg'),
+                        src: require('../images/Trainder4.png'),
                     },
                     ],
 
