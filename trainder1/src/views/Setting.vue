@@ -1,60 +1,32 @@
 <template>
   <v-container>
-    <br />
-    <div class="bigbox">
-      <v-row justify="start">
-        <v-btn @click="back"><v-icon center>arrow_back_ios</v-icon></v-btn>
-      </v-row>
-      <br />
-      <table class="tab" border="0">
-        <tr>
-          <td width="700" height="700px">
-            <div class="box">
+
+<v-row justify="center">
+  <v-card class="ma-8 pa-15" rounded="xl" dark color="secondary" width="800">
+
               <v-form ref="form" @submit.prevent="updateUserData">
                 <h1 align="left">ตั้งค่าบัญชีผู้ใช้</h1>
-                <br />
 
-                <table border="0">
-                  <tr>
-                    <td>
-                      <img
-                        :src="userData.profilePic"
-                        align="left"
-                        width="150"
-                        height="150"
-                        alt="Avatar"
-                      /><br /><br />
-                    </td>
-                    <td width="50"></td>
-                    <td>
-                      <tr>
-                        <td>
-                          <v-text-field
-                            label="Email"
-                            v-model="userData.email"
-                            :disabled="true"
-                          ></v-text-field>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td width="400">
-                          <v-text-field
-                            label="ชื่อ"
-                            :rules="checkdata"
-                            v-model="userData.firstname"
-                            required
-                          ></v-text-field>
+              <v-row justify="start">
+                <v-col cols="4">
 
-                          <v-text-field
-                            label="นามสกุล"
-                            :rules="checkdata"
-                            v-model="userData.lastname"
-                            required
-                          ></v-text-field>
-                        </td>
-                      </tr>
-                    </td>
-                  </tr>
+                    <v-sheet color="secondary"  width="100"  height="40"></v-sheet>
+
+                  <v-row justify="center">
+                    <v-card rounded="xl">
+                    <img :src="userData.profilePic"
+                    align="left"
+                    width="170"
+                    height="170"
+                    alt="Avatar">
+                    </v-card>
+                  </v-row>
+
+                  <v-row justify="center">
+                  <v-sheet color="secondary"  width="50"  height="20"></v-sheet>
+                  </v-row>
+
+                  <v-row justify="center">
                   <template>
                     <v-file-input
                       prepend-icon="mdi-camera"
@@ -68,21 +40,58 @@
                       @click:clear="clearPic()"
                     ></v-file-input>
                   </template>
-                  <tr>
-                    <td colspan="1">สถานะผู้ใช้ : {{ userData.role }}</td>
-                  </tr>
-                </table>
+                  </v-row>
 
-                <br />
-                <p align="left">ข้อมูลส่วนตัว</p>
+                  <v-row>
+                  สถานะผู้ใช้ : {{ userData.role }}
+                  </v-row>
+                </v-col>
 
+                <v-col cols="5">
+                  <v-text-field
+                    label="Email"
+                    v-model="userData.email"
+                    :disabled="true"></v-text-field>
+                  <v-text-field
+                    label="ชื่อ"
+                    :rules="checkdata"
+                    v-model="userData.firstname"
+                    required></v-text-field>
+                  <v-text-field
+                    label="นามสกุล"
+                    :rules="checkdata"
+                    v-model="userData.lastname"
+                    required></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row justify="start">
+                <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+              </v-row>
+
+<!-- panels ข้อมูลส่วนตัว-->
+      <v-expansion-panels >
+      <v-expansion-panel>
+        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="primary">
+              <v-row justify="start">
+                <h3 align="left">ข้อมูลส่วนตัว</h3>
+              </v-row>
+        </v-expansion-panel-header>
+
+        <v-expansion-panel-content dark color="secondary">
+          <v-row justify="start">
+            <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+          </v-row>
+
+              <v-row justify="start">
                 <v-text-field
                   label="เลขบัตรประจำตัวประชาชน"
                   :rules="personalIDRule"
                   v-model="userData.personalID"
-                  required
-                ></v-text-field>
-
+                  required ></v-text-field>
+              </v-row>
+              
+              <v-row justify="start">
                 <v-select
                   :items="gen"
                   label="เพศ"
@@ -90,7 +99,9 @@
                   required
                   :rules="checkdata"
                 ></v-select>
+              </v-row>
 
+              <v-row justify="start">
                 <v-menu
                   ref="menu"
                   v-model="menu"
@@ -98,8 +109,7 @@
                   transition="scale-transition"
                   offset-y
                   min-width="auto"
-                  value="userData.BD"
-                >
+                  value="userData.BD">
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="userData.BD"
@@ -117,23 +127,24 @@
                     v-model="userData.BD"
                     max="2000-12-31"
                     min="1940-01-01"
-                    @change="this.$refs.menu.save(userData.BD)"
                   ></v-date-picker>
                 </v-menu>
+              </v-row>
 
+              <v-row justify="start">
                 <v-textarea
                   label="ที่อยู่"
                   v-model="userData.address"
                   color="blue"
                   :rules="AddressRule"
-                  required
-                >
+                  required >
                   <template v-slot:label>
                     <div>ที่อยู่ <small>(ต้องไม่เกิน 100 ตัว)</small></div>
                   </template>
                 </v-textarea>
-                <br />
+              </v-row>
 
+              <v-row justify="start">
                 <v-select
                   :items="jobs"
                   label="อาชีพ"
@@ -141,24 +152,47 @@
                   :rules="checkdata"
                   required
                 ></v-select>
+              </v-row>
 
+              <v-row justify="start">
                 <v-text-field
                   label="โทรศัพท์ติดต่อ"
                   :rules="PhoneNumberRule"
                   v-model="userData.phone"
                   required
                 ></v-text-field>
+              </v-row>
 
-                <br />
-                <p align="left">ข้อมูลทางการเงิน</p>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      </v-expansion-panels>
 
+
+<!-- panel ข้อมูลทางการเงิน -->
+
+      <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="primary">
+              <v-row justify="start">
+                <h3 align="left">ข้อมูลทางการเงิน</h3>
+              </v-row>
+        </v-expansion-panel-header>
+
+        <v-expansion-panel-content dark color="secondary">
+
+          <v-row justify="start">
+            <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+          </v-row>
+
+              <v-row justify="start">
                 <v-select
                   :items="banklist"
                   label="ธนาคาร"
                   v-model="userData.bank"
                   :disabled="!userData.bankaccountNumber == ''"
                 ></v-select>
-
+              </v-row>
+              <v-row justify="start">
                 <v-text-field
                   v-if="userData.bank"
                   label="หมายเลขบัญชีธนาคาร"
@@ -166,20 +200,27 @@
                   v-model="userData.bankaccountNumber"
                   required
                 ></v-text-field>
+              </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      </v-expansion-panels>
 
-                <v-select
-                  :items="gen"
-                  label="เพศ"
-                  v-model="userData.gender"
-                  required
-                  :rules="checkdata"
-                ></v-select>
+<!-- panel ข้อมูลเกี่ยวกับการออกกำลังกาย -->
+      <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="primary">
+              <v-row justify="start">
+                <h3 align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</h3>
+              </v-row>
+        </v-expansion-panel-header>
 
-                <!-- /////////   ///////// -->
-                <br />
-                <p align="left">ข้อมูลเกี่ยวกับการออกกำลังกาย</p>
+        <v-expansion-panel-content dark color="secondary">
 
-                <br />
+          <v-row justify="start">
+            <v-sheet color="secondary"  width="50"  height="40"></v-sheet>
+          </v-row>
+
+              <v-row justify="start">
                 <v-select
                   :items="[
                     'ลดน้ำหนัก',
@@ -192,13 +233,16 @@
                   required
                   :rules="checkdata"
                 ></v-select>
-                <br />
+              </v-row>
 
+
+              <v-row justify="start">
                 <p align="left" style="font-size:80%;">
                   ความถนัดในการออกกำลังกาย
                 </p>
+              </v-row>
 
-                <v-row align="center" justify="center">
+                <v-row justify="start">
                   <v-col cols="10" sm="6" md="6">
                     <v-checkbox
                       v-model="userData.ec_skill"
@@ -241,20 +285,28 @@
                     ></v-checkbox>
                   </v-col>
                 </v-row>
-                <!-- /////////   ///////// -->
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      </v-expansion-panels>
 
-                <br /><br />
-                <v-btn :disabled="loading" type="submit" :loading="loading"
-                  >Update</v-btn
-                >
+<!-- end panel -->
+
+                <v-row justify="end">
+                  <v-sheet color="secondary"  width="100"  height="40"></v-sheet>
+                </v-row>
+                <v-row justify="end">
+                  <v-btn :disabled="loading" type="submit" :loading="loading">อัพเดทข้อมูลผู้ใช้</v-btn>
+                </v-row>
+              
               </v-form>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
 
-    <v-snackbar v-model="snackbar" :timeout="2000">
+
+  </v-card>
+</v-row>
+
+<!-- snack bar -->
+
+    <!-- <v-snackbar v-model="snackbar" :timeout="2000">
       {{ snacktext }}
 
       <template v-slot:action="{ attrs }">
@@ -262,7 +314,28 @@
           Close
         </v-btn>
       </template>
-    </v-snackbar>
+    </v-snackbar> -->
+
+  <v-dialog v-model="snackbar" max-width="400">
+    <v-card dark color="white">
+      <v-toolbar color="primary">
+        <v-row>
+          <v-col cols="1">
+            <v-icon color="accent">mdi-check-bold</v-icon>
+          </v-col>
+          <v-col cols="5">
+            แจ้งเตือน
+          </v-col>
+        </v-row>
+      </v-toolbar><br>
+          <v-card-text>
+          <p style="color:gray">{{ snacktext }}</p>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+
+
+
   </v-container>
 </template>
 
@@ -377,6 +450,8 @@ export default {
       checkUrl: null,
       checkimage:[value => !value || (value.size /1024 /1024 < 2) || 'กรุณาอัพไฟล์ที่มีขนาดไม่เกิน 2 MB'] ,
       uploadimage:false,
+
+      menu:false,
     };
   },
   methods: {
@@ -424,12 +499,6 @@ export default {
           .then(() => {
             console.log("update userProfile successfully !!");
 
-            // user.updateProfile({
-            //   displayName: [
-            //     this.userData.firstname,
-            //     this.userData.lastname,
-            //   ].join(" "),
-            // });
             this.update_store(userRef,user);
             // console.log("update displayname successfully !!");
             this.snacktext = "อัพเดทข้อมูลผู้ใช้เรียบร้อย";
@@ -465,14 +534,7 @@ export default {
         }).catch(error => {
             console.log(error);
         });
-      // storageRef.on(`state_changed`, () =>
-      //   storageRef.snapshot.ref.getDownloadURL().then((url) => {
-      //     this.userData.profilePic = url;
-      //     console.log(this.userData.profilePic);
-      //     // console.log(this.imageData[index]);
-      //     // console.log(this.picture[index]);
-      //   })
-      // );
+
     },
     clearPic() {
       console.log("Click Clear");
@@ -541,12 +603,7 @@ export default {
   width: 100%;
   height: 100%;
   box-shadow: 2;
-  /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
-  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
-  0 12.5px 10px rgba(0, 0, 0, 0.06),
-  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
-  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-  0 100px 80px rgba(0, 0, 0, 0.12); */
+
 }
 .bigbox {
   background-color: rgb(255, 255, 255);
