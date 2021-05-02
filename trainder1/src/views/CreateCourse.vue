@@ -4,7 +4,7 @@
 <v-row align="center" justify="center">
   <v-col cols="6">
       
-      <v-card class="ma-6 pa-6" rounded="xl" dark color="primary" width="600" height="730">
+      <v-card class="ma-6 pa-6" rounded="xl" dark color="primary" width="600" height="850">
         <v-row>
 
           <v-col cols="2">
@@ -22,20 +22,18 @@
         </v-row>
         <v-row>
             <v-card-text>4 อันดับคอร์สที่ประสบความสำเร็จแห่งปีใน Trainder</v-card-text>
-            
           
         </v-row>
         <v-row>
           
           <v-card rounded="xl">
-          <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
-            <v-carousel-item 
-              v-for="(item,i) in items"
-                :key="i"
-                :src="item.src"                          
-                width="750px"
-                ></v-carousel-item>
-            </v-carousel>
+            <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
+              <v-carousel-item 
+                v-for="(item,i) in items"
+                  :key="i"
+                  :src="item.src"                          
+                  ></v-carousel-item>
+              </v-carousel>
           </v-card>
 
         </v-row>
@@ -45,13 +43,13 @@
 </v-col>
 
 <v-col cols="6">
-    <v-card class="ma-5 pa-6" rounded="xl" dark color="secondary" width="600" height="730">
+    <v-card class="ma-5 pa-6" rounded="xl" color="#fce5e5" width="600" height="850">
 
       <v-form ref="Courseform" @submit.prevent="CourseCreate">  
     
 
-        <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
-        <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส" ></v-textarea>
+        <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" outlined :rules="checkdata"></v-text-field>
+        <v-textarea v-model="CourseData.description" type="text" outlined label="รายละเอียดคอร์ส" ></v-textarea>
 
         <v-select
         v-model="CourseData.purpose"
@@ -61,7 +59,7 @@
           'หุ่นที่ดี',
           'เพื่อสุขภาพ',]"
           label="เป้าหมายของคอร์ส"
-          :rules="checkdata"
+          :rules="checkdata" outlined
         ></v-select>
 
           <v-select
@@ -74,14 +72,14 @@
             'คาร์ดิโอ',
             'อื่นๆ']"
             label="ประเภทของคอร์ส"
-            :rules="checkdata"
+            :rules="checkdata" outlined
           ></v-select>
     
-          <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" :disabled="events.length != 0"></v-text-field>
-          <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" :disabled="events.length != 0"></v-text-field>
+          <v-text-field v-model="CourseData.start" outlined type="date" label="วันเริ่มคอร์ส" :disabled="events.length != 0"></v-text-field>
+          <v-text-field v-model="CourseData.end" outlined type="date" label="วันจบคอร์ส" :disabled="events.length != 0"></v-text-field>
           <p align="left" style="font-size:15px;color:red;" v-if="CourseData.start >= CourseData.end">**วันเริ่มคอร์สต้องน้อยกว่าวันจบคอร์ส</p>
 
-          <v-text-field label="สร้างตารางออกกำลังกายที่นี่" readonly prepend-inner-icon="mdi-calendar" 
+          <v-text-field label="สร้างตารางออกกำลังกายที่นี่" outlined readonly prepend-inner-icon="mdi-calendar" 
           :disabled="CourseData.start >= CourseData.end" @click="Table_dia=true"
           :value="events.length == 0? '':'กดที่นี่เพื่อแก้ไขตารางกิจกรรม'"
           ></v-text-field>

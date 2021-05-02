@@ -16,16 +16,16 @@
               </v-row>
 
               <v-row justify="start">
-                <v-col cols="4">
+                <v-col cols="5">
 
-                    <v-sheet color="#ffb8b8"  width="100"  height="40"></v-sheet>
+                    <v-sheet color="#ffb8b8"  width="100"  height="20"></v-sheet>
 
                   <v-row justify="center">
                     <v-card rounded="xl">
                     <img :src="userData.profilePic"
                     align="left"
-                    width="170"
-                    height="170"
+                    width="220"
+                    height="220"
                     alt="Avatar">
                     </v-card>
                   </v-row>
@@ -59,17 +59,19 @@
                   <v-text-field
                     label="Email"
                     v-model="userData.email"
-                    :disabled="true"></v-text-field>
+                    :disabled="true"
+                    outlined
+                    ></v-text-field>
                   <v-text-field
                     label="ชื่อ"
                     :rules="checkdata"
                     v-model="userData.firstname"
-                    required></v-text-field>
+                    required outlined></v-text-field>
                   <v-text-field
                     label="นามสกุล"
                     :rules="checkdata"
                     v-model="userData.lastname"
-                    required></v-text-field>
+                    required outlined></v-text-field>
                 </v-col>
               </v-row>
 
@@ -96,7 +98,7 @@
                   label="เลขบัตรประจำตัวประชาชน"
                   :rules="personalIDRule"
                   v-model="userData.personalID"
-                  required ></v-text-field>
+                  required outlined></v-text-field>
               </v-row>
               
               <v-row justify="start">
@@ -105,7 +107,7 @@
                   label="เพศ"
                   v-model="userData.gender"
                   required
-                  :rules="checkdata"
+                  :rules="checkdata" outlined
                 ></v-select>
               </v-row>
 
@@ -127,7 +129,7 @@
                       v-bind="attrs"
                       v-on="on"
                       required
-                      :rules="checkdata"
+                      :rules="checkdata" outlined
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -145,7 +147,7 @@
                   v-model="userData.address"
                   color="blue"
                   :rules="AddressRule"
-                  required >
+                  required outlined>
                   <template v-slot:label>
                     <div>ที่อยู่ <small>(ต้องไม่เกิน 100 ตัว)</small></div>
                   </template>
@@ -158,7 +160,7 @@
                   label="อาชีพ"
                   v-model="userData.career"
                   :rules="checkdata"
-                  required
+                  required outlined
                 ></v-select>
               </v-row>
 
@@ -167,7 +169,7 @@
                   label="โทรศัพท์ติดต่อ"
                   :rules="PhoneNumberRule"
                   v-model="userData.phone"
-                  required
+                  required outlined
                 ></v-text-field>
               </v-row>
 
@@ -196,7 +198,7 @@
                 <v-select
                   :items="banklist"
                   label="ธนาคาร"
-                  v-model="userData.bank"
+                  v-model="userData.bank" outlined
                   :disabled="!userData.bankaccountNumber == ''"
                 ></v-select>
               </v-row>
@@ -204,7 +206,7 @@
                 <v-text-field
                   v-if="userData.bank"
                   label="หมายเลขบัญชีธนาคาร"
-                  :rules="bankaccountNumberRule"
+                  :rules="bankaccountNumberRule" outlined
                   v-model="userData.bankaccountNumber"
                   required
                 ></v-text-field>
@@ -238,7 +240,7 @@
                   ]"
                   label="เป้าหมายในการออกกำลังกาย"
                   v-model="userData.purpose"
-                  required
+                  required outlined
                   :rules="checkdata"
                 ></v-select>
               </v-row>

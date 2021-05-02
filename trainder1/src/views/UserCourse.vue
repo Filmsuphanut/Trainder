@@ -1,20 +1,71 @@
 <template>
   <v-container>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
-          <v-row class="ma-2">
+    <v-row justify="center" width="500">
+        <v-card class="ma-4 pa-8" rounded="xl" color="secondary" width="100%">
             
-            <h2>
-              <v-avatar color="white"><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar>
-              คอร์สของฉัน
-            </h2>
-          </v-row>
+            <v-sheet color="white" height="600" width="100%">
+
+                    <v-toolbar rounded="l" color="primary" width="100%" height="100" dark>
+                        <h2>
+                        <v-avatar color="white" ><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar>
+                        คอร์สของฉัน
+                        </h2>
+                    </v-toolbar>
+
+                    <br><br>
+                    <v-row justify="center">
+                    
+                        <v-card class="ma-5 pa-6" width="80%">
+                            asdasd
+                        </v-card>
+
+                    </v-row>
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+            </v-sheet>
+            <!-- title -->
+            <!-- <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
+                <v-row>
+                    <v-toolbar>
+                        <h2>
+                        <v-avatar color="white"><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar>
+                        คอร์สของฉัน
+                        </h2>
+                    </v-toolbar>
+                </v-row>
+                <v-row>
+                    asdasd
+                </v-row>
+            </v-card> -->
+
+
+
+            
+
+
+
+
+
+
+
         
           <!-- Grid title -->
 
-          <v-row class="my-3">
+          <!-- <v-row class="my-3">
             <v-col
               v-for="(t, index) in title"
               :key="index"
@@ -61,10 +112,11 @@
                 </v-row>
               </v-card>
             </v-col>
-          </v-row>
+          </v-row> -->
           
         </v-card>
-      </v-col>
+
+
     </v-row>
 
   </v-container>
