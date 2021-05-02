@@ -10,9 +10,7 @@
                 <v-card-title>
                   <h5>Hello {{ callname() }}!</h5>
                 </v-card-title>
-                <v-card-subtitle>
-                  It's good to see you again.
-                </v-card-subtitle>
+                <v-card-subtitle> It's good to see you again. </v-card-subtitle>
                 <v-card-subtitle class="font-weight-bold primary--text">
                   Your Friend Id : {{ userData.uid }}
                 </v-card-subtitle>
@@ -25,15 +23,17 @@
                     max-width="150"
                   ></v-img>
                 </v-card> -->
-                  <v-row justify="center">
-                    <v-card rounded="circle" flat>
-                    <img :src="profile_image"
-                    align="left"
-                    width="150"
-                    height="150"
-                    alt="Avatar">
-                    </v-card>
-                  </v-row>
+                <v-row justify="center">
+                  <v-card rounded="circle" flat>
+                    <img
+                      :src="profile_image"
+                      align="left"
+                      width="150"
+                      height="150"
+                      alt="Avatar"
+                    />
+                  </v-card>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -71,14 +71,7 @@
             </v-btn>
           </v-row>
           <v-row>
-            <v-btn
-              rounded
-              large
-              block
-              class="mt-6 pa-10"
-              color="primary"
-              to="/vdoc"
-            >
+            <v-btn rounded large block class="mt-6 pa-10" color="primary" to="/vdoc">
               <h3>Excercise With People</h3>
             </v-btn>
           </v-row>
@@ -96,26 +89,12 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <v-btn
-                rounded
-                block
-                large
-                class="mt-6 pa-10"
-                color="primary"
-                to="/Table"
-              >
-                <h3>Table</h3>
+              <v-btn rounded block large class="mt-6 pa-10" color="primary" to="/Table">
+                <h3>Schedule</h3>
               </v-btn>
             </v-col>
             <v-col cols="6">
-              <v-btn
-                rounded
-                block
-                large
-                class="mt-6 pa-10"
-                color="primary"
-                to="/Stats"
-              >
+              <v-btn rounded block large class="mt-6 pa-10" color="primary" to="/Stats">
                 <h3>Your Stat</h3>
               </v-btn>
             </v-col>
@@ -143,8 +122,7 @@ export default {
   name: "index",
   data() {
     return {
-      profile_image:"",
-
+      profile_image: "",
     };
   },
   computed: {
@@ -164,7 +142,7 @@ export default {
       // let userData = await userRef.where("uid","==",user.data.uid).get();
 
       // userData.forEach(doc => {
-        this.profile_image = this.$store.getters["userData"].data.profilePic;
+      this.profile_image = this.$store.getters["userData"].data.profilePic;
       // })
 
       //console.log(test.data.fullName)
@@ -251,7 +229,7 @@ export default {
 .routerLink {
   text-decoration: none;
 }
-#huge{
+#huge {
   font-size: 50px;
 }
 </style>

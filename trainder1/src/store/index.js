@@ -38,6 +38,9 @@ export default new Vuex.Store({
         setUser(state, value) {
             Vue.set(state, "user", value);
         },
+        clearFriendLists(state) {
+            Vue.set(state, "friendList", {})
+        },
         setFriendLists(state, value) {
             Vue.set(state.friendList, value.id, value.data);
         },
@@ -63,6 +66,7 @@ export default new Vuex.Store({
             return prom;
         },
         fetchFriends(context) {
+            context.commit("clearFriendLists")
             let prom = new Promise(async(resolve, reject) => {
                 try {
                     let res = await axios.get(

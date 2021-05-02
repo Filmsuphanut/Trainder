@@ -1,11 +1,6 @@
 <template>
   <div>
-    <v-menu
-      :close-on-content-click="false"
-      :close-on-click="false"
-      offset-y
-      left
-    >
+    <v-menu :close-on-content-click="false" :close-on-click="false" offset-y left>
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon class="rounded-pill" v-bind="attrs" v-on="on">
           <v-icon>mdi-dots-horizontal</v-icon>
@@ -38,19 +33,12 @@
             <v-icon class="white--text mr-3">mdi-alert</v-icon>
             Report
             <v-spacer></v-spacer>
-            <v-btn
-              @click="overlays.report.show = false"
-              text
-              icon
-              color="white"
-            >
+            <v-btn @click="overlays.report.show = false" text icon color="white">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
           <v-card-text class="pt-3">
-            <p class="text-h6">
-              Please inform us the details.
-            </p>
+            <p class="text-h6">Please inform us the details.</p>
             <p>User : {{ user.target.name }}</p>
             <v-textarea
               outlined
@@ -63,10 +51,7 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              :loading="!overlays.report.ready"
-              @click="report"
-              color="error"
+            <v-btn :loading="!overlays.report.ready" @click="report" color="error"
               >Report this user</v-btn
             >
           </v-card-actions>
@@ -77,6 +62,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   props: ["user"],
   data() {
@@ -106,8 +92,19 @@ export default {
     };
   },
   methods: {
-    unfriend() {
+    async unfriend() {
       console.log("unfriend");
+      if (confirm(`Confirm Unfriend ${this.user.target.name} ?`)) {
+        let res = await axios.delete("unFriend", {
+          data: {
+            id1: this.user.current.uid,
+            id2: this.user.target.uid,
+          },
+        });
+        await this.$store.dispatch("fetchFriends");
+        this.$emit("back");
+        alert(res ? "Done." : "Failed. Try agian.");
+      }
     },
     async report() {
       this.overlays.report.ready = false;
@@ -118,7 +115,7 @@ export default {
       });
       this.overlays.report.ready = true;
       alert(res ? "Done." : "Failed. Try agian.");
-      if(res) this.overlays.report.show = false
+      if (res) this.overlays.report.show = false;
     },
   },
 };

@@ -15,7 +15,7 @@
           <v-toolbar-title>{{ tab ? target.target.name : "Friends" }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <add-friend v-if="!tab" />
-          <chat-option :user="target" v-if="tab" />
+          <chat-option @back="tab = 0" :user="target" v-if="tab" />
         </v-toolbar>
         <v-tabs-items v-model="tab">
           <!-- list -->
@@ -67,7 +67,7 @@
           </v-tab-item>
           <!-- chat -->
           <v-tab-item>
-            <chat :user="target" />
+            <chat v-if="tab" :user="target" />
           </v-tab-item>
         </v-tabs-items>
       </v-card>
