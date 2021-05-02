@@ -41,7 +41,7 @@
             
             <v-row justify='center'>
                 <v-col class="text-right">
-                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิกเป็น Trainer</v-btn>    
+                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" rounded color="primary">สมัครสมาชิกเป็น Trainer</v-btn>    
                 </v-col>
             </v-row>
                 
@@ -270,7 +270,7 @@ background-color: rgb(255, 255, 255);
     text-align: center;
      width: 100%;
     height: 100%;
-      box-shadow:1
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),

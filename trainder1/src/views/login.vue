@@ -5,6 +5,8 @@
         label="Email"
         :rules="checkdata"
         v-model="userdata.name"
+        outlined
+        clearable
       ></v-text-field>
       <v-text-field
         label="รหัสผ่าน"
@@ -12,8 +14,10 @@
         type="password"
         required
         v-model="userdata.pass"
+        outlined
+        clearable
       ></v-text-field>
-      <v-btn type="submit" :loading="loading" :disabled="loading" color="primary" rounded class="ma-2"
+      <v-btn type="submit" :loading="loading" :disabled="loading" color="primary" rounded class="ma-2 mt-0"
         >เข้าสู่ระบบ</v-btn
       >
     </v-form>
@@ -250,6 +254,6 @@ export default {
   background-color: rgb(255, 255, 255);
   text-align: center;
   width: 300px;
-  height: 270px;
+  height: 300px;
 }
 </style>
