@@ -1,12 +1,12 @@
 <template>
   <v-container>
 
-    <v-row justify="center" width="500">
-        <v-card class="ma-4 pa-8" rounded="xl" color="secondary" width="100%">
+    <v-row justify="center" >
+        <v-card class="ma-4 pa-8" rounded="xl" color="secondary" width="980">
             
-            <v-sheet color="white" height="600" width="100%">
-
-                    <v-toolbar rounded="l" color="primary" width="100%" height="100" dark>
+            <v-row justify="center">
+                <v-sheet color="white" width="100%" rounded="xl">
+                    <v-toolbar color="primary" height="80" width="100%" dark>
                         <h2>
                         <v-avatar color="white" ><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar>
                         คอร์สของฉัน
@@ -14,29 +14,44 @@
                     </v-toolbar>
 
                     <br><br>
+
                     <v-row justify="center">
-                    
-                        <v-card class="ma-5 pa-6" width="80%">
-                            asdasd
+                        <v-card width="800" flat>
+                            <v-expansion-panels popout>
+                            <v-expansion-panel v-for="(item,i) in 5" :key="i">
+                                <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="secondary">ชื่อคอร์สออกกำลังกาย{{i}}</v-expansion-panel-header>
+                                <v-expansion-panel-content><br>
+
+                                <v-row justify="start">
+                                    <v-card class="ma-1" flat>
+                                        <v-card-text>
+                                        ชื่อคอร์ส:<br>
+                                        รายละเอียดคอร์ส:<br>
+                                        ชื่อเทรนเนอร์:<br>
+                                        วันเริ่มคอร์ส<br>
+                                        วันจบคอร์ส<br>
+                                        </v-card-text>
+
+                                    </v-card>
+                                </v-row>
+
+
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            </v-expansion-panels>            
                         </v-card>
 
                     </v-row>
 
+                    <v-row>
+                        <v-card flat height="80">
 
-
-
-
-
-
-
-
-
-
- 
-
-
+                        </v-card>
+                    </v-row>
 
             </v-sheet>
+            </v-row>
+
             <!-- title -->
             <!-- <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
                 <v-row>
@@ -119,6 +134,7 @@
 
     </v-row>
 
+
   </v-container>
 </template>
 
@@ -129,11 +145,13 @@ export default {
     name:"UserCourse",
     data(){
         return{
-
+            my_course:[],
 
         }
     },
     methods:{
+
+//////////////////default method
         callname(){
             let user = this.$store.getters["userData"];
             return user.data.fullName;
@@ -151,10 +169,13 @@ export default {
                 this.$store.commit("setPreviousPage","/Course");
             }
         },
+
     },
   async mounted() {
+
       this.$store.commit("setPreviousPage","/TrainerHome");
   },
+
 }
 </script>
 

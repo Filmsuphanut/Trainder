@@ -68,6 +68,7 @@
 
 <!-- course table -->
       <v-tab-item>
+
         <v-card color="secondary" flat>
         <v-row justify="center" align="center" >
         <v-card elevation="4" class="ma-7 pa-2" width="900" height="750">
@@ -120,6 +121,7 @@
         </v-card>
         </v-row>
         </v-card>
+        
       </v-tab-item>
 
     </v-tabs>
