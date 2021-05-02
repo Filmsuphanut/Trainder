@@ -20,6 +20,7 @@ import Stats from "../views/Stats.vue"
 import Course from '../views/Course.vue'
 import CreateCourse from '../views/CreateCourse.vue'
 import EditCoures from '../views/EditCourse.vue'
+import UserCourse from '../views/UserCourse.vue'
 
 Vue.use(VueRouter)
 
@@ -113,6 +114,11 @@ const routes = [{
         path: '/Course/EditCourse',
         name: 'EditCoures',
         component: EditCoures
+    },
+    {
+        path: '/User/Course',
+        name: 'UserCourse',
+        component: UserCourse
     },
     // {
     //   path: '/about',

@@ -49,7 +49,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col>
-                <v-btn rounded dark color="primary" class="mt-4" to="/Course">
+                <v-btn rounded dark color="primary" class="mt-4" to="/User/Course">
                   view your course
                 </v-btn>
               </v-col>
