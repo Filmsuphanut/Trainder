@@ -27,7 +27,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon v-bind="attrs" v-on="on">
           <v-avatar>
-            <v-img :src="profile_image"></v-img>
+            <v-img :src="$store.getters['userData'].data.profilePic"></v-img>
           </v-avatar>
         </v-btn>
       </template>
@@ -72,9 +72,6 @@ export default {
             console.log(error);
           });
       },
-    },
-    mounted(){
-      this.profile_image = this.$store.getters["userData"].data.profilePic;
     },
 }
 </script>
