@@ -15,18 +15,19 @@
     <v-tab-item >
       <v-card color="secondary" flat>
       <v-row justify="center" align="center" >
-      <v-card elevation="4" class="ma-7 pa-4" width="600" height="650">
+      <v-card elevation="4" class="ma-7 pa-4" width="600" height="800">
 
-        <v-card-title>
-        <v-sheet>
-          <v-toolbar-title>ข้อมูลคอร์สของคุณ</v-toolbar-title>
-        </v-sheet>
-        </v-card-title>
+        <v-card class="ma-2 pa-1" rounded="xl" dark color="primary" width="250">
+          <v-col>
+            <v-toolbar-title><v-icon>mdi-file-multiple-outline</v-icon>ข้อมูลคอร์สของคุณ</v-toolbar-title>
+          </v-col>
+        </v-card>
 
         <v-form ref="Courseform" @submit.prevent="updateCourse">
 
-          <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" :rules="checkdata"></v-text-field>
-          <v-textarea v-model="CourseData.description" type="text" label="รายละเอียดคอร์ส"></v-textarea>
+          <v-sheet height="30"></v-sheet>
+          <v-text-field v-model="CourseData.name" type="text" label="ชื่อคอร์ส" outlined :rules="checkdata"></v-text-field>
+          <v-textarea v-model="CourseData.description" type="text" outlined label="รายละเอียดคอร์ส"></v-textarea>
 
           <v-select v-model="CourseData.purpose"
             :items="['ลดน้ำหนัก',
@@ -34,7 +35,7 @@
               'หุ่นที่ดี',
               'เพื่อสุขภาพ',]"
             label="เป้าหมายของคอร์ส"
-            :rules="checkdata"
+            :rules="checkdata" outlined
           ></v-select>
 
           <v-select v-model="CourseData.genre"
@@ -46,11 +47,11 @@
               'คาร์ดิโอ',
               'อื่นๆ',]"
             label="ประเภทของคอร์ส"
-            :rules="checkdata"
+            :rules="checkdata" outlined
           ></v-select>
 
-          <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" disabled></v-text-field>
-          <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" disabled></v-text-field>
+          <v-text-field v-model="CourseData.start" type="date" label="วันเริ่มคอร์ส" outlined disabled></v-text-field>
+          <v-text-field v-model="CourseData.end" type="date" label="วันจบคอร์ส" outlined disabled></v-text-field>
 
 
           <v-row justify="end">
@@ -60,6 +61,7 @@
         </v-form>
         </v-card>
         </v-row>
+      
       </v-card>
       </v-tab-item>
 
@@ -68,14 +70,13 @@
       <v-tab-item>
         <v-card color="secondary" flat>
         <v-row justify="center" align="center" >
-        <v-card elevation="4" class="ma-7 pa-2" width="900" height="650">
+        <v-card elevation="4" class="ma-7 pa-2" width="900" height="750">
 
-        <v-card-title>
-        <v-sheet>
-          <v-toolbar-title>ตารางออกกำลังกายใน Course ของคุณ</v-toolbar-title>
-        </v-sheet>
-        </v-card-title>
-
+        <v-card class="ma-2 pa-1" rounded="xl" dark color="primary" width="400">
+          <v-col>
+            <v-toolbar-title width="400"><v-icon>mdi-calendar</v-icon>ตารางออกกำลังกายใน Course ของคุณ</v-toolbar-title>
+          </v-col>
+        </v-card>
 
         <v-card>
         <v-sheet tile class="d-flex">
@@ -93,7 +94,7 @@
           </v-btn>
         </v-sheet>
 
-        <v-sheet height="500" width="100%">
+        <v-sheet height="600" width="100%">
           <v-calendar
             ref="calendar"
             v-model="value"
