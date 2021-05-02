@@ -4,16 +4,16 @@
     <!-- <v-btn @click="back" fab><v-icon center>arrow_back_ios</v-icon></v-btn><br><br> -->
     <v-row>
       <v-col cols="12">
-        <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
+        <v-card class="ma-5 pa-6" rounded="xl" dark color="primary" >
           <v-row class="ma-2">
             
             <h2>
               <v-avatar color="white"><v-icon color="accent">mdi-folder-multiple</v-icon></v-avatar>
-              Course Detail
+              จัดการคอร์สออกกำลังกายของคุณ
             </h2>
 
             <v-spacer></v-spacer>
-            <v-btn rounded="xl" class="text-center pa-2" color="accent" @click="Router_CreCourse"><v-icon>mdi-plus</v-icon> Create Course</v-btn>
+            <v-btn rounded="xl" class="text-center pa-2" color="accent" @click="Router_CreCourse"><v-icon>mdi-plus</v-icon>สร้างคอร์สใหม่</v-btn>
           </v-row>
         
           <!-- Grid title -->
@@ -113,14 +113,14 @@ export default {
     return {
       column: ["2", "4", "1", "1", "1", "1", "1", "1"],
       title: [
-        "Course Name",
-        "Course Detail",
-        "Start",
-        "End",
-        "Type",
-        "Goal",
-        "Edit",
-        "Delete",
+        "ชื่อคอร์ส",
+        "รายละเอียด",
+        "วันเวลาเริ่มต้น",
+        "วันเวลาสิ้นสุด",
+        "ชนิด",
+        "เป้าหมาย",
+        "แก้ไข",
+        "ลบ",
       ],
 
     courses:[],
