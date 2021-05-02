@@ -8,25 +8,24 @@
   >
     <v-card-text
       class="pa-0 ma-0 pt-3"
-      style="height:400px;max-height:400px; overflow-y:scroll"
+      style="height: 400px; max-height: 400px; overflow-y: scroll"
     >
       <template v-for="(log, idx) in logs">
         <div
           class="py-1"
           :key="idx"
-          :class="
-            isCurrentUser(log.sender) ? 'd-flex justify-end text-right' : ''
-          "
+          :class="isCurrentUser(log.sender) ? 'd-flex justify-end text-right' : ''"
         >
-          <div class="d-flex mb-2 ">
-            <v-avatar style="border: 2px solid #c64242 " v-if="!isCurrentUser(log.sender)" class="mx-2">
+          <div class="d-flex mb-2">
+            <v-avatar
+              style="border: 2px solid #c64242"
+              v-if="!isCurrentUser(log.sender)"
+              class="mx-2"
+            >
               <img :src="user.target.img" alt="John" />
             </v-avatar>
             <div
-              style="width: fit-content;
-                  height: fit-content;
-                  border : thin solid #ff7474
-                  "
+              style="width: fit-content; height: fit-content; border: thin solid #ff7474"
               :style="
                 isCurrentUser(log.sender)
                   ? 'border-right-width : thick'
@@ -38,7 +37,7 @@
                 <span v-if="isCurrentUser(log.sender)" class="text-caption">{{
                   log.date
                 }}</span>
-                {{ log.sender }}
+                {{ nameDisplay(log.sender) }}
                 <span v-if="!isCurrentUser(log.sender)" class="text-caption">{{
                   log.date
                 }}</span>
@@ -47,18 +46,21 @@
                 {{ log.msg }}
               </p>
             </div>
-            <v-avatar style="border: 2px solid #c64242 " v-if="isCurrentUser(log.sender)" class="mx-2">
+            <v-avatar
+              style="border: 2px solid #c64242"
+              v-if="isCurrentUser(log.sender)"
+              class="mx-2"
+            >
               <img :src="user.current.img" alt="Me" />
             </v-avatar>
           </div>
         </div>
       </template>
     </v-card-text>
-
     <v-card-actions class="pa-0 ma-0">
       <div
         class="rounded-b-lg white d-flex justify-center align-center elevation-5 px-5"
-        style="height: 70px;width:100%"
+        style="height: 70px; width: 100%"
       >
         <v-text-field
           rounded
@@ -81,40 +83,69 @@
 </template>
 
 <script>
+import axios from "axios";
+import { fb } from "../firebase";
+const db = fb.firestore();
 export default {
   props: ["user"],
   data() {
     return {
-      logs: [
-        {
-          sender: "WONGVARIT PANCHAROEN",
-          msg: "hello friend.",
-          date: new Date().toLocaleTimeString(),
-        },
-        {
-          sender: "WONGVARIT PANCHAROEN",
-          msg: "my name is pew~diepie",
-          date: new Date().toLocaleTimeString(),
-        },
-        {
-          sender: "vodka",
-          msg: "I love marzia 💖.",
-          date: new Date().toLocaleTimeString(),
-        },
-        {
-          sender: "WONGVARIT PANCHAROEN",
-          msg: "send me your meme.",
-          date: new Date().toLocaleTimeString(),
-        },
-      ],
+      // logs: [
+      //   {
+      //     sender: "WONGVARIT PANCHAROEN",
+      //     msg: "hello friend.",
+      //     date: new Date().toLocaleTimeString(),
+      //   },
+      //   {
+      //     sender: "WONGVARIT PANCHAROEN",
+      //     msg: "my name is pew~diepie",
+      //     date: new Date().toLocaleTimeString(),
+      //   },
+      //   {
+      //     sender: "vodka",
+      //     msg: "I love marzia 💖.",
+      //     date: new Date().toLocaleTimeString(),
+      //   },
+      //   {
+      //     sender: "WONGVARIT PANCHAROEN",
+      //     msg: "send me your meme.",
+      //     date: new Date().toLocaleTimeString(),
+      //   },
+      // ],
+      logs: [],
       msg: "",
     };
   },
   methods: {
-    sendChat() {},
-    isCurrentUser(user) {
+    nameDisplay(uid) {
+      let current = this.user.current;
+      let target = this.user.target;
+      return current.uid == uid ? current.name : target.name;
+    },
+    async sendChat() {
+      await axios.put("saveLog", {
+        LogRef: this.user.logDoc,
+        sender: this.user.current.uid,
+        msg: this.msg,
+        date: new Date().toLocaleTimeString(),
+      });
+      this.msg = "";
+    },
+    isCurrentUser(uid) {
+      let user = this.nameDisplay(uid);
       return user == this.user.current.name;
     },
+    async fetchChat() {
+      db.collection("chat-logs")
+        .doc(this.user.logDoc)
+        .onSnapshot((doc) => {
+          // console.log("Current data: ", doc.data());
+          this.logs = doc.data().logs;
+        });
+    },
+  },
+  mounted() {
+    this.fetchChat();
   },
 };
 </script>
