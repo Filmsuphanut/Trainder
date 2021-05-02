@@ -13,15 +13,26 @@
         autoplay
         muted
       ></video>
+
+      <div style="position: fixed; left: 10px">
+        <v-btn
+          :loading="!ready"
+          @click="addFriend"
+          outlined
+          icon
+          fab
+          color="primary"
+          class="vdoIcon ml-auto"
+          style="background: white"
+        >
+          <v-icon>mdi-account-plus</v-icon>
+        </v-btn>
+        <report :user="reportData" />
+      </div>
     </div>
     <!-- chat -->
     <v-navigation-drawer app right width="456" v-model="chatBar" temporary>
-      <v-card
-        class="d-flex flex-column"
-        outlined
-        elevation="0"
-        style="height: 100%"
-      >
+      <v-card class="d-flex flex-column" outlined elevation="0" style="height: 100%">
         <v-card-title
           primary-title
           class="d-flex flex-column align-start info white--text"
@@ -41,16 +52,13 @@
             <template v-for="(log, idx) in roomChats">
               <div
                 :key="idx"
-                :class="
-                  isCurrentUser(log.sender)
-                    ? 'd-flex justify-end text-right'
-                    : ''
-                "
+                :class="isCurrentUser(log.sender) ? 'd-flex justify-end text-right' : ''"
               >
                 <div
-                  style="width: fit-content;
-                  height: fit-content;
-                  border : thin solid #2196f3
+                  style="
+                    width: fit-content;
+                    height: fit-content;
+                    border: thin solid #2196f3;
                   "
                   :style="
                     isCurrentUser(log.sender)
@@ -60,17 +68,13 @@
                   class="mb-2 pa-2 rounded-lg"
                 >
                   <p class="info--text font-weight-bold ma-0">
-                    <span
-                      v-if="isCurrentUser(log.sender)"
-                      class="text-caption"
-                      >{{ log.date }}</span
-                    >
+                    <span v-if="isCurrentUser(log.sender)" class="text-caption">{{
+                      log.date
+                    }}</span>
                     {{ log.sender }}
-                    <span
-                      v-if="!isCurrentUser(log.sender)"
-                      class="text-caption"
-                      >{{ log.date }}</span
-                    >
+                    <span v-if="!isCurrentUser(log.sender)" class="text-caption">{{
+                      log.date
+                    }}</span>
                   </p>
                   <p class="ma-0">
                     {{ log.msg }}
@@ -129,16 +133,16 @@
           <v-icon>mdi-microphone</v-icon>
         </v-btn>
 
-        <v-btn icon fab color="error" class="vdoIcon" @click="leave" outlined>
-          <v-icon>mdi-phone-hangup</v-icon>
+        <v-btn icon fab color="info" class="vdoIcon" @click="leave" outlined>
+          <v-icon>mdi-autorenew</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-         
         <v-btn
           icon
           fab
           color="primary"
           class="vdoIcon ml-auto"
+          style="background: white; position: absolute; right: 0"
           @click="chatBar = room ? !chatBar : chatBar"
           outlined
         >
@@ -148,9 +152,7 @@
     </v-footer>
     <!-- loader  -->
     <v-overlay :value="!room">
-      <v-progress-circular indeterminate size="200"
-        >Waiting... 🤩</v-progress-circular
-      >
+      <v-progress-circular indeterminate size="200">Waiting... 🤩</v-progress-circular>
     </v-overlay>
   </div>
 </template>
@@ -173,14 +175,17 @@ video {
 </style>
 
 <script>
-import {config,endpoint} from '../websocket'
+import { config, endpoint } from "../websocket";
 import io from "socket.io-client";
 import { mapGetters } from "vuex";
-import addFriend from './addFriend.vue';
+import addFriend from "./addFriend.vue";
+import AddFriendRandom from "./addFriend_random.vue";
+import axios from "axios";
+import Report from "./report.vue";
 var socket;
 
 export default {
-  components: { addFriend },
+  components: { addFriend, AddFriendRandom, Report },
   data() {
     return {
       peerConnections: {},
@@ -204,6 +209,8 @@ export default {
         name: "",
         objective: "",
       },
+      ready: true,
+      partner_uid: "",
       room: "",
     };
   },
@@ -240,8 +247,31 @@ export default {
     camStatus() {
       return this.devices.cam;
     },
+    reportData() {
+      return {
+        current: this.uid,
+        target: this.partner_uid,
+      };
+    },
   },
   methods: {
+    async addFriend() {
+      this.ready = false;
+      if (this.partner_uid) {
+        try {
+          let res = await axios.post(`addFriend`, {
+            id1: this.uid,
+            id2: this.partner_uid,
+          });
+          alert("Done");
+          await this.$store.dispatch("fetchFriends");
+        } catch (err) {
+          alert(err);
+        }
+      } else {
+      }
+      this.ready = true;
+    },
     isCurrentUser(text) {
       return this.username == text;
     },
@@ -374,12 +404,7 @@ export default {
         .createOffer()
         .then((sdp) => this.peerConnections[id].setLocalDescription(sdp))
         .then(() => {
-          socket.emit(
-            "offer",
-            this.room,
-            id,
-            this.peerConnections[id].localDescription
-          );
+          socket.emit("offer", this.room, id, this.peerConnections[id].localDescription);
         });
     },
     answer(id, description) {
@@ -395,12 +420,7 @@ export default {
         .then((sdp) => this.peerConnections[id].setLocalDescription(sdp))
         .then(() => {
           console.log(`answer to user : ${id}`);
-          socket.emit(
-            "answer",
-            this.room,
-            id,
-            this.peerConnections[id].localDescription
-          );
+          socket.emit("answer", this.room, id, this.peerConnections[id].localDescription);
         });
     },
     async join(room) {
@@ -410,11 +430,21 @@ export default {
       socket.emit("join-room", this.room);
 
       socket.on("joined", (data) => {
+        console.log(data);
+        let partner = data.users.find((el) => el != this.uid);
+        if (partner) {
+          this.partner_uid = partner.uid;
+        }
         this.roomChats = [];
+      });
+
+      socket.on("add-friend-request", (room) => {
+        socket.emit("send-friend-uid", room, this.uid);
       });
 
       socket.on("user-joined-room", (id, userData) => {
         console.log(`offering to user : ${id}`);
+        this.partner_uid = userData.uid;
         this.offer(id);
       });
       // other offer stream
@@ -437,9 +467,7 @@ export default {
 
       socket.on("candidate", (id, to, candidate) => {
         if (this.peerConnections[id] && socket.id == to) {
-          this.peerConnections[id].addIceCandidate(
-            new RTCIceCandidate(candidate)
-          );
+          this.peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
         }
       });
 
@@ -464,13 +492,12 @@ export default {
       socket.on("user-joined-room", () => {});
       Object.keys(this.peerConnections).forEach((peer) => {
         this.peerConnections[peer].close();
-        delete this.peerConnections[peer]
+        delete this.peerConnections[peer];
       });
       Array.prototype.slice
         .call(document.getElementsByTagName("video"))
-        .forEach(function(item) {
-          if (item && item.id != "myVdo" && item.id != "myScreen")
-            item.remove();
+        .forEach(function (item) {
+          if (item && item.id != "myVdo" && item.id != "myScreen") item.remove();
           // or item.parentNode.removeChild(item); for older browsers (Edge-)
         });
       this.roomChats = [];
@@ -482,23 +509,15 @@ export default {
       });
     },
     sendChat() {
-      socket.emit(
-        "chat message",
-        this.room,
-        this.chat,
-        new Date().toLocaleTimeString()
-      );
+      socket.emit("chat message", this.room, this.chat, new Date().toLocaleTimeString());
       this.chat = "";
     },
     makeid(length) {
       var result = [];
-      var characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       var charactersLength = characters.length;
       for (var i = 0; i < length; i++) {
-        result.push(
-          characters.charAt(Math.floor(Math.random() * charactersLength))
-        );
+        result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
       }
       return result.join("");
     },
@@ -507,7 +526,6 @@ export default {
     this.initRTC();
     this.initCamera();
     // this.streamingInit();
-    
   },
 };
 </script>

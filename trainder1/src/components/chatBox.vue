@@ -2,7 +2,15 @@
   <div>
     <v-menu :close-on-content-click="false" :close-on-click="false" offset-y left>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn dark color="primary" class="rounded-pill" v-bind="attrs" v-on="on">
+        <v-btn
+          dark
+          color="primary"
+          class="elevation-1 mx-1"
+          fab
+          small
+          v-bind="attrs"
+          v-on="on"
+        >
           <v-icon>mdi-account-multiple</v-icon>
         </v-btn>
       </template>
