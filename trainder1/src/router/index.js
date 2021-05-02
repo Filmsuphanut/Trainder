@@ -17,6 +17,9 @@ import UserTable from '../views/UserTable.vue'
 import register2 from '../views/register2.vue'
 import store from "../store/index"
 import Stats from "../views/Stats.vue"
+import Course from '../views/Course.vue'
+import CreateCourse from '../views/CreateCourse.vue'
+import EditCoures from '../views/EditCourse.vue'
 
 Vue.use(VueRouter)
 
@@ -96,6 +99,21 @@ const routes = [{
         name: 'Stats',
         component: Stats
     },
+    {
+        path: '/Course',
+        name: 'Course',
+        component: Course
+    },
+    {
+        path: '/Course/CreateCourse',
+        name: 'CreateCourse',
+        component: CreateCourse
+    },
+    {
+        path: '/Course/EditCourse',
+        name: 'EditCoures',
+        component: EditCoures
+    },
     // {
     //   path: '/about',
     //   name: 'About',
@@ -116,18 +134,17 @@ router.beforeEach((to, from, next) => {
     // // if logged in no access to index page
     // // console.log(firebase.auth().currentUser)
     //console.log(store.getters["userData"]!=null);
-    if (store.getters["userData"]) {
+    // if (store.getters["userData"]) {
+    //     if (to.path == "/") return
+    //     next()
+    // } else {
 
-        if (to.path == "/") return
-        next()
-    } else {
-
-        if (to.path != "/" && to.path != "/register" && to.path != "/Trainerregister")
-            next("/")
-        else
-            next()
-    }
-    // next()
+    //     if (to.path != "/" && to.path != "/register" && to.path != "/Trainerregister")
+    //         next("/")
+    //     else
+    //         next()
+    // }
+    next()
 });
 
 export default router

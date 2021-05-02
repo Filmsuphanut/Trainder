@@ -1,14 +1,12 @@
 <template>
     <v-container>
 
-    <br>
-        <div class="bigbox">
+
         <v-row justify='start'>
-        <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
         </v-row>
         <br>
         <table class="tab" border="0">
-            <tr><td width="35%" height="700px">
+            <tr><td width="900" height="700px">
             <div class="box">
                 <img src="../images/Logo.png"  align="center"><br><br>
             <v-form ref="form" @submit.prevent="regissubmit">
@@ -43,7 +41,7 @@
             
             <v-row justify='center'>
                 <v-col class="text-right">
-                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" >สมัครสมาชิกเป็น Trainer</v-btn>    
+                <v-btn :disabled="!checkbox||loading" type="submit" :loading="loading" rounded color="primary">สมัครสมาชิกเป็น Trainer</v-btn>    
                 </v-col>
             </v-row>
                 
@@ -51,10 +49,9 @@
             </v-form>
             </div>
             </td></tr>
-            
         </table>
-        </div>
 
+<!-- dialog -->
 
         <v-dialog
             v-model="dialog"
@@ -169,7 +166,15 @@ export default {
                                 uid: user.uid,
                             });
 
-                            this.addTable(user,tableRef)
+                            this.addTable(user,tableRef);
+
+                            //addCourse
+                            // let courseRef = db.collection("Course");
+                            // courseRef.add({
+                            //     uid: user.uid,
+                            // });
+
+                            //this.addCourse(user,courseRef);
 
                             user.updateProfile({
                                 displayName: [
@@ -218,8 +223,22 @@ export default {
             console.log(doc.id, '=>', doc.data());
             });
 
-            tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////รอแก้
+            tableRef.doc(docid).collection('Event').add({}); /////////////////////////////////
         },
+        //     async addCourse(user,courseRef){
+
+        //     let userData = await courseRef.where("uid", "==", user.uid).get();
+
+        //     let docid = null;
+
+        //     userData.forEach(doc => {
+        //         docid = doc.id;
+        //         console.log(doc.id, '=>', doc.data());
+        //     });
+
+        //     courseRef.doc(docid).collection('List').add({}); /////////////////////////////////
+            
+        // },
         async push_store_and_go(userRef,user,taget){//////////หาเพื่อเอาข้อมูลที่ update แล้วมา commit ลง vuex
 
             let userData = await userRef.where("uid", "==", user.uid).get();
@@ -245,13 +264,13 @@ export default {
 
 .box {
 background-color: rgb(255, 255, 255);
-    border: 2px solid rgb(205, 205, 253); 
+  border: 2px solid rgb(198, 66, 66);
     padding: 5% 15% 10% 15%;
     border-radius: 10px;
     text-align: center;
      width: 100%;
     height: 100%;
-      box-shadow:1
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),
@@ -266,7 +285,7 @@ background-color: rgb(255, 255, 255);
      padding: 2% 2% 2% 2%;
     width:100%;
     height:100%;
-    border: 2px solid rgb(152, 152, 255); 
+  border: 2px solid rgb(198, 66, 66);
     border-radius: 10px;
       box-shadow: 2
   0 2.8px 2.2px rgba(0, 0, 0, 0.034),

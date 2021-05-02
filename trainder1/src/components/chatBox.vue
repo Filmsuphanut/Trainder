@@ -1,0 +1,170 @@
+<template>
+  <div>
+    <v-menu :close-on-content-click="false" :close-on-click="false" offset-y left>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn dark color="primary" class="rounded-pill" v-bind="attrs" v-on="on">
+          <v-icon>mdi-account-multiple</v-icon>
+        </v-btn>
+      </template>
+
+      <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
+        <v-toolbar color="primary" dark>
+          <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ tab ? target.target.name : "Friends" }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <add-friend v-if="!tab" />
+          <chat-option @back="tab = 0" :user="target" v-if="tab" />
+        </v-toolbar>
+        <v-tabs-items v-model="tab">
+          <!-- list -->
+          <v-tab-item>
+            <v-list v-if="items.length" three-line>
+              <template v-for="(item, index) in friendLists">
+                <div :key="index">
+                  <v-hover v-slot="{ hover }">
+                    <v-list-item
+                      :class="hover ? 'blue-grey lighten-5' : ''"
+                      :key="item.name"
+                      style="cursor: pointer"
+                    >
+                      <v-list-item-avatar>
+                        <v-img :src="item.img"></v-img>
+                      </v-list-item-avatar>
+
+                      <v-list-item-content>
+                        <v-list-item-title
+                          class="secondary--text"
+                          v-html="item.name"
+                        ></v-list-item-title>
+
+                        <!-- <v-list-item-subtitle>
+                          <span class="text--primary">{{ item.name }}</span>
+                          &mdash;
+                          {{ item.subtitle }}
+                        </v-list-item-subtitle> -->
+                      </v-list-item-content>
+
+                      <v-btn
+                        class="elevation-2 white"
+                        :style="hover ? '' : 'visibility: hidden;'"
+                        text
+                        icon
+                        color="primary"
+                        @click="openChat(item)"
+                      >
+                        <v-icon class="primary--text">mdi-chevron-right</v-icon>
+                      </v-btn>
+                    </v-list-item>
+                  </v-hover>
+                </div>
+              </template>
+            </v-list>
+            <v-card-text class="text-center text-h5 grey--text" v-else>
+              Look Empty Here...
+            </v-card-text>
+          </v-tab-item>
+          <!-- chat -->
+          <v-tab-item>
+            <chat v-if="tab" :user="target" />
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
+    </v-menu>
+  </div>
+</template>
+
+<style></style>
+
+<script>
+import chat from "./chat.vue";
+import ChatOption from "./chatOption.vue";
+
+import { mapGetters } from "vuex";
+import AddFriend from "./addFriend.vue";
+
+export default {
+  components: { chat, ChatOption, AddFriend },
+  data() {
+    return {
+      tab: 0,
+      items: [
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          name: "Brunch weekend",
+          subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+          name: "Summer Barbeque",
+          subtitle: `Wish I could come, but I'm out of town this weekend.`,
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+          name: "Sandra Adams",
+          subtitle: "Do you have Paris recommendations? Have you ever been?",
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+          name: "Trevor Hansen",
+          subtitle: "Have any ideas about what we should get Heidi for her birthday?",
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
+          name: "Britta Holt",
+          subtitle: "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
+        },
+      ],
+      target: { target: "", current: "" },
+    };
+  },
+  computed: {
+    ...mapGetters({
+      userData: "userData",
+      lists: "friendLists",
+    }),
+    current() {
+      return {
+        name: this.userData.data.fullName,
+        uid: this.userData.uid,
+        img: this.userData.data.profilePic,
+      };
+    },
+    friendLists() {
+      return Object.keys(this.lists).map((uid) => {
+        return {
+          name: this.lists[uid].data.name,
+          uid: uid,
+          img: this.lists[uid].data.img,
+          logUid: this.lists[uid].logs,
+        };
+      });
+    },
+  },
+  methods: {
+    back() {
+      this.tab = 0;
+      this.$set(this.target, "target", "");
+    },
+    openChat(user) {
+      this.tab = 1;
+      this.target = {
+        target: {
+          name: user.name,
+          uid: user.uid,
+          img: user.img,
+        },
+        current: this.current,
+        logDoc: user.logUid,
+      };
+    },
+    async fetch() {
+      await this.$store.dispatch("fetchFriends");
+    },
+  },
+  async created() {
+    this.fetch();
+  },
+};
+</script>

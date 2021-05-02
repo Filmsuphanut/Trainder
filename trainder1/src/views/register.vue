@@ -1,16 +1,9 @@
 <template>
   <v-container>
-    <br />
-    <div class="bigbox">
-      <v-row justify="start">
-        <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
-      </v-row>
-
-      <br />
 
       <table class="tab" border="0">
         <tr>
-          <td width="35%" height="700px">
+          <td width="900" height="700px">
             <div class="box">
               <img
                 src="../images/Logo.png"
@@ -77,6 +70,8 @@
                       :disabled="!checkbox || loading"
                       type="submit"
                       :loading="loading"
+                      rounded
+                      color="primary"
                       >สมัครสมาชิก</v-btn
                     >
                   </v-col>
@@ -86,7 +81,9 @@
           </td>
         </tr>
       </table>
-    </div>
+
+
+<!-- dialog -->
 
     <v-dialog v-model="dialog" absolute max-width="400" persistent>
       <v-card>
@@ -273,13 +270,13 @@ export default {
 <style scoped>
 .box {
   background-color: rgb(255, 255, 255);
-  border: 2px solid rgb(205, 205, 253);
+  border: 2px solid rgb(198, 66, 66);
   padding: 5% 15% 10% 15%;
   border-radius: 10px;
   text-align: center;
   width: 100%;
   height: 100%;
-  box-shadow: 2;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   /* 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
   0 6.7px 5.3px rgba(0, 0, 0, 0.048),
   0 12.5px 10px rgba(0, 0, 0, 0.06),
@@ -294,7 +291,7 @@ export default {
   padding: 2% 2% 2% 2%;
   width: 100%;
   height: 100%;
-  border: 2px solid rgb(152, 152, 255);
+  border: 2px solid rgb(198, 66, 66);
   border-radius: 10px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
     0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
