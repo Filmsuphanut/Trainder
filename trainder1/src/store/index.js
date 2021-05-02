@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersistence from "vuex-persist";
-import { fb } from "../firebase";
+import {
+    fb
+} from "../firebase";
 const db = fb.firestore();
 import axios from "axios";
 Vue.use(Vuex);
 
-let endpoint = process.env.VUE_APP_ENDPOINT
+let endpoint = process.env.VUE_APP_ENDPOINT;
 
 export default new Vuex.Store({
     state: {
@@ -15,6 +17,7 @@ export default new Vuex.Store({
             // token: null,
             data: "",
         },
+        friendList: {},
         previous: {
             pre: "/",
         },
@@ -34,6 +37,9 @@ export default new Vuex.Store({
         },
         setUser(state, value) {
             Vue.set(state, "user", value);
+        },
+        setFriendLists(state, value) {
+            Vue.set(state.friendList, value.id, value.data);
         },
     },
     actions: {
@@ -59,7 +65,24 @@ export default new Vuex.Store({
         fetchFriends(context) {
             let prom = new Promise(async(resolve, reject) => {
                 try {
-                    let res = await axios.get(`${endpoint}/allFriends/${context.state.user.data.uid}`);
+                    let res = await axios.get(
+                        `${endpoint}/allFriends/${context.state.user.data.uid}`
+                    );
+                    let FL = [];
+                    let friends = res.data;
+                    for (let i = 0; i < friends.length; ++i) {
+                        let f = friends[i];
+                        let log = await axios.get(
+                            `${endpoint}/getLogByUID/${context.state.user.data.uid}&${f.id}`
+                        );
+                        context.commit("setFriendLists", {
+                            id: f.id,
+                            data: {
+                                data: f,
+                                logs: log.data.logId,
+                            }
+                        });
+                    }
                     resolve(res);
                 } catch (err) {
                     console.log(err);
@@ -72,6 +95,9 @@ export default new Vuex.Store({
     getters: {
         userData(state) {
             return state.user.data;
+        },
+        friendLists(state) {
+            return state.friendList;
         },
     },
     modules: {

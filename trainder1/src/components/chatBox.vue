@@ -1,36 +1,18 @@
 <template>
   <div>
-    <v-menu
-      :close-on-content-click="false"
-      :close-on-click="false"
-      offset-y
-      left
-    >
+    <v-menu :close-on-content-click="false" :close-on-click="false" offset-y left>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          dark
-          color="primary"
-          class="rounded-pill"
-          v-bind="attrs"
-          v-on="on"
-        >
+        <v-btn dark color="primary" class="rounded-pill" v-bind="attrs" v-on="on">
           <v-icon>mdi-account-multiple</v-icon>
         </v-btn>
       </template>
 
-      <v-card
-        width="450"
-        style="min-height:300px;"
-        max-height="550"
-        class="mx-auto"
-      >
+      <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
         <v-toolbar color="primary" dark>
           <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
-          <v-toolbar-title>{{
-            tab ? target.target.name : "Friends"
-          }}</v-toolbar-title>
+          <v-toolbar-title>{{ tab ? target.target.name : "Friends" }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <add-friend v-if="!tab" />
           <chat-option :user="target" v-if="tab" />
@@ -39,13 +21,13 @@
           <!-- list -->
           <v-tab-item>
             <v-list v-if="items.length" three-line>
-              <template v-for="(item, index) in items">
+              <template v-for="(item, index) in friendLists">
                 <div :key="index">
                   <v-hover v-slot="{ hover }">
                     <v-list-item
                       :class="hover ? 'blue-grey lighten-5' : ''"
                       :key="item.name"
-                      style="cursor : pointer"
+                      style="cursor: pointer"
                     >
                       <v-list-item-avatar>
                         <v-img :src="item.img"></v-img>
@@ -57,15 +39,15 @@
                           v-html="item.name"
                         ></v-list-item-title>
 
-                        <v-list-item-subtitle>
+                        <!-- <v-list-item-subtitle>
                           <span class="text--primary">{{ item.name }}</span>
                           &mdash;
                           {{ item.subtitle }}
-                        </v-list-item-subtitle>
+                        </v-list-item-subtitle> -->
                       </v-list-item-content>
 
                       <v-btn
-                        class="elevation-2 white  "
+                        class="elevation-2 white"
                         :style="hover ? '' : 'visibility: hidden;'"
                         text
                         icon
@@ -108,33 +90,31 @@ export default {
     return {
       tab: 0,
       items: [
-        // {
-        //   img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-        //   name: "Brunch weekend",
-        //   subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-        // },
-        // {
-        //   img: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-        //   name: "Summer Barbeque",
-        //   subtitle: `Wish I could come, but I'm out of town this weekend.`,
-        // },
-        // {
-        //   img: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-        //   name: "Sandra Adams",
-        //   subtitle: "Do you have Paris recommendations? Have you ever been?",
-        // },
-        // {
-        //   img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-        //   name: "Trevor Hansen",
-        //   subtitle:
-        //     "Have any ideas about what we should get Heidi for her birthday?",
-        // },
-        // {
-        //   img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
-        //   name: "Britta Holt",
-        //   subtitle:
-        //     "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
-        // },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          name: "Brunch weekend",
+          subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+          name: "Summer Barbeque",
+          subtitle: `Wish I could come, but I'm out of town this weekend.`,
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+          name: "Sandra Adams",
+          subtitle: "Do you have Paris recommendations? Have you ever been?",
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+          name: "Trevor Hansen",
+          subtitle: "Have any ideas about what we should get Heidi for her birthday?",
+        },
+        {
+          img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
+          name: "Britta Holt",
+          subtitle: "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
+        },
       ],
       target: { target: "", current: "" },
     };
@@ -142,6 +122,7 @@ export default {
   computed: {
     ...mapGetters({
       userData: "userData",
+      lists: "friendLists",
     }),
     current() {
       return {
@@ -149,6 +130,16 @@ export default {
         uid: this.userData.uid,
         img: this.userData.data.profilePic,
       };
+    },
+    friendLists() {
+      return Object.keys(this.lists).map((uid) => {
+        return {
+          name: this.lists[uid].data.name,
+          uid: uid,
+          img: this.lists[uid].data.img,
+          logUid: this.lists[uid].logs,
+        };
+      });
     },
   },
   methods: {
@@ -161,16 +152,19 @@ export default {
       this.target = {
         target: {
           name: user.name,
-          uid: "1",
+          uid: user.uid,
           img: user.img,
         },
         current: this.current,
+        logDoc: user.logUid,
       };
+    },
+    async fetch() {
+      await this.$store.dispatch("fetchFriends");
     },
   },
   async created() {
-    let res = await this.$store.dispatch("fetchFriends");
-    console.log(res);
+    this.fetch();
   },
 };
 </script>
