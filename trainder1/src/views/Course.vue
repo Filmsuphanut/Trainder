@@ -13,7 +13,7 @@
             </h2>
 
             <v-spacer></v-spacer>
-            <v-btn rounded="xl" class="text-center pa-2" color="accent" @click="Router_CreCourse">Create Course</v-btn>
+            <v-btn rounded="xl" class="text-center pa-2" color="accent" @click="Router_CreCourse"><v-icon>mdi-plus</v-icon> Create Course</v-btn>
           </v-row>
         
           <!-- Grid title -->
@@ -30,7 +30,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-for="course in courses" :key="course">
+          <v-row v-for="course in courses" :key="course" class="mb-2">
             <v-col cols="12">
               <v-card rounded="xl" color="secondary">
                 <v-row>
