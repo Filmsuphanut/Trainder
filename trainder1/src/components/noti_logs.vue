@@ -2,34 +2,44 @@
   <div>
     <v-menu :close-on-content-click="false" offset-y left>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          dark
-          color="primary"
-          class="elevation-1 mx-1"
-          fab
-          small
-          v-bind="attrs"
-          v-on="on"
+        <v-badge
+          :value="notification.length"
+          dot
+          bordered
+          bottom
+          color="error"
+          offset-x="15"
+          offset-y="10"
+          overlap
         >
-          <v-icon>mdi-account-multiple</v-icon>
-        </v-btn>
+          <v-btn
+            dark
+            color="primary"
+            class="elevation-1 mx-1"
+            fab
+            small
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+        </v-badge>
       </template>
 
-      <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
+      <v-card
+        width="450"
+        style="min-height: 300px"
+        max-height="550"
+        class="mx-auto"
+      >
         <v-toolbar color="primary" dark>
-          <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
-            <v-icon>mdi-arrow-left</v-icon>
-          </v-btn>
-          <v-toolbar-title>{{ tab ? target.target.name : "Friends" }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <add-friend v-if="!tab" />
-          <chat-option @back="tab = 0" :user="target" v-if="tab" />
+          <v-toolbar-title> Notification </v-toolbar-title>
         </v-toolbar>
         <v-tabs-items v-model="tab">
           <!-- list -->
           <v-tab-item>
-            <v-list v-if="items.length">
-              <template v-for="(item, index) in friendLists">
+            <v-list v-if="items.length" three-line>
+              <template v-for="(item, index) in notification">
                 <div :key="index">
                   <v-hover v-slot="{ hover }">
                     <v-list-item
@@ -47,22 +57,20 @@
                           v-html="item.name"
                         ></v-list-item-title>
 
-                        <!-- <v-list-item-subtitle>
-                          <span class="text--primary">{{ item.name }}</span>
-                          &mdash;
-                          {{ item.subtitle }}
-                        </v-list-item-subtitle> -->
+                        <v-list-item-subtitle v-html="item.msg">
+                        </v-list-item-subtitle>
                       </v-list-item-content>
 
                       <v-btn
-                        class="elevation-2 white"
-                        :style="hover ? '' : 'visibility: hidden;'"
+                        @click="deleteNoti(index)"
+                        v-if="hover"
+                        fab
+                        color="warning"
+                        class="mx-1"
+                        small
                         text
-                        icon
-                        color="primary"
-                        @click="openChat(item)"
                       >
-                        <v-icon class="primary--text">mdi-chevron-right</v-icon>
+                        <v-icon>mdi-trash-can</v-icon>
                       </v-btn>
                     </v-list-item>
                   </v-hover>
@@ -74,9 +82,6 @@
             </v-card-text>
           </v-tab-item>
           <!-- chat -->
-          <v-tab-item>
-            <chat v-if="tab" :user="target" />
-          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-menu>
@@ -86,14 +91,10 @@
 <style></style>
 
 <script>
-import chat from "./chat.vue";
-import ChatOption from "./chatOption.vue";
-
 import { mapGetters } from "vuex";
-import AddFriend from "./addFriend.vue";
-
+import { fb } from "../firebase";
+const db = fb.firestore();
 export default {
-  components: { chat, ChatOption, AddFriend },
   data() {
     return {
       tab: 0,
@@ -116,12 +117,14 @@ export default {
         {
           img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
           name: "Trevor Hansen",
-          subtitle: "Have any ideas about what we should get Heidi for her birthday?",
+          subtitle:
+            "Have any ideas about what we should get Heidi for her birthday?",
         },
         {
           img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
           name: "Britta Holt",
-          subtitle: "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
+          subtitle:
+            "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
         },
       ],
       target: { target: "", current: "" },
@@ -129,46 +132,28 @@ export default {
   },
   computed: {
     ...mapGetters({
+      notification: "notification",
       userData: "userData",
-      lists: "friendLists",
     }),
-    current() {
-      return {
-        name: this.userData.data.fullName,
-        uid: this.userData.uid,
-        img: this.userData.data.profilePic,
-      };
-    },
-    friendLists() {
-      return Object.keys(this.lists).map((uid) => {
-        return {
-          name: this.lists[uid].data.name,
-          uid: uid,
-          img: this.lists[uid].data.img,
-          logUid: this.lists[uid].logs,
-        };
-      });
-    },
   },
   methods: {
     back() {
       this.tab = 0;
       this.$set(this.target, "target", "");
     },
-    openChat(user) {
-      this.tab = 1;
-      this.target = {
-        target: {
-          name: user.name,
-          uid: user.uid,
-          img: user.img,
-        },
-        current: this.current,
-        logDoc: user.logUid,
-      };
-    },
     async fetch() {
-      await this.$store.dispatch("fetchFriends");
+      await this.$store.dispatch("fetchNotication");
+      db.collection("userData")
+        .doc(this.userData.uid)
+        .onSnapshot(async () => {
+          await this.$store.dispatch("fetchNotication");
+        });
+    },
+    deleteNoti(index) {
+      let deleted = [...this.notification];
+      deleted.splice(index, 1);
+      this.$store.commit("setNotification", deleted);
+      this.$store.dispatch("updateNoti");
     },
   },
   async created() {

@@ -16,12 +16,7 @@
     </div>
     <!-- chat -->
     <v-navigation-drawer app right width="456" v-model="chatBar" temporary>
-      <v-card
-        class="d-flex flex-column"
-        outlined
-        elevation="0"
-        style="height: 100%"
-      >
+      <v-card class="d-flex flex-column" outlined elevation="0" style="height: 100%">
         <v-card-title
           primary-title
           class="d-flex flex-column align-start info white--text"
@@ -41,16 +36,13 @@
             <template v-for="(log, idx) in roomChats">
               <div
                 :key="idx"
-                :class="
-                  isCurrentUser(log.sender)
-                    ? 'd-flex justify-end text-right'
-                    : ''
-                "
+                :class="isCurrentUser(log.sender) ? 'd-flex justify-end text-right' : ''"
               >
                 <div
-                  style="width: fit-content;
-                  height: fit-content;
-                  border : thin solid #2196f3
+                  style="
+                    width: fit-content;
+                    height: fit-content;
+                    border: thin solid #2196f3;
                   "
                   :style="
                     isCurrentUser(log.sender)
@@ -60,17 +52,13 @@
                   class="mb-2 pa-2 rounded-lg"
                 >
                   <p class="info--text font-weight-bold ma-0">
-                    <span
-                      v-if="isCurrentUser(log.sender)"
-                      class="text-caption"
-                      >{{ log.date }}</span
-                    >
+                    <span v-if="isCurrentUser(log.sender)" class="text-caption">{{
+                      log.date
+                    }}</span>
                     {{ log.sender }}
-                    <span
-                      v-if="!isCurrentUser(log.sender)"
-                      class="text-caption"
-                      >{{ log.date }}</span
-                    >
+                    <span v-if="!isCurrentUser(log.sender)" class="text-caption">{{
+                      log.date
+                    }}</span>
                   </p>
                   <p class="ma-0">
                     {{ log.msg }}
@@ -108,7 +96,7 @@
         class="d-flex justify-center align-center"
         style="height: 100%; width: 100%; position: relative"
       >
-        <a @click="copy" class="ma-0 pa-0">
+        <a @click="copy" class="ma-0 pa-0 info--text">
           <v-icon class="info--text">mdi-link-variant</v-icon> Invite link</a
         >
         <v-spacer></v-spacer>
@@ -136,7 +124,7 @@
           <v-icon>mdi-phone-hangup</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        
+
         <v-btn
           icon
           fab
@@ -208,7 +196,7 @@
             <v-col cols="4" class="pa-1">
               <v-btn
                 class="pa-6"
-                style="height:56px"
+                style="height: 56px"
                 block
                 :disabled="room == ''"
                 color="success"
@@ -219,7 +207,7 @@
           </v-row>
         </v-card-text>
         <v-card-text class="py-0">
-          <p class="text-h6   text-center ma-0">- - - OR - - -</p>
+          <p class="text-h6 text-center ma-0">- - - OR - - -</p>
         </v-card-text>
         <v-card-text class="px-8 py-1 pb-5">
           <v-btn class="pa-8 my-2" block color="warning" @click="createRoom"
@@ -249,8 +237,7 @@ video {
 </style>
 
 <script>
- 
-import {config,endpoint} from '../websocket'
+import { config, endpoint } from "../websocket";
 import io from "socket.io-client";
 import { mapGetters } from "vuex";
 var socket;
@@ -320,10 +307,10 @@ export default {
     copy() {
       const text = `${window.location.host}/custom-vdoc/${this.room}`;
       navigator.clipboard.writeText(text).then(
-        function() {
+        function () {
           alert("Copy Room Url Success;");
         },
-        function(err) {
+        function (err) {
           console.error("Async: Could not copy text: ", err);
         }
       );
@@ -460,12 +447,7 @@ export default {
         .createOffer()
         .then((sdp) => this.peerConnections[id].setLocalDescription(sdp))
         .then(() => {
-          socket.emit(
-            "offer",
-            this.room,
-            id,
-            this.peerConnections[id].localDescription
-          );
+          socket.emit("offer", this.room, id, this.peerConnections[id].localDescription);
         });
     },
     answer(id, description) {
@@ -481,12 +463,7 @@ export default {
         .then((sdp) => this.peerConnections[id].setLocalDescription(sdp))
         .then(() => {
           console.log(`answer to user : ${id}`);
-          socket.emit(
-            "answer",
-            this.room,
-            id,
-            this.peerConnections[id].localDescription
-          );
+          socket.emit("answer", this.room, id, this.peerConnections[id].localDescription);
         });
     },
     async join(room) {
@@ -503,11 +480,11 @@ export default {
           msg: `You has joined a room ${this.room}`,
           date: new Date().toLocaleTimeString(),
         });
-        this.roomChats.push({
-          sender: "System",
-          msg: `People inside this room : ${data.users.join(", ")}`,
-          date: new Date().toLocaleTimeString(),
-        });
+        // this.roomChats.push({
+        //   sender: "System",
+        //   msg: `People inside this room : ${data.users.join(", ")}`,
+        //   date: new Date().toLocaleTimeString(),
+        // });
       });
 
       socket.on("user-joined-room", (id, userData) => {
@@ -540,9 +517,7 @@ export default {
 
       socket.on("candidate", (id, to, candidate) => {
         if (this.peerConnections[id] && socket.id == to) {
-          this.peerConnections[id].addIceCandidate(
-            new RTCIceCandidate(candidate)
-          );
+          this.peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
         }
       });
 
@@ -561,23 +536,22 @@ export default {
     },
     leave() {
       if (this.room) socket.emit("leave-room", this.room);
-      this.devices.mic = false
-      this.devices.cam = false
+      this.devices.mic = false;
+      this.devices.cam = false;
       //clear all listener
       socket.on("user-leaved-room", () => {});
       socket.on("user-joined-room", () => {});
       this.peerConnections = {};
       Array.prototype.slice
         .call(document.getElementsByTagName("video"))
-        .forEach(function(item) {
-          if (item && item.id != "myVdo" && item.id != "myScreen")
-            item.remove();
+        .forEach(function (item) {
+          if (item && item.id != "myVdo" && item.id != "myScreen") item.remove();
           // or item.parentNode.removeChild(item); for older browsers (Edge-)
         });
       this.roomChats = [];
       this.chat = "";
       this.room = "";
-      this.overlays.nameInput = true
+      this.overlays.nameInput = true;
     },
     // async shareScreen() {
     //   const video = document.getElementById("myVdo");
@@ -595,23 +569,15 @@ export default {
     //     .catch((error) => console.error(error));
     // },
     sendChat() {
-      socket.emit(
-        "chat message",
-        this.room,
-        this.chat,
-        new Date().toLocaleTimeString()
-      );
+      socket.emit("chat message", this.room, this.chat, new Date().toLocaleTimeString());
       this.chat = "";
     },
     makeid(length) {
       var result = [];
-      var characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       var charactersLength = characters.length;
       for (var i = 0; i < length; i++) {
-        result.push(
-          characters.charAt(Math.floor(Math.random() * charactersLength))
-        );
+        result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
       }
       return result.join("");
     },

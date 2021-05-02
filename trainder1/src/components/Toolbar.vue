@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar color="#fce5e5">
+  <v-toolbar>
     <v-toolbar-title class="d-flex align-center">
       <v-img
         alt="Trainder Logo"
@@ -13,10 +13,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <chat-box />
-    <v-btn color="primary" class="elevation-1 mx-1" fab small>
-      <v-icon>mdi-bell</v-icon>
-    </v-btn>
-
+    <noti-logs />
     <!-- <v-btn icon>
         <v-avatar>
             <v-img src="../images/hello.png"></v-img>
@@ -43,9 +40,10 @@
 <script>
 import chatBox from "./chatBox.vue";
 import firebase from "firebase";
+import NotiLogs from "./noti_logs.vue";
 
 export default {
-  components: { chatBox },
+  components: { chatBox, NotiLogs },
   data() {
     return {
       profile_image: "",
@@ -67,6 +65,10 @@ export default {
           console.log(error);
         });
     },
+  },
+  async created() {
+    await this.$store.dispatch("fetchNotication");
+    await this.$store.dispatch("fetchFriends");
   },
 };
 </script>

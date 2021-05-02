@@ -18,6 +18,7 @@ export default new Vuex.Store({
             data: "",
         },
         friendList: {},
+        notification: [],
         previous: {
             pre: "/",
         },
@@ -44,6 +45,9 @@ export default new Vuex.Store({
         setFriendLists(state, value) {
             Vue.set(state.friendList, value.id, value.data);
         },
+        setNotification(state, value) {
+            Vue.set(state, "notification", value)
+        }
     },
     actions: {
         logout(context) {
@@ -95,6 +99,44 @@ export default new Vuex.Store({
             });
             return prom;
         },
+        fetchNotication(context) {
+            let prom = new Promise(async(resolve, reject) => {
+                try {
+                    let res = await axios.get(
+                        `getAllNoti/${context.state.user.data.uid}`
+                    );
+                    var data = []
+                    let allNoti = res.data
+                    for (let i = 0; i < allNoti.length; ++i) {
+                        let noti = allNoti[i]
+                        db.collection("userData").doc(noti.sender).get().then(who => {
+                            data.push({
+                                img: who.data().profilePic,
+                                name: who.data().fullName,
+                                msg: noti.msg
+                            })
+                        })
+                    }
+                    context.commit("setNotification", data)
+                    resolve(res);
+                } catch (err) {
+                    console.log(err);
+                    reject(false);
+                }
+            });
+            return prom;
+        },
+        async updateNoti(context) {
+            try {
+                let res = await axios.put("updateNoti", {
+                    userId: context.state.user.data.uid,
+                    notification: context.state.notification
+                })
+                console.log(res.data)
+            } catch (err) {
+                alert(err)
+            }
+        }
     },
     getters: {
         userData(state) {
@@ -103,6 +145,9 @@ export default new Vuex.Store({
         friendLists(state) {
             return state.friendList;
         },
+        notification(state) {
+            return state.notification
+        }
     },
     modules: {
         fb,
