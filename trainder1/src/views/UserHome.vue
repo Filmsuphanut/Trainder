@@ -18,13 +18,22 @@
                 </v-card-subtitle>
               </v-col>
               <v-col cols="5" class="">
-                <v-card class="pa-0 ma-0" rounded="circle" flat>
+                <!-- <v-card class="pa-0 ma-0" rounded="circle" flat>
                   <v-img
-                    src="../images/sudlor.jpg"
+                    :src="profile_image"
                     max-height="150"
                     max-width="150"
                   ></v-img>
-                </v-card>
+                </v-card> -->
+                  <v-row justify="center">
+                    <v-card rounded="circle" flat>
+                    <img :src="profile_image"
+                    align="left"
+                    width="150"
+                    height="150"
+                    alt="Avatar">
+                    </v-card>
+                  </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -133,7 +142,10 @@ import { mapGetters } from "vuex";
 export default {
   name: "index",
   data() {
-    return {};
+    return {
+      profile_image:"",
+
+    };
   },
   computed: {
     ...mapGetters({
@@ -146,6 +158,14 @@ export default {
 
       //let user = firebase.auth().currentUser;
       let user = this.$store.getters["userData"];
+
+      // let db = firebase.firestore()
+      // let userRef = db.collection("userData");
+      // let userData = await userRef.where("uid","==",user.data.uid).get();
+
+      // userData.forEach(doc => {
+        this.profile_image = this.$store.getters["userData"].data.profilePic;
+      // })
 
       //console.log(test.data.fullName)
 

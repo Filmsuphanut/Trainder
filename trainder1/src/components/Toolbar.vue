@@ -27,7 +27,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-btn icon v-bind="attrs" v-on="on">
           <v-avatar>
-            <v-img src="../images/sudlor.jpg"></v-img>
+            <v-img :src="profile_image"></v-img>
           </v-avatar>
         </v-btn>
       </template>
@@ -51,6 +51,11 @@ import firebase from "firebase";
 
 export default {
   components: { chatBox },
+    data(){
+      return{
+        profile_image:"",
+      }
+    },
     methods: {
       logout() {
         firebase
@@ -67,6 +72,9 @@ export default {
             console.log(error);
           });
       },
+    },
+    mounted(){
+      this.profile_image = this.$store.getters["userData"].data.profilePic;
     },
 }
 </script>
