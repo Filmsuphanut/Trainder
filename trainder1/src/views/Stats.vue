@@ -281,11 +281,13 @@
             <v-row>
               <v-col cols="12" class="flex-column">
                 <v-card rounded="xl" light class="pa-2 text-center elevation-5">
+
                   <GChart
                     type="ColumnChart"
                     :data="exerciseData"
                     :options="exerciseChartOptions"
                   ></GChart>
+
                 </v-card>
               </v-col>
             </v-row>
@@ -298,6 +300,9 @@
 
 <script>
 import { GChart } from "vue-google-charts";
+import firebase from 'firebase';
+
+
 export default {
   components: {
     GChart,
@@ -410,6 +415,7 @@ export default {
       this.dialog_status2 = false;
     },
     eating_history_range(){
+      
       const current = new Date();
       let tempDate = current.getDate()-7;
       let tempMonth = current.getMonth()+1;
@@ -430,7 +436,57 @@ export default {
       const min = tempYear+'-'+zeroone+(tempMonth)+'-'+tempDate;
       const max = current.getFullYear()+'-'+zeroone+(current.getMonth()+1)+'-'+(current.getDate());
       return [min,max];
+    },
+
+//////////////////////////////// firebase methods
+
+    async call_stat(){
+
+      let uid = this.$store.getters["userData"].data.uid;
+      let db = firebase.firestore();
+      let statRef = db.collection("userStats");
+      let statData = await statRef.get();
+      let check_stat_data = false;
+
+      statData.forEach(doc => {
+        if(doc.id == uid){
+          check_stat_data = true;
+        }
+      });
+
+      if(check_stat_data==true){
+        console.log("get data");
+        let statData = await statRef.doc(uid).get();
+        this.weight = statData.data().weight;
+        this.height = statData.data().height;
+
+
+      }else{
+        console.log("create data");
+
+        await statRef.doc(uid).set({
+          BMI:0,
+          BMI_status:"Normal",
+          calories_burned_history:{"0/0/0":0},
+          calories_eaten_history:{"0/0/0":{noon:0,morning:0,evening:0},calories_limit:0},
+          dates:{exercise_first_edited:"0/0/0",exercise_last_edited:"0/0/0",meal_first_edited:"0/0/0",meal_last_edited:"0/0/0",
+          weight_first_edited:"0/0/0",weight_last_edited:"0/0/0"},
+          exercise_time_history:{"0/0/0":0},
+          dummy:"dummy",
+          height:0,
+          weight:0,
+          weight_start:0,
+        });
+
+      }
+
+
+
     }
+
+
+
+
   },
   computed: {
     bmi() {
@@ -462,5 +518,15 @@ export default {
       return 0
     }
   },
+
+
+  mounted(){
+
+    this.call_stat();
+
+
+
+
+  }
 };
 </script>
