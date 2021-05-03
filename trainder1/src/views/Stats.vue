@@ -298,6 +298,9 @@
 
 <script>
 import { GChart } from "vue-google-charts";
+import firebase from 'firebase';
+
+
 export default {
   components: {
     GChart,
@@ -430,7 +433,59 @@ export default {
       const min = tempYear+'-'+zeroone+(tempMonth)+'-'+tempDate;
       const max = current.getFullYear()+'-'+zeroone+(current.getMonth()+1)+'-'+(current.getDate());
       return [min,max];
+    },
+
+//////////////////////////////// firebase methods
+
+    async call_stat(){
+
+      let uid = this.$store.getters["userData"].data.uid;
+      let db = firebase.firestore();
+      let statRef = db.collection("userStats");
+      let statData = await statRef.get();
+      let check_stat_data = false;
+
+      statData.forEach(doc => {
+        if(doc.id == uid){
+          check_stat_data = true;
+        }
+      });
+
+      if(check_stat_data==true){
+        console.log("ok");
+        let statData = await statRef.doc(uid).get();
+        this.weight = statData.data().weight;
+        this.height = statData.data().height;
+        this.bmi = statData.data().BMI;
+        this.bmi_status = statData.data().BMI_status;
+
+
+      }else{
+        console.log("create data");
+
+        await statRef.doc(uid).set({
+          BMI:0,
+          BMI_status:"Normal",
+          calories_burned_history:{"0/0/0":0},
+          calories_eaten_history:{"0/0/0":{noon:0,morning:0,evening:0},calories_limit:0},
+          dates:{exercise_first_edited:"0/0/0",exercise_last_edited:"0/0/0",meal_first_edited:"0/0/0",meal_last_edited:"0/0/0",
+          weight_first_edited:"0/0/0",weight_last_edited:"0/0/0"},
+          exercise_time_history:{"0/0/0":0},
+          dummy:"dummy",
+          height:0,
+          weight:0,
+          weight_start:0,
+        });
+
+      }
+
+
+
     }
+
+
+
+
   },
   computed: {
     bmi() {
@@ -462,5 +517,15 @@ export default {
       return 0
     }
   },
+
+
+  mounted(){
+
+    this.call_stat();
+
+
+
+
+  }
 };
 </script>
