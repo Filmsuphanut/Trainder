@@ -1,140 +1,66 @@
 <template>
   <v-container>
+    <v-row justify="center">
+      <v-card class="ma-4 pa-8" rounded="xl" color="secondary" width="980">
+        <v-row justify="center">
+          <v-sheet color="white" width="100%" rounded="xl">
+            <v-toolbar color="primary" height="80" width="100%" dark>
+              <h2>
+                <v-avatar color="white"
+                  ><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar
+                >
+                คอร์สของฉัน
+              </h2>
+            </v-toolbar>
 
-    <v-row justify="center" >
-        <v-card class="ma-4 pa-8" rounded="xl" color="secondary" width="980">
-            
+            <br /><br />
+
             <v-row justify="center">
-                <v-sheet color="white" width="100%" rounded="xl">
-                    <v-toolbar color="primary" height="80" width="100%" dark>
-                        <h2>
-                        <v-avatar color="white" ><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar>
-                        คอร์สของฉัน
-                        </h2>
-                    </v-toolbar>
+              <v-card width="800" flat>
+                <v-expansion-panels popout>
+                  <v-expansion-panel v-for="(item, i) in my_course" :key="i">
+                    <v-expansion-panel-header
+                      expand-icon="mdi-menu-down"
+                      dark
+                      color="secondary"
+                      >{{ item.name }}</v-expansion-panel-header
+                    >
+                    <v-expansion-panel-content
+                      ><br />
 
-                    <br><br>
-
-                    <v-row justify="center">
-                        <v-card width="800" flat>
-                            <v-expansion-panels popout>
-                            <v-expansion-panel v-for="(item,i) in 5" :key="i">
-                                <v-expansion-panel-header expand-icon="mdi-menu-down" dark color="secondary">ชื่อคอร์สออกกำลังกาย{{i}}</v-expansion-panel-header>
-                                <v-expansion-panel-content><br>
-
-                                <v-row justify="start">
-                                    <v-card class="ma-1" flat>
-                                        <v-card-text>
-                                        ชื่อคอร์ส:<br>
-                                        รายละเอียดคอร์ส:<br>
-                                        ชื่อเทรนเนอร์:<br>
-                                        วันเริ่มคอร์ส<br>
-                                        วันจบคอร์ส<br>
-                                        </v-card-text>
-
-                                    </v-card>
-                                </v-row>
-
-
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            </v-expansion-panels>            
+                      <v-row justify="start">
+                        <v-card class="ma-1" flat>
+                          <v-card-text class="black--text">
+                            ชื่อคอร์ส: {{ item.name }}<br />
+                            รายละเอียดคอร์ส: {{ item.description }}<br />
+                            ชื่อเทรนเนอร์: {{ item.creatorname }}<br />
+                            วันเริ่มคอร์ส: {{ item.start }}<br />
+                            วันจบคอร์ส: {{ item.end }}<br />
+                            ประเภท: {{ item.genre }}<br />
+                            วัตถุประสงค์: {{ item.purpose }}<br />
+                          </v-card-text>
                         </v-card>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
 
-                    </v-row>
-
-                    <v-row>
-                        <v-card flat height="80">
-
-                        </v-card>
-                    </v-row>
-
-            </v-sheet>
+                <v-card-text
+                  class="d-flex flex-row justify-center"
+                  v-if="my_course.length == 0"
+                  >ยังไม่มีคอร์สเหรอ หา Trainer ดีๆ ใน Excercise with trainer
+                  สิ</v-card-text
+                >
+              </v-card>
             </v-row>
 
-            <!-- title -->
-            <!-- <v-card class="ma-5 pa-6" rounded="xl" dark color="primary">
-                <v-row>
-                    <v-toolbar>
-                        <h2>
-                        <v-avatar color="white"><v-icon color="accent" x-large>mdi-dumbbell</v-icon></v-avatar>
-                        คอร์สของฉัน
-                        </h2>
-                    </v-toolbar>
-                </v-row>
-                <v-row>
-                    asdasd
-                </v-row>
-            </v-card> -->
-
-
-
-            
-
-
-
-
-
-
-
-        
-          <!-- Grid title -->
-
-          <!-- <v-row class="my-3">
-            <v-col
-              v-for="(t, index) in title"
-              :key="index"
-              :cols="column[index]"
-            >
-              <v-card rounded="xl" class="text-center pa-2" color="accent">
-                {{ t }}
-              </v-card>
-            </v-col>
-          </v-row>
-
-          <v-row v-for="course in courses" :key="course" class="mb-2">
-            <v-col cols="12">
-              <v-card rounded="xl" color="secondary">
-                <v-row>
-                  <v-col cols="2" class="pl-6">
-                    {{ course.name }}
-                  </v-col>
-                  <v-col cols="4" class="pl-6">
-                    {{ course.description }}
-                  </v-col>
-                  <v-col cols="1" class="text-center">
-                    {{ course.start }}
-                  </v-col>
-                  <v-col cols="1" class="text-center">
-                    {{ course.end }}
-                  </v-col>
-                  <v-col cols="1" class="pl-6">
-                    {{ course.purpose }}
-                  </v-col>
-                  <v-col cols="1" class="pl-6">
-                    {{ course.genre }}
-                  </v-col>
-                  <v-col cols="1" class="text-center">
-                    <v-btn fab small dark color="lime" @click="Router_EditCourse(course.id)">
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="1" class="text-center">
-                    <v-btn fab small dark color="red" @click="snackdelete=true,del_id = course.id">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-col>
-          </v-row> -->
-          
-        </v-card>
-
-
+            <v-row>
+              <v-card flat height="80"> </v-card>
+            </v-row>
+          </v-sheet>
+        </v-row>
+      </v-card>
     </v-row>
-
-
   </v-container>
 </template>
 
@@ -142,43 +68,70 @@
 import firebase from "firebase";
 
 export default {
-    name:"UserCourse",
-    data(){
-        return{
-            my_course:[],
-
-        }
-    },
-    methods:{
-
-//////////////////default method
-        callname(){
-            let user = this.$store.getters["userData"];
-            return user.data.fullName;
-        },
-        back() {
-            let previous = this.$store.state.previous.pre;
-            this.$router.push(previous);
-        },
-        Router_CreCourse(){
-            this.setPrevious();
-            this.$router.push("/CreateCourse")
-        },
-        setPrevious(){
-            if(this.$store.state.previous.pre !== "/Course"){
-                this.$store.commit("setPreviousPage","/Course");
-            }
-        },
-
-    },
-  async mounted() {
-
-      this.$store.commit("setPreviousPage","/TrainerHome");
+  name: "UserCourse",
+  data() {
+    return {
+      my_course: [],
+    };
   },
+  methods: {
+    /////////////////////firebase
+    async call_myCourse() {
+      let user = this.$store.getters["userData"];
+      let db = firebase.firestore();
+      let courseRef = await db.collection("Course").get();
 
-}
+      courseRef.forEach((doc) => {
+        let member = doc.data().member;
+        //console.log(doc.id);
+        if (member.includes(user.uid)) {
+          let d = { ...doc.data() };
+          d.creatorname = "";
+          this.my_course.push({ ...d });
+        }
+      });
+    },
+    async call_trainername() {
+      let user = this.$store.getters["userData"].data;
+      let db = firebase.firestore();
+      let courseRef = await db.collection("userData").get();
+      //console.log(this.my_course);
+
+      this.my_course.forEach((data) => {
+        console.log(data.creator);
+        courseRef.forEach((doc) => {
+          if (doc.data().uid == data.creator) {
+            data.creatorname = doc.data().fullName;
+          }
+        });
+      });
+    },
+    //////////////////default method
+    callname() {
+      let user = this.$store.getters["userData"];
+      return user.data.fullName;
+    },
+    back() {
+      let previous = this.$store.state.previous.pre;
+      this.$router.push(previous);
+    },
+    Router_CreCourse() {
+      this.setPrevious();
+      this.$router.push("/CreateCourse");
+    },
+    setPrevious() {
+      if (this.$store.state.previous.pre !== "/Course") {
+        this.$store.commit("setPreviousPage", "/Course");
+      }
+    },
+  },
+  async mounted() {
+    await this.call_myCourse();
+    await this.call_trainername();
+    console.log(this.my_course);
+    //this.$store.commit("setPreviousPage","/TrainerHome");
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
