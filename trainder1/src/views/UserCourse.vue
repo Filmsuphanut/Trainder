@@ -30,7 +30,7 @@
 
                       <v-row justify="start">
                         <v-card class="ma-1" flat>
-                          <v-card-text>
+                          <v-card-text class="black--text">
                             ชื่อคอร์ส: {{ item.name }}<br />
                             รายละเอียดคอร์ส: {{ item.description }}<br />
                             ชื่อเทรนเนอร์: {{ item.creatorname }}<br />
@@ -52,7 +52,6 @@
                   สิ</v-card-text
                 >
               </v-card>
-              {{ my_course }}
             </v-row>
 
             <v-row>
@@ -78,14 +77,13 @@ export default {
   methods: {
     /////////////////////firebase
     async call_myCourse() {
-      let user = this.$store.getters["userData"].data;
+      let user = this.$store.getters["userData"];
       let db = firebase.firestore();
       let courseRef = await db.collection("Course").get();
 
       courseRef.forEach((doc) => {
         let member = doc.data().member;
         //console.log(doc.id);
-        console.log(doc.id, member);
         if (member.includes(user.uid)) {
           let d = { ...doc.data() };
           d.creatorname = "";
