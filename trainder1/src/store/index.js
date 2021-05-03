@@ -55,14 +55,25 @@ export default new Vuex.Store({
         },
         setChatEvent(state, value) {
             Vue.set(state.chatSetting, "event", value)
+        },
+        clearAll(state) {
+            Vue.set(state, "user", {
+                data: ""
+            })
+            Vue.set(state, "friendList", {})
+            Vue.set(state, "chatSetting", {
+                event: false,
+            })
+            Vue.set(state, "notification", [])
+            Vue.set(state, "previous", {
+                pre: "/",
+            })
+
         }
     },
     actions: {
         logout(context) {
-            context.commit("setUser", {
-                // token: null,
-                data: "",
-            });
+            context.commit("clearAll");
         },
         report(context, value) {
             let prom = new Promise(async(resolve, reject) => {
@@ -138,6 +149,7 @@ export default new Vuex.Store({
                     //         })
                     //     })
                     // }
+                    if (res.data == "There no notification") res.data = []
                     context.commit("setNotification", res.data);
                     resolve(res);
                 } catch (err) {
@@ -185,6 +197,9 @@ export default new Vuex.Store({
         },
         getDataById: (state) => (id) => {
             return state.friendList[id]
+        },
+        userRole(state) {
+            return state.user.data.data.role
         }
     },
     modules: {
