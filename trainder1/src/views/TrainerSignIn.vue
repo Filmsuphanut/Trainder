@@ -1,23 +1,13 @@
 <template>
   <v-container>
-    <br />
-
-    <div class="bigbox">
-      <v-row justify="start">
-        <v-btn to="/"><v-icon center>arrow_back_ios</v-icon></v-btn>
-      </v-row>
-      <br />
-
-      <table class="tab" border="0">
-        <tr>
-          <td width="620" height="700px">
-            <div class="box">
-              <img src="../images/Logo.png" align="center" /><br /><br />
+    <br>
+          <v-row justify="center">
+            <v-card class="box" width="900" height="100%">
+              <img src="../images/Logo.png" align="center">
 
               <v-form ref="form" @submit.prevent="regissubmit">
                 <v-row justify="center">
                   <v-col>
-                    <br />
                     <p align="left">ข้อมูลส่วนตัว</p>
 
                     <v-text-field
@@ -25,6 +15,7 @@
                       :rules="personalIDRule"
                       v-model="userdata.personalID"
                       required
+                      outlined
                     ></v-text-field>
 
                     <v-select
@@ -32,6 +23,7 @@
                       label="เพศ"
                       v-model="userdata.gender"
                       required
+                      outlined
                       :rules="checkdata"
                     ></v-select>
 
@@ -53,6 +45,7 @@
                           v-on="on"
                           :rules="checkdata"
                           required
+                          outlined
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -68,7 +61,7 @@
                       color="blue"
                       :rules="AddressRule"
                       required
-                    >
+                      outlined>
                       <template v-slot:label>
                         <div>ที่อยู่ <small>(ต้องไม่เกิน 100 ตัว)</small></div>
                       </template>
@@ -81,6 +74,7 @@
                       v-model="userdata.career"
                       required
                       :rules="checkdata"
+                      outlined
                     ></v-select>
 
                     <v-text-field
@@ -88,6 +82,7 @@
                       :rules="PhoneNumberRule"
                       v-model="userdata.phone"
                       required
+                      outlined
                     ></v-text-field>
 
                     <br /><br />
@@ -105,6 +100,7 @@
                       v-model="userdata.purpose"
                       required
                       :rules="checkdata"
+                      outlined
                     ></v-select>
 
                     <br /><br />
@@ -196,6 +192,7 @@
                       required
                       :rules="checkdata"
                       :disabled="!userdata.bankaccountNumber == ''"
+                      outlined
                     ></v-select>
 
                     <v-text-field
@@ -204,6 +201,7 @@
                       :rules="bankaccountNumberRule"
                       v-model="userdata.bankaccountNumber"
                       required
+                      outlined
                     ></v-text-field>
 
                     
@@ -217,13 +215,13 @@
                   </v-col>
                 </v-row>
               </v-form>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
+            </v-card>
+          </v-row>
 
-    <v-snackbar v-model="snackbar" :timeout="2000">
+
+<!-- snackbar -->
+
+    <!-- <v-snackbar v-model="snackbar" :timeout="2000">
       {{ snacktext }}
 
       <template v-slot:action="{ attrs }">
@@ -231,7 +229,7 @@
           Close
         </v-btn>
       </template>
-    </v-snackbar>
+    </v-snackbar> -->
   </v-container>
 </template>
 
@@ -456,8 +454,8 @@ export default {
 <style scoped>
 .box {
   background-color: rgb(255, 255, 255);
-  border: 2px solid rgb(205, 205, 253);
-  padding: 5% 15% 10% 15%;
+  border: 2px solid rgb(198, 66, 66);
+  padding: 2% 15% 4% 15%;
   border-radius: 10px;
   text-align: center;
   width: 100%;
@@ -476,7 +474,7 @@ export default {
   padding: 2% 2% 2% 2%;
   width: 100%;
   height: 100%;
-  border: 2px solid rgb(152, 152, 255);
+  border: 2px solid rgb(198, 66, 66);
   border-radius: 10px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
     0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),

@@ -1,19 +1,16 @@
 <template>
   <v-container>
-    <br />
-    <div class="bigbox">
-      <br />
-      <table class="tab" border="1">
-        <tr>
-          <td width="700" height="700px">
-            <div class="box">
+
+        <br>
+          <v-row justify="center">
+            <v-card class="box" width="900" height="1850" >
 
               <v-form ref="form" @submit.prevent="updateUserData">
               
-                <h3 align="left">บันทึกข้อมูลผู้ใช้ใหม่</h3>
+                <h2 align="left">บันทึกข้อมูลผู้ใช้ใหม่</h2>
                 <br />
 
-                <table border="0">
+                <!-- <table border="1">
                   <tr>
                     <td>
                       <img
@@ -21,8 +18,7 @@
                         align="left"
                         width="150"
                         height="150"
-                        alt="Avatar"
-                      /><br /><br />
+                        alt="Avatar" >
                     </td>
                     <td width="50"></td>
                     <td>
@@ -32,6 +28,7 @@
                             label="Email"
                             v-model="userData.email"
                             :disabled="true"
+                            outlined
                           ></v-text-field>
                         </td>
                       </tr>
@@ -42,7 +39,7 @@
                             :rules="checkdata"
                             v-model="userData.firstname"
                             :disabled="true"
-
+                            outlined
                           ></v-text-field>
 
                           <v-text-field
@@ -50,6 +47,7 @@
                             :rules="checkdata"
                             v-model="userData.lastname"
                             :disabled="true"
+                            outlined
                           ></v-text-field>
                         </td>
                       </tr>
@@ -70,7 +68,71 @@
                     ></v-file-input>
 
                   </template>
-                </table>
+                </table> -->
+              <v-row justify="start">
+                <v-col cols="4">
+
+                    <v-sheet color="white"  width="100"  height="40"></v-sheet>
+
+                  <v-row justify="center">
+                    <v-card rounded="xl">
+                    <img :src="userData.profilePic"
+                    align="left"
+                    width="170"
+                    height="170"
+                    alt="Avatar">
+                    </v-card>
+                  </v-row>
+
+                  <v-row justify="center">
+                  <v-sheet color="white"  width="50"  height="20"></v-sheet>
+                  </v-row>
+
+                  <v-row justify="center">
+                  <template>
+                    <v-file-input
+                      prepend-icon="mdi-camera"
+                      accept="image/png, image/jpeg, image/jpg"
+                      label="เปลี่ยนรูปโปรไฟล์"
+                      filled
+                      dense
+                      rounded
+                      :rules="checkimage"
+                      @change="onUpload($event)"
+                      @click:clear="clearPic()"
+                    ></v-file-input>
+                  </template>
+                  </v-row>
+
+                </v-col>
+
+                <v-col cols="8">
+                  <v-text-field
+                    label="Email"
+                    v-model="userData.email"
+                    :disabled="true"
+                    outlined
+                    ></v-text-field>
+                  <v-text-field
+                    label="ชื่อ"
+                    :rules="checkdata"
+                    v-model="userData.firstname"
+                    required
+                    :disabled="true"
+                    outlined                    
+                    ></v-text-field>
+                  <v-text-field
+                    label="นามสกุล"
+                    :rules="checkdata"
+                    v-model="userData.lastname"
+                    required
+                    :disabled="true"
+                    outlined
+                    ></v-text-field>
+                </v-col>
+              </v-row>
+
+
 
                 <br />
                 <p align="left">ข้อมูลส่วนตัว</p>
@@ -80,6 +142,7 @@
                   :rules="personalIDRule"
                   v-model="userData.personalID"
                   required
+                  outlined
                 ></v-text-field>
 
                 <v-select
@@ -88,6 +151,7 @@
                   v-model="userData.gender"
                   required
                   :rules="checkdata"
+                  outlined
                 ></v-select>
 
 
@@ -111,6 +175,7 @@
                       v-on="on"
                       required
                       :rules="checkdata"
+                      outlined
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -118,7 +183,6 @@
                     v-model="userData.BD"
                     max="2000-12-31"
                     min="1940-01-01"
-                    @change="this.$refs.menu.save(userData.BD)"
                   ></v-date-picker>
                 </v-menu>
 
@@ -128,6 +192,7 @@
                   color="blue"
                   :rules="AddressRule"
                   required
+                  outlined
                 >
                   <template v-slot:label>
                     <div>ที่อยู่ <small>(ต้องไม่เกิน 100 ตัว)</small></div>
@@ -141,6 +206,7 @@
                   v-model="userData.career"
                   :rules="checkdata"
                   required
+                  outlined
                 ></v-select>
 
                 <v-text-field
@@ -148,6 +214,7 @@
                   :rules="PhoneNumberRule"
                   v-model="userData.phone"
                   required
+                  outlined
                 ></v-text-field>
 
                 <br />
@@ -159,6 +226,7 @@
                   v-model="userData.bank"
                   :disabled="!userData.bankaccountNumber == ''"
                   required
+                  outlined
                 ></v-select>
 
                 <v-text-field
@@ -167,6 +235,7 @@
                   :rules="bankaccountNumberRule"
                   v-model="userData.bankaccountNumber"
                   required
+                  outlined
                 ></v-text-field>
 
                 <!-- /////////   ///////// -->
@@ -185,6 +254,7 @@
                   v-model="userData.purpose"
                   required
                   :rules="checkdata"
+                  outlined
                 ></v-select>
                 <br />
 
@@ -236,18 +306,18 @@
                   </v-col>
                 </v-row>
                 <!-- /////////   ///////// -->
-
-                <br /><br />
-                <v-btn :disabled="loading" type="submit" :loading="loading"
-                  >Update</v-btn>
+                <v-row justify="end">
+                  <v-btn :disabled="loading" type="submit" :loading="loading">บันทึกข้อมูลผู้ใช้</v-btn>
+                </v-row>
+                
                 
               </v-form>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
+            </v-card>
+          </v-row>
+          
 
+<!-- snack -->
+<!-- 
     <v-snackbar v-model="snackbar" :timeout="2000">
       {{ snacktext }}
 
@@ -256,7 +326,8 @@
           Close
         </v-btn>
       </template>
-    </v-snackbar>
+    </v-snackbar> -->
+
   </v-container>
 </template>
 
@@ -511,7 +582,7 @@ export default {
 <style scoped>
 .box {
   background-color: rgb(255, 255, 255);
-  border: 2px solid rgb(205, 205, 253);
+  border: 2px solid rgb(198, 66, 66);
   padding: 5% 15% 10% 15%;
   border-radius: 10px;
   text-align: center;
@@ -531,7 +602,7 @@ export default {
   padding: 2% 2% 2% 2%;
   width: 100%;
   height: 100%;
-  border: 2px solid rgb(152, 152, 255);
+  border: 2px solid rgb(198, 66, 66);
   border-radius: 10px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
     0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
