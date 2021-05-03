@@ -49,7 +49,7 @@
             :short-intervals="false"
             :weekdays="[0, 1, 2, 3, 4, 5, 6]"
             :type="type"
-            :events="events"
+            :events="$store.getters['Table_events']"
             :now="today"
             :event-overlap-mode="mode"
             :event-overlap-threshold="30"
@@ -118,8 +118,7 @@
       v-model="selectedOpen"
       :close-on-content-click="false"
       :activator="selectedElement"
-      offset-x
-    >
+      offset-x >
       <v-card color="grey lighten-4" min-width="350px" flat>
         <v-toolbar :color="selectedEvent.color" dark>
           <v-btn icon @click="deleteEvent(selectedEvent)">
@@ -246,61 +245,68 @@ export default {
     };
   },
   methods: {
+
     async getEvents() {
-      this.fetchEvent();
-      //let user = firebase.auth().currentUser;
-      let user = this.$store.getters["userData"].data;
-      let uid = user.uid;
-      let db = firebase.firestore();
-      let tableRef = db.collection("Table");
-      let userData = await tableRef.where("uid", "==", uid).get();
 
-      userData.forEach((doc) => {
-        this.userDocid = doc.id;
-        //console.log(doc.id, '=>', doc.data());
-      });
+      this.$store.dispatch("getTableEvents");
+      this.events = this.$store.getters["Table_events"];
+      this.userDocid = this.$store.state.tableid;
+      // this.fetchEvent();
+      // //let user = firebase.auth().currentUser;
+      // let user = this.$store.getters["userData"].data;
 
-      let userEvent = await tableRef
-        .doc(this.userDocid)
-        .collection("Event")
-        .get();
+      // let uid = user.uid;
+      // let db = firebase.firestore();
+      // let tableRef = db.collection("Table");
+      // let userData = await tableRef.where("uid", "==", uid).get();
 
-      userEvent.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-        if (JSON.stringify(doc.data()) != "{}") {
-          let EventData = doc.data();
-          EventData.id = doc.id;
-          this.events.push(EventData);
-        }
-      });
+      // userData.forEach((doc) => {
+      //   this.userDocid = doc.id; // <--
+      //   //console.log(doc.id, '=>', doc.data());
+      // });
+
+      // let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
+
+      // userEvent.forEach((doc) => {
+      //   console.log(doc.id, " => ", doc.data());
+      //   if (JSON.stringify(doc.data()) != "{}") {
+      //     let EventData = doc.data();
+      //     EventData.id = doc.id;
+      //     this.events.push(EventData); // <--
+      //   }
+      // });
+     
     },
+
     async isCollision(newEvent_start, newEvent_end) {
       this.fetchEvent();
-      //let user = firebase.auth().currentUser;
-      let user = this.$store.getters["userData"].data;
-      let uid = user.uid;
-      let db = firebase.firestore();
-      let tableRef = db.collection("Table");
-      let userData = await tableRef.where("uid", "==", uid).get();
 
-      userData.forEach((doc) => {
-        this.userDocid = doc.id;
-        //console.log(doc.id, '=>', doc.data());
-      });
+      // let user = this.$store.getters["userData"].data;
+      // let uid = user.uid;
+      // let db = firebase.firestore();
+      // let tableRef = db.collection("Table");
+      // let userData = await tableRef.where("uid", "==", uid).get();
 
-      let userEvent = await tableRef
-        .doc(this.userDocid)
-        .collection("Event")
-        .get();
-      let allEvent = [];
-      userEvent.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-        if (JSON.stringify(doc.data()) != "{}") {
-          let EventData = doc.data();
-          EventData.id = doc.id;
-          allEvent.push(EventData);
-        }
-      });
+      // userData.forEach((doc) => {
+      //   this.userDocid = doc.id;
+      // });
+
+      // let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
+
+      ///
+
+
+      //let allEvent = [];
+      let allEvent = this.$store.getters['Table_events'];
+
+      // userEvent.forEach((doc) => {
+      //   console.log(doc.id, " => ", doc.data());
+      //   if (JSON.stringify(doc.data()) != "{}") {
+      //     let EventData = doc.data();
+      //     EventData.id = doc.id;
+      //     allEvent.push(EventData);
+      //   }
+      // });
 
       console.log(
         "newStart :",
@@ -330,12 +336,8 @@ export default {
     },
 
     async addEvent() {
-      ///// บัค start กี่โมงก็ได้แต่ end เที่ยงคืน = ไม่ขึ้น
 
-      if (
-        this.$refs.addEventform.validate() &&
-        this.eventstart < this.eventend
-      ) {
+      if (this.$refs.addEventform.validate() && this.eventstart < this.eventend) {
         let db = firebase.firestore();
         let tableRef = db.collection("Table");
         var Creator = "Owner";
@@ -399,7 +401,7 @@ export default {
 
         this.getEvents();
 
-        console.log(this.events);
+        //console.log(this.events);
       } else {
         console.log("มีบางอย่างไม่ถูกต้อง...");
       }

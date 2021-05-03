@@ -222,17 +222,18 @@ export default {
         });
     },
 
-    setPrevious() {
-      if (this.$store.state.previous.pre !== "/User") {
-        this.$store.commit("setPreviousPage", "/User");
-      }
-    },
+    // setPrevious() {
+    //   if (this.$store.state.previous.pre !== "/User") {
+    //     this.$store.commit("setPreviousPage", "/User");
+    //   }
+    // },
     createRoom() {
       this.$router.push(`/custom-vdoc/new-room`);
     },
   },
   mounted() {
-    this.setPrevious();
+    this.$store.dispatch("getTableEvents");
+    this.$store.dispatch("fetchUser_course");
   },
 };
 </script>

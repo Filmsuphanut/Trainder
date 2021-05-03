@@ -26,6 +26,9 @@ export default new Vuex.Store({
         previous: {
             pre: "/",
         },
+        user_course:[],
+        events:[],
+        tableid:"",
     },
     mutations: {
         //
@@ -63,6 +66,23 @@ export default new Vuex.Store({
         pushCourse(state, value) {
             state.course.push(value)
         },
+        setUsercourse(state,value){
+            //console.log("here")
+            Vue.set(state,"user_course",value)
+        },
+        clearUsercourse(state){
+            //console.log("here")
+            Vue.set(state,"user_course",[])
+        },
+        setTableEvent(state,value){
+            Vue.set(state,"events",value);
+        },
+        setTableid(state,value){
+            Vue.set(state,"tableid",value);
+        },
+        // clearTableEvent(state){
+        //     Vue.set(state,"events",[]);
+        // },
         clearAll(state) {
             Vue.set(state, "user", {
                 data: ""
@@ -75,7 +95,12 @@ export default new Vuex.Store({
             Vue.set(state, "previous", {
                 pre: "/",
             })
-
+            //////////////////course
+            Vue.set(state,"course",[]);
+            Vue.set(state,"user_course",[]);
+            ///////////////////table
+            Vue.set(state,"events",[]);
+            Vue.set(state,"tableid","");
         }
     },
     actions: {
@@ -167,16 +192,36 @@ export default new Vuex.Store({
             return prom;
         },
         async fetchCourse(context) {
-            context.commit("clearCourse")
-            let user = context.state.user.data;
+            
+            //let user = context.state.user.data.data;
+            let docid = context.state.user.data.uid
+
             let courseRef = db.collection("Course");
-            let trainerCourse = await courseRef.where("creator", "==", user.uid).get();
-            //let CourseDocid;
+            let trainerCourse = await courseRef.where("creator", "==", docid).get();
+            // //let CourseDocid;
+            let course_data = [];
+            let coursedocid;
+
             trainerCourse.forEach((doc) => {
-                console.log(doc.data())
-                context.commit("pushCourse", { id: doc.id, ...doc.data() })
+                coursedocid = doc.id;
+                let d = { id: doc.id, ...doc.data() };
+                d.event = [];
+                course_data.push(d);
+                context.commit("pushCourse", course_data);
+                //let CourseEvent = await courseRef.doc(coursedocid).collection("Event").get();
             });
+
+            
+
+            // CourseEvent.forEach(doc => {
+            //     //console.log(doc.data())
+            //     course_data.event.push(doc.data());
+            // })
+
+            context.commit("clearCourse")
+            
         },
+
         async updateNoti(context, value) {
             try {
                 let res = await axios.put("updateNoti", {
@@ -187,6 +232,70 @@ export default new Vuex.Store({
                 alert(err);
             }
         },
+
+        async fetchUser_course(context){
+            
+            let user = context.state.user.data.data;
+            let courseRef = await db.collection("Course").get();
+            let userRef = await db.collection("userData").get();
+            let d = [];
+
+            console.log(user)
+      
+            courseRef.forEach((doc) => {
+              let member = doc.data().member;
+              //console.log(doc.id);
+              if (member.includes(user.uid)) {
+                let buff = { ...doc.data() };
+                buff.creatorname = "";
+                d.push({ ...buff });
+              }
+            });
+      
+            d.forEach((data) => {
+              console.log(data.creator);
+              userRef.forEach((doc) => {
+                if (doc.data().uid == data.creator) {
+                  data.creatorname = doc.data().fullName;
+                }
+              });
+            });
+            
+            context.commit("clearUsercourse");
+            context.commit("setUsercourse",d);
+
+        },
+
+        async getTableEvents(context) {
+            
+            let user = context.state.user.data.data;
+      
+            let uid = user.uid;
+            let tableRef = db.collection("Table");
+            let userData = await tableRef.where("uid", "==", uid).get();
+            let eventbuff = [];
+            
+            userData.forEach((doc) => {
+                context.commit("setTableid",doc.id); // <--
+              //console.log(doc.id, '=>', doc.data());
+            });
+      
+            let userEvent = await tableRef.doc(context.state.tableid).collection("Event").get();
+
+            userEvent.forEach(doc => {
+            
+              //console.log(doc.id, " => ", doc.data());
+              if (JSON.stringify(doc.data()) != "{}") {
+                let EventData = doc.data();
+                EventData.id = doc.id;
+                eventbuff.push(EventData); // <--
+              }
+            });
+    
+            context.commit("setTableEvent",[]);
+            context.commit("setTableEvent",eventbuff);
+          },
+
     },
     getters: {
         userData(state) {
@@ -217,7 +326,16 @@ export default new Vuex.Store({
         },
         userRole(state) {
             return state.user.data.data.role
-        }
+        },
+        course(state){
+            return state.course;
+        },
+        user_course(state){
+            return state.user_course;
+        },
+        Table_events(state){
+            return state.events;
+        },
     },
     modules: {
         fb,

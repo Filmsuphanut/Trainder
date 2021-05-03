@@ -181,48 +181,47 @@ export default {
     }
   },
   methods:{
-        callname(){////ชื่อ user 
-            let user = firebase.auth().currentUser
-            let displayname
+        // callname(){////ชื่อ user 
+        //     let user = firebase.auth().currentUser
+        //     let displayname
 
-            if (user != null) {
-                displayname = user.displayName
-            }
-            return displayname
-        },
+        //     if (user != null) {
+        //         displayname = user.displayName
+        //     }
+        //     return displayname
+        // },
         async connection(){
+
           this.page_loading = true;
           this.call_uid().then(() =>{
+
             this.callData(this.trainer_uid);
             this.page_loading = false;
+
           })
         },
+
+
         async call_uid(){
 
-          let uid = this.$store.getters["userData"].data.uid;
+          //let uid = this.$store.getters["userData"].data.uid;
+          let docId = this.$store.getters["userData"].uid;
+
           let db = firebase.firestore();
           let userRef = db.collection("userData");
-          let userData = await userRef.where("uid","==",uid).get();
-          let docId ;
-
-          userData.forEach(doc => {
-            docId = doc.id;
-          })
-
-          let traineruid = await axios.get("findTrainer/"+docId)
+          //let userData = await userRef.where("uid","==",uid).get();
+          
+          let traineruid = await axios.get("findTrainer/"+docId) //returned top 10 trainer uid
 
           this.trainer_uid = traineruid.data;
-          console.log(this.trainer_uid);
+          //console.log(this.trainer_uid);
         },
+
         async callData(uid_obj){
 
           let db = firebase.firestore();
           let userRef = db.collection("userData");
           let courseRef = db.collection("Course");
-          // let couresDocid;
-          //let userCourseData = [];
-          // let EventData;
-          // let event = [];
 
           for(let i in uid_obj){
 
@@ -230,8 +229,9 @@ export default {
             let courseData = await courseRef.where("creator","==",uid_obj[i]).get();
             
             userData.forEach(doc => {///ข้อมูล
-               this.trainer_data.push(doc.data());
-               //console.log(doc.data().profilePic,doc.data().uid);
+              let data = doc.data()
+              data.docid = doc.id;
+              this.trainer_data.push(data);
             });
 
             courseData.forEach(doc =>{//หา doc id ของ course
@@ -239,30 +239,14 @@ export default {
               let data = {id:uid_obj[i],name:doc.data().name};
               //console.log(uid_obj[i],doc.data());
               this.trainer_course.push(data);
+              //console.log(this.trainer_course);
             })
-            
-            //console.log(userCourseData);
-
-            // let courseEvent = await courseRef.doc(couresDocid).collection('Event').get();
-
-            // courseEvent.forEach(doc => {
-            //   if(JSON.stringify(doc.data()) != "{}"){
-            //     EventData = doc.data();
-            //     event.push(EventData);
-            //   }
-            // })
-            // console.log(EventData);
-
-            // let course = {uid:uid_obj[i],course:courseData,event:event};
-           // this.trainer_course.push(userCourseData);
-            
+                       
           }///endfor
-          //console.log(this.trainer_data);
-          //console.log(this.trainer_course);
 
         },
         async like(){
-          console.log(this.trainer_data[this.onboarding]);
+          console.log("trainer doc id =>",this.trainer_data[this.onboarding].docid);
         },
 
 ////////////////////////////////////// details

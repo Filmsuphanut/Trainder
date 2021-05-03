@@ -469,25 +469,94 @@ export default {
       let previous = this.$store.state.previous.pre;
       this.$router.push(previous);
     },
+
+    calldata_from_store(){
+      let userStore = this.$store.getters["userData"].data;
+      
+        this.userData.email = this.$store.getters["userData"].email;
+
+        this.userData.firstname =
+          userStore.fullName == null ? null : userStore.fullName.split(" ")[0];
+        this.userData.lastname =
+          userStore.fullName == null ? null : userStore.fullName.split(" ")[1];
+        this.userData.role =
+          userStore.role == null
+            ? null
+            : userStore.role == "trainer"
+            ? "เทรนเนอร์"
+            : "ผู้ใช้ทั่วไป";
+        this.userData.personalID = userStore.PersonalID;
+        this.userData.address = userStore.Address;
+        this.userData.gender = userStore.Gender;
+        this.userData.BD = userStore.Birthday;
+        this.userData.bank = userStore.Bank;
+        this.userData.bankaccountNumber = userStore.BankAccountNumber;
+        this.userData.phone = userStore.PhoneNumber;
+        this.userData.career = userStore.Career;
+        this.userData.ec_skill = userStore.EC_skill;
+        this.userData.purpose = userStore.Purpose;
+        this.userData.profilePic = userStore.profilePic;
+
+    },
+    async fatch_userData(){
+
+      //let uid = this.$store.getters["userData"].data.uid;
+      let docid = this.$store.getters["userData"].uid;
+      let db = firebase.firestore();
+      let userRef = db.collection("userData");
+      //let userData = await userRef.where("uid", "==", uid).get();
+      let userDatadoc = await userRef.doc(docid).get();
+
+      this.userData.email = this.$store.getters["userData"].email;
+
+        this.userData.firstname =
+          userDatadoc.data().fullName == null ? null : userDatadoc.data().fullName.split(" ")[0];
+        this.userData.lastname =
+          userDatadoc.data().fullName == null ? null : userDatadoc.data().fullName.split(" ")[1];
+        this.userData.role =
+          userDatadoc.data().role == null
+            ? null
+            : userDatadoc.data().role == "trainer"
+            ? "เทรนเนอร์"
+            : "ผู้ใช้ทั่วไป";
+        this.userData.personalID = userDatadoc.data().PersonalID;
+        this.userData.address = userDatadoc.data().Address;
+        this.userData.gender = userDatadoc.data().Gender;
+        this.userData.BD = userDatadoc.data().Birthday;
+        this.userData.bank = userDatadoc.data().Bank;
+        this.userData.bankaccountNumber = userDatadoc.data().BankAccountNumber;
+        this.userData.phone = userDatadoc.data().PhoneNumber;
+        this.userData.career = userDatadoc.data().Career;
+        this.userData.ec_skill = userDatadoc.data().EC_skill;
+        this.userData.purpose = userDatadoc.data().Purpose;
+        this.userData.profilePic = userDatadoc.data().profilePic;
+      
+        let form = {
+          uid: docid,
+          data: userDatadoc.data(),
+          email: this.$store.getters["userData"].email,};
+        this.$store.commit("setUserData", form);
+    },
+
+
     async updateUserData(e) {
       if (this.$refs.form.validate()) 
       {
         this.loading = true;
-        //let user = firebase.auth().currentUser;
-        //let uid = firebase.auth().currentUser.uid;
-        let user = this.$store.getters["userData"].data;
-        let uid = user.uid
-        console.log("called method");
+
+        let docid = this.$store.getters["userData"].uid;
+        // let uid = user.uid
         let db = firebase.firestore();
         let userRef = db.collection("userData");
-        let userData = await userRef.where("uid", "==", uid).get();
-        //let userData = await userRef.where("uid", "==", uid);
-        let docId;
-        userData.forEach((doc) => {
-          console.log(doc);
-          docId = doc.id;
-        });
-        let userDataRef = await userRef.doc(docId);
+        // let userData = await userRef.where("uid", "==", uid).get();
+
+        // let docId;
+        // userData.forEach((doc) => {
+        //   console.log(doc);
+        //   docId = doc.id;
+        // });
+        
+        let userDataRef = userRef.doc(docid);
         userDataRef
           .update({
             fullName: [this.userData.firstname, this.userData.lastname].join(
@@ -509,7 +578,8 @@ export default {
           .then(() => {
             console.log("update userProfile successfully !!");
 
-            this.update_store(userRef,user);
+            this.fatch_userData();
+            //this.update_store(userRef,this.$store.getters["userData"].uid);
             // console.log("update displayname successfully !!");
             this.snacktext = "อัพเดทข้อมูลผู้ใช้เรียบร้อย";
             this.snackbar = true;
@@ -521,9 +591,6 @@ export default {
           });
       }
       e.preventDefault();
-      // {
-      // });
-      ///////////////////////////////////////////////
     },
     // Upload Picture method
     onUpload(e) {
@@ -553,53 +620,28 @@ export default {
       this.uploadimage = false;
       console.log(this.uploadimage);
     },
-    async update_store(userRef,user){
 
-        let userData = await userRef.where("uid", "==", user.uid).get();
-          userData.forEach((doc) => {
-            let form = {
-              uid: doc.id,
-              data: doc.data(),
-              email: user.email,
-          };
-          this.$store.commit("setUserData", form);
-        })
-    },
+    // async update_store(userRef,docid){
+    //     //let userData = await userRef.where("uid", "==", user.uid).get();
+    //       let userData = await userRef.doc(docid).get();
+    //      // userData.forEach((doc) => {
+    //         let form = {
+    //           uid: doc.id,
+    //           data: doc.data(),
+    //           email: user.email,};
+    //         console.log(form);
+    //       this.$store.commit("setUserData", form);
+    //     //});
+    // },
 
   },
-  async mounted() {
-    //let uid = firebase.auth().currentUser.uid;
-    let uid = this.$store.getters["userData"].data.uid;
-    console.log(uid);
-    let db = firebase.firestore();
-    let userRef = db.collection("userData");
-    let userData = await userRef.where("uid", "==", uid).get();
-    this.userData.email = this.$store.getters["userData"].email;//firebase.auth().currentUser.email;
-    userData.forEach((doc) => {
-      //console.log(doc.id, '=>', doc.data());
-      this.userData.firstname =
-        doc.data().fullName == null ? null : doc.data().fullName.split(" ")[0];
-      this.userData.lastname =
-        doc.data().fullName == null ? null : doc.data().fullName.split(" ")[1];
-      this.userData.role =
-        doc.data().role == null
-          ? null
-          : doc.data().role == "trainer"
-          ? "เทรนเนอร์"
-          : "ผู้ใช้ทั่วไป";
-      this.userData.personalID = doc.data().PersonalID;
-      this.userData.address = doc.data().Address;
-      this.userData.gender = doc.data().Gender;
-      this.userData.BD = doc.data().Birthday;
-      this.userData.bank = doc.data().Bank;
-      this.userData.bankaccountNumber = doc.data().BankAccountNumber;
-      this.userData.phone = doc.data().PhoneNumber;
-      this.userData.career = doc.data().Career;
-      this.userData.ec_skill = doc.data().EC_skill;
-      this.userData.purpose = doc.data().Purpose;
-      this.userData.profilePic = doc.data().profilePic;
-    });
+  mounted() {
+    this.fatch_userData();
   },
+  created(){
+    this.calldata_from_store();
+  },
+
 };
 </script>
 

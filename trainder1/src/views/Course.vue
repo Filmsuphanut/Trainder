@@ -32,7 +32,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-for="course in courses" :key="course" class="mb-2">
+          <v-row v-for="course in $store.getters['course']" :key="course" class="mb-2">
             <v-col cols="12">
               <v-card rounded="xl" color="white">
                 <v-row>
@@ -144,7 +144,7 @@ export default {
         "ลบ",
       ],
 
-      courses: [],
+      //courses: [],
 
       /////alert
       snackdelete: false,
@@ -153,17 +153,21 @@ export default {
     };
   },
   methods: {
-    async callCourse() {
-      let user = this.$store.getters["userData"].data;
-      let db = firebase.firestore();
-      let courseRef = db.collection("Course");
-      let trainerCourse = await courseRef.where("creator", "==", user.uid).get();
-      //let CourseDocid;
 
-      trainerCourse.forEach((doc) => {
-        this.courses.push(doc.data());
-        console.log(doc.id, doc.data());
-      });
+    async callCourse() {
+      // let user = this.$store.getters["userData"].data;
+      // let db = firebase.firestore();
+      // let courseRef = db.collection("Course");
+      // let trainerCourse = await courseRef.where("creator", "==", user.uid).get();
+      // //let CourseDocid;
+
+      // trainerCourse.forEach((doc) => {
+      //   this.courses.push(doc.data());
+      //   console.log(doc.id, doc.data());
+      // });
+      //this.courses = this.$store.getters["course"];
+      this.$store.dispatch("fetchCourse");
+    
     },
 
     async delete_Course() {
@@ -205,9 +209,14 @@ export default {
       this.snackdelete = false;
       this.loading = false;
       this.del_id = null;
-      this.courses = [];
-      this.callCourse();
+      //this.courses = [];
+      //this.callCourse();
+
+      this.$store.dispatch("fetchCourse");
     },
+
+
+////////////////////default methods
 
     callname() {
       let user = this.$store.getters["userData"];
@@ -218,22 +227,25 @@ export default {
       this.$router.push(previous);
     },
     Router_CreCourse() {
-      this.setPrevious();
+
       this.$router.push("/Course/CreateCourse");
     },
     Router_EditCourse(e) {
-      this.setPrevious();
+      //this.setPrevious();
       //console.log(e);
       this.$router.push(`/Course/EditCourse?id=${e}`);
     },
-    setPrevious() {
-      if (this.$store.state.previous.pre !== "/Course") {
-        this.$store.commit("setPreviousPage", "/Course");
-      }
-    },
+    // setPrevious() {
+    //   if (this.$store.state.previous.pre !== "/Course") {
+    //     this.$store.commit("setPreviousPage", "/Course");
+    //   }
+    // },
   },
   mounted() {
-    this.$store.commit("setPreviousPage", "/TrainerHome");
+    //this.$store.commit("setPreviousPage", "/TrainerHome");
+    //this.$store.dispatch("fetchCourse");
+    //this.courses = this.$store.getters['course']
+    //console.log(this.courses.data())
     this.callCourse();
   },
 };

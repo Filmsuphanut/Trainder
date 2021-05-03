@@ -18,7 +18,7 @@
             <v-row justify="center">
               <v-card width="800" flat>
                 <v-expansion-panels popout>
-                  <v-expansion-panel v-for="(item, i) in my_course" :key="i">
+                  <v-expansion-panel v-for="(item, i) in $store.getters['user_course']" :key="i">
                     <v-expansion-panel-header
                       expand-icon="mdi-menu-down"
                       dark
@@ -47,7 +47,7 @@
 
                 <v-card-text
                   class="d-flex flex-row justify-center"
-                  v-if="my_course.length == 0"
+                  v-if="$store.getters['user_course'].length == 0"
                   >ยังไม่มีคอร์สเหรอ หา Trainer ดีๆ ใน Excercise with trainer
                   สิ</v-card-text
                 >
@@ -64,6 +64,7 @@
   </v-container>
 </template>
 
+
 <script>
 import firebase from "firebase";
 
@@ -71,50 +72,49 @@ export default {
   name: "UserCourse",
   data() {
     return {
-      my_course: [],
     };
   },
   methods: {
     /////////////////////firebase
-    async call_myCourse() {
-      let user = this.$store.getters["userData"];
-      let db = firebase.firestore();
-      let courseRef = await db.collection("Course").get();
+    // async call_myCourse() {
+    //   let user = this.$store.getters["userData"];
+    //   let db = firebase.firestore();
+    //   let courseRef = await db.collection("Course").get();
 
-      courseRef.forEach((doc) => {
-        let member = doc.data().member;
-        //console.log(doc.id);
-        if (member.includes(user.uid)) {
-          let d = { ...doc.data() };
-          d.creatorname = "";
-          this.my_course.push({ ...d });
-        }
-      });
-    },
-    async call_trainername() {
-      let user = this.$store.getters["userData"].data;
-      let db = firebase.firestore();
-      let courseRef = await db.collection("userData").get();
-      //console.log(this.my_course);
+    //   courseRef.forEach((doc) => {
+    //     let member = doc.data().member;
+    //     //console.log(doc.id);
+    //     if (member.includes(user.uid)) {
+    //       let d = { ...doc.data() };
+    //       d.creatorname = "";
+    //       this.my_course.push({ ...d });
+    //     }
+    //   });
+    // },
+    // async call_trainername() {
+    //   let user = this.$store.getters["userData"].data;
+    //   let db = firebase.firestore();
+    //   let courseRef = await db.collection("userData").get();
+    //   //console.log(this.my_course);
 
-      this.my_course.forEach((data) => {
-        console.log(data.creator);
-        courseRef.forEach((doc) => {
-          if (doc.data().uid == data.creator) {
-            data.creatorname = doc.data().fullName;
-          }
-        });
-      });
-    },
+    //   this.my_course.forEach((data) => {
+    //     console.log(data.creator);
+    //     courseRef.forEach((doc) => {
+    //       if (doc.data().uid == data.creator) {
+    //         data.creatorname = doc.data().fullName;
+    //       }
+    //     });
+    //   });
+    // },
     //////////////////default method
-    callname() {
-      let user = this.$store.getters["userData"];
-      return user.data.fullName;
-    },
-    back() {
-      let previous = this.$store.state.previous.pre;
-      this.$router.push(previous);
-    },
+    // callname() {
+    //   let user = this.$store.getters["userData"];
+    //   return user.data.fullName;
+    // },
+    // back() {
+    //   let previous = this.$store.state.previous.pre;
+    //   this.$router.push(previous);
+    // },
     Router_CreCourse() {
       this.setPrevious();
       this.$router.push("/CreateCourse");
@@ -126,9 +126,9 @@ export default {
     },
   },
   async mounted() {
-    await this.call_myCourse();
-    await this.call_trainername();
-    console.log(this.my_course);
+    // await this.call_myCourse();
+    // await this.call_trainername();
+    this.$store.dispatch("fetchUser_course");
     //this.$store.commit("setPreviousPage","/TrainerHome");
   },
 };
