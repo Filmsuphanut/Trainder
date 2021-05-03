@@ -26,12 +26,7 @@
         </v-badge>
       </template>
 
-      <v-card
-        width="450"
-        style="min-height: 300px"
-        max-height="550"
-        class="mx-auto"
-      >
+      <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
         <v-toolbar color="primary" dark>
           <v-toolbar-title> Notification </v-toolbar-title>
         </v-toolbar>
@@ -43,27 +38,57 @@
                 <div :key="index">
                   <v-hover v-slot="{ hover }">
                     <v-list-item
-                      :class="hover ? 'blue-grey lighten-5' : ''"
-                      :key="item.name"
+                      :class="
+                        hover
+                          ? 'blue-grey lighten-5'
+                          : item.type == 'invite'
+                          ? 'amber lighten-5'
+                          : ''
+                      "
+                      :key="item.sender"
                       style="cursor: pointer"
                     >
                       <v-list-item-avatar>
-                        <v-img :src="item.img"></v-img>
+                        <v-img v-if="item.sender != 'system'" :src="item.img"></v-img>
+                        <v-avatar v-else size="40" color="info">
+                          <span class="white--text headline">S</span></v-avatar
+                        >
                       </v-list-item-avatar>
 
                       <v-list-item-content>
                         <v-list-item-title
                           class="secondary--text"
-                          v-html="item.name"
+                          v-html="item.sender"
                         ></v-list-item-title>
 
-                        <v-list-item-subtitle v-html="item.msg">
+                        <v-list-item-subtitle
+                          v-if="item.type == 'plain'"
+                          v-html="item.msg"
+                        >
                         </v-list-item-subtitle>
+                        <v-list-item-subtitle v-else class="py-2" v-html="item.msg.text">
+                        </v-list-item-subtitle>
+
+                        <v-btn
+                          width="100"
+                          color="success"
+                          class="mt-1"
+                          v-if="item.type == 'invite'"
+                          @click="joinCourse(item.msg.course_id)"
+                          >Enroll<v-icon right>mdi-account-arrow-right</v-icon>
+                        </v-btn>
+
+                        <v-icon
+                          v-if="item.type == 'invite'"
+                          style="position: absolute; top: 5px; right: 5px"
+                          class="orange--text"
+                          >mdi-dumbbell</v-icon
+                        >
                       </v-list-item-content>
 
                       <v-btn
                         @click="deleteNoti(index)"
-                        v-if="hover"
+                        :style="hover ? '' : 'visibility: hidden;'"
                         fab
                         color="warning"
                         class="mx-1"
@@ -93,8 +118,10 @@
 <script>
 import { mapGetters } from "vuex";
 import { fb } from "../firebase";
+import addFriend from "./addFriend.vue";
 const db = fb.firestore();
 export default {
+  components: { addFriend },
   data() {
     return {
       tab: 0,
@@ -117,14 +144,12 @@ export default {
         {
           img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
           name: "Trevor Hansen",
-          subtitle:
-            "Have any ideas about what we should get Heidi for her birthday?",
+          subtitle: "Have any ideas about what we should get Heidi for her birthday?",
         },
         {
           img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
           name: "Britta Holt",
-          subtitle:
-            "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
+          subtitle: "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
         },
       ],
       target: { target: "", current: "" },
@@ -152,8 +177,11 @@ export default {
     deleteNoti(index) {
       let deleted = [...this.notification];
       deleted.splice(index, 1);
-      this.$store.commit("setNotification", deleted);
-      this.$store.dispatch("updateNoti");
+      // this.$store.commit("setNotification", deleted);
+      this.$store.dispatch("updateNoti", deleted);
+    },
+    joinCourse(id) {
+      console.log(`joining course ${id}`);
     },
   },
   async created() {

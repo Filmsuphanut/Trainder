@@ -105,19 +105,19 @@ export default new Vuex.Store({
                     let res = await axios.get(
                         `getAllNoti/${context.state.user.data.uid}`
                     );
-                    var data = []
-                    let allNoti = res.data
-                    for (let i = 0; i < allNoti.length; ++i) {
-                        let noti = allNoti[i]
-                        db.collection("userData").doc(noti.sender).get().then(who => {
-                            data.push({
-                                img: who.data().profilePic,
-                                name: who.data().fullName,
-                                msg: noti.msg
-                            })
-                        })
-                    }
-                    context.commit("setNotification", data)
+                    // var data = []
+                    // let allNoti = res.data
+                    // for (let i = 0; i < allNoti.length; ++i) {
+                    //     let noti = allNoti[i]
+                    //     db.collection("userData").doc(noti.sender).get().then(who => {
+                    //         data.push({
+                    //             img: who.data().profilePic,
+                    //             name: who.data().fullName,
+                    //             msg: noti.msg
+                    //         })
+                    //     })
+                    // }
+                    context.commit("setNotification", res.data)
                     resolve(res);
                 } catch (err) {
                     console.log(err);
@@ -126,11 +126,11 @@ export default new Vuex.Store({
             });
             return prom;
         },
-        async updateNoti(context) {
+        async updateNoti(context, value) {
             try {
                 let res = await axios.put("updateNoti", {
                     userId: context.state.user.data.uid,
-                    notification: context.state.notification
+                    notification: value
                 })
                 console.log(res.data)
             } catch (err) {
