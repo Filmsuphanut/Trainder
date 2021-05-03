@@ -139,18 +139,17 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     // // if logged in no access to index page
     // // console.log(firebase.auth().currentUser)
-    //console.log(store.getters["userData"]!=null);
-    // if (store.getters["userData"]) {
-    //     if (to.path == "/") return
-    //     next()
-    // } else {
-
-    //     if (to.path != "/" && to.path != "/register" && to.path != "/Trainerregister")
-    //         next("/")
-    //     else
-    //         next()
-    // }
-    next()
+    const auth = ["/", "/register", "/Trainerregister"]
+    if (store.getters["userData"].data) {
+        if (to.path == "/") return next("/user")
+        next()
+    } else {
+        if (!auth.includes(to.path))
+            next("/")
+        else
+            next()
+    }
+    // next()
 });
 
 export default router

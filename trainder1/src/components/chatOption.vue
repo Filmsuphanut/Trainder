@@ -22,6 +22,16 @@
                 </v-list-item>
               </div>
             </template>
+            <div v-if="userRole == 'trainer'" @click="openInvite">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="primary">mdi-dumbbell</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Invite </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
           </v-list-item-group>
         </v-list>
       </v-card>
@@ -58,17 +68,56 @@
         </v-card>
       </v-overlay>
     </portal>
+
+    <portal to="report2">
+      <v-overlay z-index="20" :value="overlays.invite.show">
+        <v-card width="600" light>
+          <v-card-title class="primary white--text text-center" primary-title>
+            <v-icon class="white--text mr-3">mdi-dumbbell</v-icon>
+            Invitation
+            <v-spacer></v-spacer>
+            <v-btn @click="overlays.invite.show = false" text icon color="white">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="pt-3">
+            <p class="text-h6">Leave them a message.</p>
+            <p>User : {{ user.target.name }}</p>
+            <v-textarea
+              outlined
+              label="Details"
+              color="info"
+              v-model="overlays.invite.msg"
+              hide-details
+            ></v-textarea>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn :loading="!overlays.invite.ready" @click="invite" color="error"
+              >Send</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-overlay>
+    </portal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   props: ["user"],
   data() {
     return {
       overlays: {
         report: {
+          show: false,
+          msg: "",
+          ready: true,
+        },
+        invite: {
           show: false,
           msg: "",
           ready: true,
@@ -90,6 +139,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    ...mapGetters({
+      userRole: "userRole",
+    }),
   },
   methods: {
     async unfriend() {
@@ -116,6 +170,23 @@ export default {
       this.overlays.report.ready = true;
       alert(res ? "Done." : "Failed. Try agian.");
       if (res) this.overlays.report.show = false;
+    },
+    async openInvite() {
+      await this.$store.dispatch("fetchCourse");
+      this.overlays.invite.show = true;
+    },
+    async invite() {
+      await axios.post("pushNoti", {
+        userId: this.user.target.uid,
+        sender: this.user.current.uid,
+        msg: {
+          course_id: "",
+          text: this.overlays.invite.msg,
+        },
+        date: new Date().toLocaleTimeString,
+        type: "invite",
+      });
+      alert("Done");
     },
   },
 };
