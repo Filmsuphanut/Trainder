@@ -413,6 +413,7 @@ export default {
       this.dialog_status2 = false;
     },
     eating_history_range(){
+      
       const current = new Date();
       let tempDate = current.getDate()-7;
       let tempMonth = current.getMonth()+1;
