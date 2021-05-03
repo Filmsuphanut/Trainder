@@ -11,6 +11,7 @@
         <br />
         <tr>
           <td>
+
             <v-carousel cycle hide-delimiter-background show-arrows-on-hover>
               <v-carousel-item
                 v-for="(item, i) in items"
@@ -19,6 +20,7 @@
                 width="750px"
               ></v-carousel-item>
             </v-carousel>
+
           </td>
           <td width="2%"></td>
 
@@ -51,20 +53,10 @@ export default {
   },
   data() {
     return {
-      items: [
-        {
-          src: require("../images/Trainder2.png"),
-        },
-        {
-          src: require("../images/Trainder.png"),
-        },
-        {
-          src: require("../images/Trainder3.png"),
-        },
-        {
-          src: require("../images/Trainder4.png"),
-        },
-      ],
+      items: [{src: require("../images/Trainder2.png"),},
+              {src: require("../images/Trainder.png"),},
+              {src: require("../images/Trainder3.png"),},
+              {src: require("../images/Trainder4.png"),},],
     };
   },
   methods: {},
