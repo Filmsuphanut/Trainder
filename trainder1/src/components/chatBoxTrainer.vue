@@ -27,19 +27,12 @@
         </v-badge>
       </template>
 
-      <v-card
-        width="450"
-        style="min-height: 300px"
-        max-height="550"
-        class="mx-auto"
-      >
+      <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
         <v-toolbar color="primary" dark>
           <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
-          <v-toolbar-title>{{
-            tab ? target.target.name : "Contacts"
-          }}</v-toolbar-title>
+          <v-toolbar-title>{{ tab ? target.target.name : "Contacts" }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <add-friend v-if="!tab" />
           <chat-option @back="tab = 0" :user="target" v-if="tab" />
@@ -67,9 +60,7 @@
                           v-html="item.name"
                         ></v-list-item-title>
 
-                        <v-list-item-subtitle
-                          v-if="getLastChat(item.uid).length"
-                        >
+                        <v-list-item-subtitle v-if="getLastChat(item.uid).length">
                           <span class="text--primary">
                             {{ getName(getLastChat(item.uid)[0].sender) }}</span
                           >
@@ -100,7 +91,7 @@
           <!-- chat -->
 
           <v-tab-item>
-            <chat-trainer v-if="tab" :user="target" />
+            <chat v-if="tab" :user="target" />
           </v-tab-item>
         </v-tabs-items>
       </v-card>
@@ -111,14 +102,14 @@
 <style></style>
 
 <script>
+import chat from "./chat.vue";
 import ChatOption from "./chatOption.vue";
 
 import { mapGetters } from "vuex";
 import AddFriend from "./addFriend.vue";
-import ChatTrainer from "./chatTrainer.vue";
 
 export default {
-  components: { ChatOption, AddFriend, ChatTrainer },
+  components: { chat, ChatOption, AddFriend },
   data() {
     return {
       tab: 0,
@@ -141,14 +132,12 @@ export default {
         {
           img: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
           name: "Trevor Hansen",
-          subtitle:
-            "Have any ideas about what we should get Heidi for her birthday?",
+          subtitle: "Have any ideas about what we should get Heidi for her birthday?",
         },
         {
           img: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
           name: "Britta Holt",
-          subtitle:
-            "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
+          subtitle: "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
         },
       ],
       target: { target: "", current: "" },

@@ -22,6 +22,22 @@
                 </v-list-item>
               </div>
             </template>
+            <div
+              v-if="userRole == 'trainer'"
+              @click="
+                {
+                }
+              "
+            >
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-dumbbell</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Invite </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
           </v-list-item-group>
         </v-list>
       </v-card>
@@ -63,6 +79,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   props: ["user"],
   data() {
@@ -90,6 +107,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    ...mapGetters({
+      userRole: "userRole",
+    }),
   },
   methods: {
     async unfriend() {
