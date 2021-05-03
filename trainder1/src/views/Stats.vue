@@ -281,11 +281,13 @@
             <v-row>
               <v-col cols="12" class="flex-column">
                 <v-card rounded="xl" light class="pa-2 text-center elevation-5">
+
                   <GChart
                     type="ColumnChart"
                     :data="exerciseData"
                     :options="exerciseChartOptions"
                   ></GChart>
+
                 </v-card>
               </v-col>
             </v-row>
@@ -453,7 +455,7 @@ export default {
       });
 
       if(check_stat_data==true){
-        console.log("ok");
+        console.log("get data");
         let statData = await statRef.doc(uid).get();
         this.weight = statData.data().weight;
         this.height = statData.data().height;
