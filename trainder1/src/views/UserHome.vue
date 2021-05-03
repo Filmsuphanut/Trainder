@@ -1,117 +1,127 @@
 <template>
-  <div id="UserHome">
-    <v-container id="ModeSelector" class="mx-auto">
-      <v-row class="mx-auto">
-        <v-col cols="6">
-          <!-- Hello User -->
-          <v-card rounded="xl" elevation="6">
-            <v-row justify="center">
-              <v-col cols="7">
-                <v-card-title>
-                  <h5>Hello {{ callname() }}!</h5>
-                </v-card-title>
-                <v-card-subtitle> It's good to see you again. </v-card-subtitle>
-                <v-card-subtitle class="font-weight-bold primary--text">
-                  Your Friend Id : {{ userData.uid }}
-                </v-card-subtitle>
-              </v-col>
-              <v-col cols="5" class="">
-                <!-- <v-card class="pa-0 ma-0" rounded="circle" flat>
-                  <v-img
-                    :src="profile_image"
-                    max-height="150"
-                    max-width="150"
-                  ></v-img>
-                </v-card> -->
-                <v-row justify="center">
-                  <v-card rounded="circle" flat>
-                    <img
-                      :src="profile_image"
-                      align="left"
-                      width="150"
-                      height="150"
-                      alt="Avatar"
-                    />
-                  </v-card>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-          <!-- Courses in Progress -->
-          <v-card rounded="xl" class="pa-5 mt-6" elevation="6">
-            <v-row>
-              <v-col cols="2" class="d-flex">
-                <h1 id="huge" class="ml-3">3</h1>
-              </v-col>
-              <v-col cols="5" class="mt-3">
-                <h3>Courses</h3>
-                <span>in progress </span>
-              </v-col>
-              <v-spacer></v-spacer>
-              <v-col>
-                <v-btn rounded dark color="primary" class="mt-4" to="/User/Course">
-                  view your course
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col cols="6">
-          <!-- Buttons -->
-          <v-row>
-            <v-btn
-              rounded
-              large
-              block
-              class="mt-7 pa-10"
-              color="primary"
-              to="/User/FindTrainer"
-            >
-              <h3>Excercise With Trainer</h3>
-            </v-btn>
-          </v-row>
-          <v-row>
-            <v-btn rounded large block class="mt-6 pa-10" color="primary" to="/vdoc">
-              <h3>Excercise With People</h3>
-            </v-btn>
-          </v-row>
-          <v-row>
-            <v-btn
-              rounded
-              large
-              block
-              class="mt-6 pa-10"
-              color="primary"
-              @click="createRoom"
-            >
-              <h3>Excercise With Your Friend</h3>
-            </v-btn>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <v-btn rounded block large class="mt-6 pa-10" color="primary" to="/Table">
-                <h3>Schedule</h3>
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn rounded block large class="mt-6 pa-10" color="primary" to="/Stats">
-                <h3>Your Stat</h3>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+  <div>
+    <v-navigation-drawer app>
+      <v-sheet color="grey lighten-4" class="pa-4 text-center">
+        <v-avatar class="mb-4" size="100">
+          <v-img :src="profile_image"></v-img>
+        </v-avatar>
+
+        <div>Welcome back!</div>
+        <h3>{{callname()}}</h3>
+        <br>
+        <span>Your Friend Id : {{ userData.uid }}</span>
+      </v-sheet>
+
+      <v-divider></v-divider>
+
+      <v-list>
+        <v-subheader>What's up going?</v-subheader>
+        <v-list-item-group color="primary">
+          <!-- Schedule -->
+          <v-list-item link to="/Table">
+            <v-list-item-icon>
+              <v-icon>mdi-calendar-arrow-right</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Schedule</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <!-- Your stat -->
+          <v-list-item link to="/Stats">
+            <v-list-item-icon>
+              <v-icon>mdi-folder-heart</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Your Stat</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <!-- Attending Course -->
+          <v-list-item link to="/User/Course">
+            <v-list-item-icon>
+              <v-icon>mdi-folder-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Attending Course</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-container class="pt-2 px-6" fluid>
+      <v-flex class="d-flex flex-row justify-center" width="70%">
+        <v-carousel
+          cycle
+          hide-delimiter-background
+          show-arrows-on-hover
+          height="350"
+        >
+          <v-carousel-item
+            v-for="(slide, i) in slides"
+            :key="i"
+            :src="slide.src"
+          >
+          </v-carousel-item>
+        </v-carousel>
+      </v-flex>
+      <v-divider></v-divider>
+
+      <!-- Exercise Mode -->
+      <v-flex class="d-flex flex-row justify-center mt-4">
+        <span style="font-size:25px; font-family:verdana">Excercise Mode</span>
+      </v-flex>
+      <v-flex class="d-flex flex-row justify-center ma-5">
+        <v-card class="justify-center mx-3" max-width="300" link elevation="6" @click="createRoom">
+          <v-img src="../images/friend.png" height="200px"></v-img>
+          <v-card-title>
+            With Friend
+          </v-card-title>
+          <v-card-subtitle>
+            Video call with your friends at once
+          </v-card-subtitle>
+        </v-card>
+
+        <v-card class="justify-center mx-3" max-width="300" link elevation="6" to="/vdoc">
+          <v-img src="../images/withpeople.jpg" height="200px"></v-img>
+          <v-card-title>
+            With People
+          </v-card-title>
+          <v-card-subtitle>
+            Having fun exercise with random people
+          </v-card-subtitle>
+        </v-card>
+      </v-flex>
+      <v-divider></v-divider>
+
+      <!-- looking for trainer -->
+      <v-flex class="d-flex flex-row justify-center mt-4 ml-8">
+        <span style="font-size:25px; font-family:verdana"
+          >Looking for Trainer?</span
+        >
+      </v-flex>
+      <v-flex class="d-flex flex-row justify-center ma-5">
+        <v-card class="justify-center mx-3" link max-width="57%" elevation="6" to="User/FindTrainer">
+          <div class="d-flex flex-row">
+            <v-img
+              src="../images/Slide4.jpg"
+              max-height="200"
+              max-width="50%"
+            ></v-img>
+            <div class="d-flex flex-column">
+              <v-card-title>
+                Find Trainer
+              </v-card-title>
+              <v-card-subtitle>
+                Choose your own Trainer that suits you
+              </v-card-subtitle>
+            </div>
+          </div>
+        </v-card>
+      </v-flex>
     </v-container>
   </div>
-  <!-- <v-container>
-        <h1>สวัสดี </h1>
-        <router-link to="/Excercise"><v-btn>ออกกำลังกายกับผู้อื่น</v-btn></router-link>
-        <router-link to="/User/FindTrainer"><v-btn>ค้นหา Trainer ที่ถูกใจ</v-btn></router-link>
-        <router-link to="/CreateRoom"><v-btn>สร้างห้องออกกำลังกายกับเพื่อน</v-btn></router-link>
-        <router-link to="/ProfileSetting" ><v-btn>ตั้งค่าบัญชีผู้ใช้</v-btn></router-link>
-        <router-link to="/User/Table" ><v-btn>Table</v-btn></router-link>
-        <v-btn @click="logout">ออกจากระบบ</v-btn>
-    </v-container> -->
 </template>
 
 <script>
@@ -122,6 +132,12 @@ export default {
   name: "index",
   data() {
     return {
+      slides: [
+      { src: require("../images/Course1.jpg") },
+      { src: require("../images/Course2.jpg") },
+      { src: require("../images/Course3.jpg") },
+      { src: require("../images/Course4.jpg") },
+    ],
       profile_image: "",
     };
   },

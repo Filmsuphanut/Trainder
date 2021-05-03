@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar color="#fce5e5">
+  <v-toolbar color="#fce5e5" flat>
     <v-toolbar-title class="d-flex align-center">
       <v-img
         alt="Trainder Logo"
