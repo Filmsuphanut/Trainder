@@ -459,8 +459,6 @@ export default {
         let statData = await statRef.doc(uid).get();
         this.weight = statData.data().weight;
         this.height = statData.data().height;
-        this.bmi = statData.data().BMI;
-        this.bmi_status = statData.data().BMI_status;
 
 
       }else{
