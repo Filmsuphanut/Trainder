@@ -172,6 +172,7 @@ export default {
 
     async delete_Course() {
       let uid = this.$store.getters["userData"].data.uid;
+      let docid = this.$store.getters["userData"].uid;
 
       let db = firebase.firestore();
       let courseRef = db.collection("Course");

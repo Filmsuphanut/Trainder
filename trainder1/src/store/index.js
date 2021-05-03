@@ -192,25 +192,30 @@ export default new Vuex.Store({
             return prom;
         },
         async fetchCourse(context) {
-            
+            context.commit("clearCourse")
             //let user = context.state.user.data.data;
             let docid = context.state.user.data.uid
 
             let courseRef = db.collection("Course");
             let trainerCourse = await courseRef.where("creator", "==", docid).get();
             // //let CourseDocid;
-            let course_data = [];
             let coursedocid;
 
             trainerCourse.forEach((doc) => {
                 coursedocid = doc.id;
                 let d = { id: doc.id, ...doc.data() };
                 d.event = [];
-                course_data.push(d);
-                context.commit("pushCourse", course_data);
-                //let CourseEvent = await courseRef.doc(coursedocid).collection("Event").get();
+                
+                courseRef.doc(coursedocid).collection("Event").get().then((courseEvent) => {
+
+                    courseEvent.forEach(docevent => {
+                        d.event.push(docevent.data())
+                    })
+                    context.commit("pushCourse", d);
+                })
             });
 
+            
             
 
             // CourseEvent.forEach(doc => {
@@ -218,7 +223,7 @@ export default new Vuex.Store({
             //     course_data.event.push(doc.data());
             // })
 
-            context.commit("clearCourse")
+            
             
         },
 
