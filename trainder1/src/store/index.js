@@ -22,6 +22,7 @@ export default new Vuex.Store({
             event: false,
         },
         notification: [],
+        course: [],
         previous: {
             pre: "/",
         },
@@ -55,6 +56,12 @@ export default new Vuex.Store({
         },
         setChatEvent(state, value) {
             Vue.set(state.chatSetting, "event", value)
+        },
+        clearCourse(state) {
+            Vue.set(state, "course", [])
+        },
+        pushCourse(state, value) {
+            state.course.push(value)
         },
         clearAll(state) {
             Vue.set(state, "user", {
@@ -159,6 +166,17 @@ export default new Vuex.Store({
             });
             return prom;
         },
+        async fetchCourse(context) {
+            context.commit("clearCourse")
+            let user = context.state.user.data;
+            let courseRef = db.collection("Course");
+            let trainerCourse = await courseRef.where("creator", "==", user.uid).get();
+            //let CourseDocid;
+            trainerCourse.forEach((doc) => {
+                console.log(doc.data())
+                context.commit("pushCourse", { id: doc.id, ...doc.data() })
+            });
+        },
         async updateNoti(context, value) {
             try {
                 let res = await axios.put("updateNoti", {
@@ -193,7 +211,6 @@ export default new Vuex.Store({
             } else {
                 return ""
             }
-
         },
         getDataById: (state) => (id) => {
             return state.friendList[id]

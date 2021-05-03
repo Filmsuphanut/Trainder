@@ -22,7 +22,7 @@
                 </v-list-item>
               </div>
             </template>
-            <div v-if="userRole == 'trainer'" @click="overlays.invite.show = true">
+            <div v-if="userRole == 'trainer'" @click="openInvite">
               <v-list-item>
                 <v-list-item-icon>
                   <v-icon color="primary">mdi-dumbbell</v-icon>
@@ -69,7 +69,7 @@
       </v-overlay>
     </portal>
 
-    <portal to="report">
+    <portal to="report2">
       <v-overlay z-index="20" :value="overlays.invite.show">
         <v-card width="600" light>
           <v-card-title class="primary white--text text-center" primary-title>
@@ -171,13 +171,17 @@ export default {
       alert(res ? "Done." : "Failed. Try agian.");
       if (res) this.overlays.report.show = false;
     },
+    async openInvite() {
+      await this.$store.dispatch("fetchCourse");
+      this.overlays.invite.show = true;
+    },
     async invite() {
       await axios.post("pushNoti", {
         userId: this.user.target.uid,
         sender: this.user.current.uid,
         msg: {
           course_id: "",
-          text: "",
+          text: this.overlays.invite.msg,
         },
         date: new Date().toLocaleTimeString,
         type: "invite",

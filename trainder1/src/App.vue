@@ -15,6 +15,7 @@
       ></Toolbar>
       <router-view></router-view>
       <portal-target name="report"> </portal-target>
+      <portal-target name="report2"> </portal-target>
     </v-main>
   </v-app>
 </template>
