@@ -1,6 +1,10 @@
 <template>
   <v-toolbar>
-    <v-toolbar-title class="d-flex align-center">
+    <v-toolbar-title
+      style="cursor: pointer"
+      @click="$router.push('/user')"
+      class="d-flex align-center"
+    >
       <v-img
         alt="Trainder Logo"
         class="shrink mr-2"

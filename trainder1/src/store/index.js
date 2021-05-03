@@ -18,6 +18,9 @@ export default new Vuex.Store({
             data: "",
         },
         friendList: {},
+        chatSetting: {
+            event: false,
+        },
         notification: [],
         previous: {
             pre: "/",
@@ -31,7 +34,6 @@ export default new Vuex.Store({
         // },
         setPreviousPage(state, value) {
             Vue.set(state.previous, "pre", value);
-            console.log("previous store = " + value);
         },
         setUserData(state, value) {
             Vue.set(state.user, "data", value);
@@ -40,13 +42,19 @@ export default new Vuex.Store({
             Vue.set(state, "user", value);
         },
         clearFriendLists(state) {
-            Vue.set(state, "friendList", {})
+            Vue.set(state, "friendList", {});
         },
         setFriendLists(state, value) {
             Vue.set(state.friendList, value.id, value.data);
         },
         setNotification(state, value) {
-            Vue.set(state, "notification", value)
+            Vue.set(state, "notification", value);
+        },
+        setLogs(state, value) {
+            Vue.set(state.friendList[value.id], "logs", value.logs)
+        },
+        setChatEvent(state, value) {
+            Vue.set(state.chatSetting, "event", value)
         }
     },
     actions: {
@@ -70,25 +78,38 @@ export default new Vuex.Store({
             return prom;
         },
         fetchFriends(context) {
-            context.commit("clearFriendLists")
+            context.commit("clearFriendLists");
             let prom = new Promise(async(resolve, reject) => {
                 try {
                     let res = await axios.get(
                         `${endpoint}/allFriends/${context.state.user.data.uid}`
                     );
-                    let FL = [];
+
                     let friends = res.data;
                     for (let i = 0; i < friends.length; ++i) {
                         let f = friends[i];
                         let log = await axios.get(
                             `${endpoint}/getLogByUID/${context.state.user.data.uid}&${f.id}`
                         );
+
+                        db.collection("chat-logs")
+                            .doc(log.data.logId)
+                            .onSnapshot((doc) => {
+                                // console.log("Current data: ", doc.data());
+                                let logs = doc.data().logs;
+                                context.commit("setLogs", {
+                                    id: f.id,
+                                    logs: logs,
+                                })
+                                context.commit("setChatEvent", true)
+                            });
+
                         context.commit("setFriendLists", {
                             id: f.id,
                             data: {
                                 data: f,
-                                logs: log.data.logId,
-                            }
+                                logsId: log.data.logId,
+                            },
                         });
                     }
                     resolve(res);
@@ -117,7 +138,7 @@ export default new Vuex.Store({
                     //         })
                     //     })
                     // }
-                    context.commit("setNotification", res.data)
+                    context.commit("setNotification", res.data);
                     resolve(res);
                 } catch (err) {
                     console.log(err);
@@ -130,13 +151,12 @@ export default new Vuex.Store({
             try {
                 let res = await axios.put("updateNoti", {
                     userId: context.state.user.data.uid,
-                    notification: value
-                })
-                console.log(res.data)
+                    notification: value,
+                });
             } catch (err) {
-                alert(err)
+                alert(err);
             }
-        }
+        },
     },
     getters: {
         userData(state) {
@@ -146,7 +166,25 @@ export default new Vuex.Store({
             return state.friendList;
         },
         notification(state) {
-            return state.notification
+            return state.notification;
+        },
+        logs: (state) => (id) => {
+            return state.friendList[id].logs
+        },
+        chatEvent(state) {
+            return state.chatSetting.event
+        },
+        getLastChat: (state) => (id) => {
+            if (state.friendList[id].logs) {
+                let last = [...state.friendList[id].logs]
+                return last.splice(last.length - 1, 1)
+            } else {
+                return ""
+            }
+
+        },
+        getDataById: (state) => (id) => {
+            return state.friendList[id]
         }
     },
     modules: {

@@ -2,17 +2,29 @@
   <div>
     <v-menu :close-on-content-click="false" offset-y left>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          dark
-          color="primary"
-          class="elevation-1 mx-1"
-          fab
-          small
-          v-bind="attrs"
-          v-on="on"
+        <v-badge
+          :value="chatEvent"
+          dot
+          bordered
+          bottom
+          color="error"
+          offset-x="15"
+          offset-y="10"
+          overlap
         >
-          <v-icon>mdi-account-multiple</v-icon>
-        </v-btn>
+          <v-btn
+            dark
+            color="primary"
+            class="elevation-1 mx-1"
+            fab
+            small
+            v-bind="attrs"
+            v-on="on"
+            @click="clearEvent"
+          >
+            <v-icon>mdi-account-multiple</v-icon>
+          </v-btn>
+        </v-badge>
       </template>
 
       <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
@@ -36,6 +48,7 @@
                       :class="hover ? 'blue-grey lighten-5' : ''"
                       :key="item.name"
                       style="cursor: pointer"
+                      three-line
                     >
                       <v-list-item-avatar>
                         <v-img :src="item.img"></v-img>
@@ -47,11 +60,12 @@
                           v-html="item.name"
                         ></v-list-item-title>
 
-                        <!-- <v-list-item-subtitle>
-                          <span class="text--primary">{{ item.name }}</span>
-                          &mdash;
-                          {{ item.subtitle }}
-                        </v-list-item-subtitle> -->
+                        <v-list-item-subtitle v-if="getLastChat(item.uid)">
+                          <span class="text--primary">
+                            {{ getName(getLastChat(item.uid)[0].sender) }}</span
+                          >
+                          &mdash; {{ getLastChat(item.uid)[0].msg }}
+                        </v-list-item-subtitle>
                       </v-list-item-content>
 
                       <v-btn
@@ -69,11 +83,13 @@
                 </div>
               </template>
             </v-list>
+
             <v-card-text class="text-center text-h5 grey--text" v-else>
               Look Empty Here...
             </v-card-text>
           </v-tab-item>
           <!-- chat -->
+
           <v-tab-item>
             <chat v-if="tab" :user="target" />
           </v-tab-item>
@@ -131,6 +147,9 @@ export default {
     ...mapGetters({
       userData: "userData",
       lists: "friendLists",
+      chatEvent: "chatEvent",
+      getLastChat: "getLastChat",
+      getDataById: "getDataById",
     }),
     current() {
       return {
@@ -145,15 +164,26 @@ export default {
           name: this.lists[uid].data.name,
           uid: uid,
           img: this.lists[uid].data.img,
-          logUid: this.lists[uid].logs,
+          logUid: this.lists[uid].logsId,
         };
       });
     },
   },
   methods: {
+    getName(id) {
+      const friend = this.getDataById(id);
+      if (friend) {
+        return friend.data.name;
+      } else {
+        return this.userData.data.fullName;
+      }
+    },
     back() {
       this.tab = 0;
       this.$set(this.target, "target", "");
+    },
+    clearEvent() {
+      this.$store.commit("setChatEvent", false);
     },
     openChat(user) {
       this.tab = 1;

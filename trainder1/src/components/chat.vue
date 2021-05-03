@@ -85,6 +85,8 @@
 <script>
 import axios from "axios";
 import { fb } from "../firebase";
+import { mapGetters } from "vuex";
+
 const db = fb.firestore();
 export default {
   props: ["user"],
@@ -112,9 +114,17 @@ export default {
       //     date: new Date().toLocaleTimeString(),
       //   },
       // ],
-      logs: [],
+      // logs: [],
       msg: "",
     };
+  },
+  computed: {
+    ...mapGetters({
+      getLogs: "logs",
+    }),
+    logs() {
+      return this.getLogs(this.user.target.uid);
+    },
   },
   methods: {
     nameDisplay(uid) {
@@ -135,17 +145,17 @@ export default {
       let user = this.nameDisplay(uid);
       return user == this.user.current.name;
     },
-    async fetchChat() {
-      db.collection("chat-logs")
-        .doc(this.user.logDoc)
-        .onSnapshot((doc) => {
-          // console.log("Current data: ", doc.data());
-          this.logs = doc.data().logs;
-        });
-    },
+    // async fetchChat() {
+    //   db.collection("chat-logs")
+    //     .doc(this.user.logDoc)
+    //     .onSnapshot((doc) => {
+    //       // console.log("Current data: ", doc.data());
+    //       this.logs = doc.data().logs;
+    //     });
+    // },
   },
   mounted() {
-    this.fetchChat();
+    // this.fetchChat();
   },
 };
 </script>
