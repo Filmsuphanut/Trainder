@@ -43,7 +43,7 @@
 </v-col>
 
 <v-col cols="6">
-    <v-card class="ma-5 pa-6" rounded="xl" color="#fce5e5" width="600" height="850">
+    <v-card class="ma-5 pa-6" rounded="xl" color="whtie" width="600" height="850">
 
       <v-form ref="Courseform" @submit.prevent="CourseCreate">  
     

@@ -66,7 +66,7 @@
     </v-card>
 
     <v-dialog v-model="addEventDialog" max-width="500">
-      <v-card color="#fce5e5" height="430">
+      <v-card color="white" height="430">
         <v-container>
           <v-form ref="addEventform" @submit.prevent="addEvent">
             <v-text-field

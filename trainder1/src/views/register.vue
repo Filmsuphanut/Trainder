@@ -85,15 +85,33 @@
 
 <!-- dialog -->
 
-    <v-dialog v-model="dialog" absolute max-width="400" persistent>
+    <v-dialog v-model="dialog" absolute max-width="450" persistent>
       <v-card>
         <v-card-title>
           กฎและข้อบังคับ
         </v-card-title>
+        <br>
         <v-card-text>
-          <br />
-          บลาบลาบลาบลาบลา
+
+          <p>Trainder เป็นแอพพลิเคชั่นสำหรับหาคู่ออกกำลังกายออนไลน์ โดยใช้การ Live Video เป็นหลัก
+          ซึ่งแอพพลิเคชั่นของเราจะให้อิสระกับผู้ใช้ในการใช้งานแอพของเรา
+        แต่จะมีกฎและข้อบังคับต่างๆเล็กน้อยที่ควรทราบและปฎิบัติตาม เพื่อเสริมสร้างสังคมที่ดีของ Trainder ดังนี้</p>
         </v-card-text>
+
+        <v-card-text>
+          <body>1.ไม่แสดงพฤติกรรมที่หยาบคาย หรือ ไม่เป็นมิตรกับผู้อื่น ขณะ Live Video</body>
+          <body>2.ไม่ทำการ Hate Speech กับผู้อื่นขณะทำการ Live Video</body>
+          <body>3.ไม่แสดงออกพฤติกรรมที่เกี่ยวกับการ Sexually Harassment ขณะทำการ Live Video</body>
+          <body>4.เพื่อปกป้องข้อมูลของท่าน กรุณาอย่าทำการบอกข้อมูลส่วนตัวให้กับคนแปลกหน้า</body>
+          <body>5.ถ้าหากท่านพบเห็นการกระทำดังกล่าว กรุณาทำการ Report เพื่อเสริมสร้างสังคมของ Trainder ให้ดีขึ้น</body>
+
+
+        </v-card-text>
+
+        <v-card-text>
+          <body>ข้อมูลส่วนบุคคลของท่านจะถูกเก็บเป็นความลับ ถ้าหากข้อมูลของท่านรั่วไหลจากตัวท่านเอง ทางแอพของเราจะไม่รับผิดชอบในทุกกรณี</body>
+        </v-card-text>
+
         <v-divider></v-divider>
         <v-card-actions>
           <v-btn text @click="(checkbox = false), (dialog = false)">
@@ -161,6 +179,7 @@ export default {
         false: "Email นี้ถูกใช้ไปแล้ว",
       },
       snacktext: null,
+
     };
   },
   methods: {
