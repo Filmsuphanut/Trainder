@@ -200,7 +200,7 @@ export default {
         }
       });
 
-      console.log(table_del_doc);
+      //console.log(table_del_doc);
       for (let key in table_del_doc) {
         await tableRef.doc(table_id).collection("Event").doc(table_del_doc[key]).delete();
       }
