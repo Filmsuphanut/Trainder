@@ -5,14 +5,8 @@
       rel="stylesheet"
     />
     <v-main>
-      <Toolbar
-        v-if="
-          $route.name != 'Index' &&
-          $route.name != 'register' &&
-          $route.name != 'Trainerregister' &&
-          $route.name != 'TrainerSignIn'
-        "
-      ></Toolbar>
+      <Toolbar v-if="allowRoutes"></Toolbar>
+      <side-nav v-if="allowRoutes" />
       <router-view></router-view>
       <portal-target name="report"> </portal-target>
       <portal-target name="report2"> </portal-target>
@@ -29,7 +23,7 @@
   /* font-family: 'Nunito', sans-serif !important; */
   box-sizing: border-box !important;
   /* font-family: 'Raleway', sans-serif; */
-  font-family: "Noto Sans JP", "Sarabun", sans-serif !important;
+  /* font-family: "Noto Sans JP", "Sarabun", sans-serif !important; */
 }
 
 /* .col,.row,[class*='col-'],[class*='row-']{
@@ -39,6 +33,7 @@
 </style>
 
 <script>
+import SideNav from "./components/sideNav.vue";
 //import Index from './views/index';
 
 import Toolbar from "./components/Toolbar.vue";
@@ -48,12 +43,28 @@ export default {
 
   components: {
     Toolbar,
+    SideNav,
     //  Index,
   },
 
   data: () => ({
     //
+    Aroutes: [
+      "Index",
+      "register",
+      "Trainerregister",
+      "TrainerSignIn",
+      "videocall",
+      "link-videocall",
+      "FindTrainer",
+    ],
   }),
+  computed: {
+    allowRoutes() {
+      return !this.Aroutes.includes(this.$route.name);
+    },
+  },
+  methods: {},
 };
 </script>
 

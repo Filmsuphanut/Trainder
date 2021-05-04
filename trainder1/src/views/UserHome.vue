@@ -1,116 +1,95 @@
 <template>
   <div>
-    <v-navigation-drawer app>
-      <v-sheet color="grey lighten-4" class="pa-4 text-center">
-        <v-avatar class="mb-4" size="100">
-          <v-img :src="profile_image"></v-img>
-        </v-avatar>
-
-        <div>Welcome back!</div>
-        <h3>{{ callname() }}</h3>
-        <br />
-        <span>Your Friend Id : {{ userData.uid }}</span>
-      </v-sheet>
-
-      <v-divider></v-divider>
-
-      <v-list>
-        <v-subheader>What's up going?</v-subheader>
-        <v-list-item-group color="primary">
-          <!-- Schedule -->
-          <v-list-item link to="/Table">
-            <v-list-item-icon>
-              <v-icon>mdi-calendar-arrow-right</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Schedule</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <!-- Your stat -->
-          <v-list-item link to="/Stats">
-            <v-list-item-icon>
-              <v-icon>mdi-folder-heart</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Your Stat</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <!-- Attending Course -->
-          <v-list-item link to="/User/Course">
-            <v-list-item-icon>
-              <v-icon>mdi-folder-multiple</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Attending Course</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-container class="pa-0" fluid>
-      <v-flex class="d-flex flex-row justify-center" width="70%">
+    <v-container class="pa-0 primary" fluid>
+      <!-- <v-flex class="d-flex flex-row justify-center" width="70%">
         <v-carousel cycle hide-delimiter-background show-arrows-on-hover height="350">
           <v-carousel-item v-for="(slide, i) in slides" :key="i" :src="slide.src">
           </v-carousel-item>
         </v-carousel>
       </v-flex>
-      <v-divider></v-divider>
+      <v-divider></v-divider> -->
+      <v-sheet
+        style="border-bottom-left-radius: 20%; border-bottom-right-radius: 20%"
+        class="white d-flex flex-row"
+      >
+        <v-card
+          class="rounded-b-pill text-right d-flex flex-column justify-center align-end"
+          elevation="0"
+        >
+          <v-spacer></v-spacer>
+          <p class="text-h2" style="line-height: 1.2">
+            Make Your
+            <br />
+            <span class="font-weight-bold info--text"> Perfect Body</span>
+            <br />
+            With The Trainer
+            <span class="font-weight-bold info--text">your choice. </span>
+          </p>
+          <v-btn
+            color="success"
+            class="pa-8 elevation-0 rounded-lg"
+            style="font-size: 1rem"
+            to="User/FindTrainer"
+            >Find Your Trainer Now!</v-btn
+          >
+          <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
+        </v-card>
+        <v-spacer></v-spacer>
+        <v-img
+          class="rounded-b-pill"
+          style="max-width: 50%"
+          src="../images/trainer.jpg"
+        ></v-img>
+      </v-sheet>
 
       <!-- Exercise Mode -->
       <v-flex class="d-flex flex-row justify-center mt-4">
-        <span style="font-size: 25px; font-family: verdana">Excercise Mode</span>
+        <span style="font-size: 2rem" class="white--text">Many way to Exercise</span>
       </v-flex>
-      <v-flex class="d-flex flex-row justify-center">
+      <v-sheet class="pa-5 primary d-flex flex-row justify-center">
         <v-card
-          class="justify-center mx-3 pa-0"
-          max-width="300"
+          class="justify-center mx-3 pa-0 text-center"
+          width="350"
           link
           elevation="6"
           @click="createRoom"
         >
-          <v-img src="../images/friend.png" height="200px"></v-img>
-          <v-card-title> With Friend </v-card-title>
-          <v-card-subtitle> Video call with your friends at once </v-card-subtitle>
+          <v-img contain src="../images/friend2.jpg" height="200px"></v-img>
+          <p class="text-h5">Exercise With Friend</p>
+          <v-card-subtitle class="pa-5 black--text">
+            Invite your friend or your trainer to a private Video call session.
+          </v-card-subtitle>
         </v-card>
 
         <v-card
-          class="justify-center mx-3 pa-0"
-          max-width="300"
+          class="justify-center mx-3 pa-0 text-center"
+          width="350"
           link
           elevation="6"
           to="/vdoc"
         >
-          <v-img src="../images/withpeople.jpg" height="200px"></v-img>
-          <v-card-title> With People </v-card-title>
-          <v-card-subtitle> Having fun exercise with random people </v-card-subtitle>
+          <v-img contain src="../images/people3.jpg" height="200px"></v-img>
+          <p class="text-h5">Explore People</p>
+          <v-card-subtitle class="pa-5 black--text">
+            Having fun exercise with people around the world.</v-card-subtitle
+          >
         </v-card>
-      </v-flex>
-      <v-divider></v-divider>
 
-      <!-- looking for trainer -->
-      <v-flex class="d-flex flex-row justify-center mt-4 ml-8">
-        <span style="font-size: 25px; font-family: verdana">Looking for Trainer?</span>
-      </v-flex>
-      <v-flex class="d-flex flex-row justify-center">
         <v-card
-          class="justify-center mx-3 pa-0"
+          class="justify-center mx-3 pa-0 text-center"
+          width="350"
           link
-          max-width="57%"
           elevation="6"
-          to="User/FindTrainer"
+          to="/User/Course"
         >
-          <div class="d-flex flex-row">
-            <v-img src="../images/Slide4.jpg" max-height="200" max-width="50%"></v-img>
-            <div class="d-flex flex-column">
-              <v-card-title> Find Trainer </v-card-title>
-              <v-card-subtitle> Choose your own Trainer that suits you </v-card-subtitle>
-            </div>
-          </div>
+          <v-img contain src="../images/schedule.jpg" height="200px"></v-img>
+          <p class="text-h5">Plan Your Body</p>
+          <v-card-subtitle class="pa-5 black--text">
+            Checkout your schedule if you already Enroll to a course.</v-card-subtitle
+          >
         </v-card>
-      </v-flex>
+      </v-sheet>
     </v-container>
   </div>
 </template>

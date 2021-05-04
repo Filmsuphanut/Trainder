@@ -1,8 +1,8 @@
 <template>
-  <v-toolbar>
+  <v-toolbar class="elevation-0" style="z-index: 10; border: 0px">
     <v-toolbar-title
       style="cursor: pointer"
-      @click="$router.push('/user')"
+      @click="$router.push(role == 'trainer' ? '/TrainerHome' : '/user')"
       class="d-flex align-center"
     >
       <v-img
@@ -16,6 +16,9 @@
       <span>Trainder</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
+    <span class="primary--text mx-4"
+      ><span class="black--text">Your Friend Id : </span>{{ userData.uid }}</span
+    >
     <chat-box-trainer v-if="role == 'trainer'" />
     <chat-box v-else />
     <noti-logs />
@@ -28,15 +31,28 @@
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="ml-3 primary" outlined icon v-bind="attrs" v-on="on">
-          <v-avatar>
+          <v-avatar width="40">
             <v-img :src="$store.getters['userData'].data.profilePic"></v-img>
           </v-avatar>
         </v-btn>
       </template>
-      <v-list width="200">
-        <v-btn plain @click="$router.push('/ProfileSetting')"> Profile Setting </v-btn>
-        <br />
-        <v-btn plain @click="logout"> logout </v-btn>
+      <v-list style="border: thin solid black" width="200">
+        <v-list-item @click="$router.push('/ProfileSetting')">
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-menu>
   </v-toolbar>
@@ -59,6 +75,7 @@ export default {
   computed: {
     ...mapGetters({
       role: "userRole",
+      userData: "userData",
     }),
   },
   methods: {

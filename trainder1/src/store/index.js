@@ -205,7 +205,10 @@ export default new Vuex.Store({
 
             trainerCourse.forEach((doc) => {
                 coursedocid = doc.id;
-                let d = { docId: doc.id, ...doc.data() };
+                let d = {
+                    docId: doc.id,
+                    ...doc.data()
+                };
                 d.event = [];
 
                 courseRef.doc(coursedocid).collection("Event").get().then((courseEvent) => {
@@ -243,7 +246,9 @@ export default new Vuex.Store({
                 let member = doc.data().member;
 
                 if (member.includes(user.uid)) {
-                    let buff = {...doc.data() };
+                    let buff = {
+                        ...doc.data()
+                    };
                     buff.creatorname = "";
                     //console.log(buff.creator);
                     userRef.doc(buff.creator).get().then(userData => {
@@ -269,17 +274,21 @@ export default new Vuex.Store({
                 //console.log(doc.id, '=>', doc.data());
             });
 
-            let userEvent = await tableRef.doc(context.state.tableid).collection("Event").get();
+            try {
+                let userEvent = await tableRef.doc(context.state.tableid).collection("Event").get();
 
-            userEvent.forEach(doc => {
+                userEvent.forEach(doc => {
 
-                //console.log(doc.id, " => ", doc.data());
-                if (JSON.stringify(doc.data()) != "{}") {
-                    let EventData = doc.data();
-                    EventData.id = doc.id;
-                    eventbuff.push(EventData); // <--
-                }
-            });
+                    //console.log(doc.id, " => ", doc.data());
+                    if (JSON.stringify(doc.data()) != "{}") {
+                        let EventData = doc.data();
+                        EventData.id = doc.id;
+                        eventbuff.push(EventData); // <--
+                    }
+                });
+            } catch (err) {
+                console.log(err)
+            }
 
             context.commit("setTableEvent", []);
             context.commit("setTableEvent", eventbuff);
