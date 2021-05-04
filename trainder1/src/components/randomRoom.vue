@@ -196,7 +196,6 @@ export default {
       online: false,
       // uid: "",
       roomMemCount: 0,
-      streams: [],
       devices: {
         mic: true,
         cam: true,
@@ -212,6 +211,7 @@ export default {
       ready: true,
       partner_uid: "",
       room: "",
+      stream: "",
     };
   },
   watch: {
@@ -301,6 +301,7 @@ export default {
       await navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
+          this.stream = stream;
           video.srcObject = stream;
         })
         .catch((error) => console.error(error));
@@ -333,6 +334,16 @@ export default {
         if (stream) stream.getAudioTracks()[0].enabled = false;
       }
     },
+    endTracks() {
+      const stream = this.stream;
+      if (stream) {
+        console.log("ending");
+        stream.getTracks().forEach((track) => {
+          console.log(track);
+          track.stop();
+        });
+      }
+    },
     initRTC() {
       this.nameInput = false;
       socket = io(endpoint, {
@@ -363,11 +374,6 @@ export default {
           this.join(room);
         }
       });
-
-      window.onunload = window.onbeforeunload = () => {
-        this.leave();
-        socket.close();
-      };
     },
     addPeerConnection(id) {
       var Ovideo = document.getElementById(id);
@@ -532,7 +538,9 @@ export default {
     // this.streamingInit();
   },
   async beforeDestroy() {
-    console.log("111");
+    this.endTracks();
+    this.leave();
+    socket.close();
     await axios.get("timerStop?uid=" + this.userData.data.uid);
     await axios.delete(`dequeue/${this.userData.uid}`);
   },
