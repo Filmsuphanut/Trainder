@@ -41,7 +41,7 @@ export default {
         {
           icon: "mdi-calendar-arrow-right",
           label: "Schedule",
-          link: "/user",
+          link: "/Table",
         },
         {
           icon: "mdi-folder-heart",
