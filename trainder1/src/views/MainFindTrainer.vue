@@ -160,8 +160,12 @@
 
 import firebase from 'firebase'
 import axios from "axios";
+import { mapGetters } from "vuex"
 
 export default {
+     computed: {
+     ...mapGetters(['getDataById'])
+     },
   data(){
     return{
 
@@ -259,11 +263,18 @@ export default {
         async like(){
 
           let docid = this.$store.getters["userData"].uid;
-          //console.log("trainer doc id =>",this.trainer_data[this.onboarding].docid);
-          //console.log(docid,this.trainer_data[this.onboarding].docid)
-          await this.addFriend(docid,this.trainer_data[this.onboarding].docid).then(() => {
-            console.log("complete")
-          })
+
+          // await this.addFriend(docid,this.trainer_data[this.onboarding].docid).then(() => {
+          //   console.log("complete")
+          // })
+
+          //let logsId = this.$store.state.friendList[this.trainer_data[this.onboarding].docid].logsId;
+          let logsId = this.getDataById(this.trainer_data[this.onboarding].docid).logsId;
+          console.log(logsId);
+
+          // await this.sendChat(docid,logsId,"hello world").then(() => {
+          //   console.log("send msg")
+          // })
 
         },
 
@@ -321,6 +332,18 @@ export default {
       //   this.$refs["uid1"].validate(true);
       // }
       //this.ready = true;
+    },
+
+    async sendChat(my_docid,log_docid,msg) {
+
+      await axios.put("saveLog", {
+        // LogRef: this.user.logDoc,
+        // sender: this.user.current.uid,
+        LogRef:log_docid,
+        sender:my_docid,
+        msg: msg,
+        date: new Date().toLocaleTimeString(),
+      });
     },
 
 
