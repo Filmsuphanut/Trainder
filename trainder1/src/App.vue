@@ -31,6 +31,7 @@
   /* font-family: 'Raleway', sans-serif; */
   font-family: "Noto Sans JP", "Sarabun", sans-serif !important;
 }
+
 /* .col,.row,[class*='col-'],[class*='row-']{
   padding: 0 !important;
   margin: 0 !important;

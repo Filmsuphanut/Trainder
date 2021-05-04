@@ -80,11 +80,21 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <v-card-text class="pt-3">
-            <p class="text-h6">Leave them a message.</p>
-            <p>User : {{ user.target.name }}</p>
+          <v-card-text class="pt-3 mt-3">
+            <p style="font-size: 1.25rem; font-weight: bold">เลือกคอร์ส</p>
+            <v-radio-group v-model="overlays.invite.radio">
+              <v-radio
+                v-for="n in courses"
+                :key="n.docId"
+                :label="`${n.name}`"
+                :value="n.docId"
+              ></v-radio>
+            </v-radio-group>
+            <p style="font-size: 1.25rem; font-weight: bold">ส่งข้อความให้เขาหน่อยสิ..</p>
+            <p>ผู้ใช้งาน : {{ user.target.name }}</p>
             <v-textarea
               outlined
+              ref="course"
               label="Details"
               color="info"
               v-model="overlays.invite.msg"
@@ -94,7 +104,11 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :loading="!overlays.invite.ready" @click="invite" color="error"
+            <v-btn
+              :disabled="!overlays.invite.radio"
+              :loading="!overlays.invite.ready"
+              @click="invite"
+              color="error"
               >Send</v-btn
             >
           </v-card-actions>
@@ -121,6 +135,7 @@ export default {
           show: false,
           msg: "",
           ready: true,
+          radio: "",
         },
       },
       selectedItem: 1,
@@ -143,6 +158,7 @@ export default {
   computed: {
     ...mapGetters({
       userRole: "userRole",
+      courses: "course",
     }),
   },
   methods: {
@@ -176,17 +192,21 @@ export default {
       this.overlays.invite.show = true;
     },
     async invite() {
-      await axios.post("pushNoti", {
-        userId: this.user.target.uid,
-        sender: this.user.current.uid,
-        msg: {
-          course_id: "",
-          text: this.overlays.invite.msg,
-        },
-        date: new Date().toLocaleTimeString,
-        type: "invite",
-      });
-      alert("Done");
+      if (this.overlays.invite.radio) {
+        await axios.put("pushNoti", {
+          userId: this.user.target.uid,
+          sender: this.user.current.uid,
+          msg: {
+            course_id: this.overlays.invite.radio,
+            text: this.overlays.invite.msg,
+          },
+          date: new Date().toLocaleTimeString(),
+          type: "invite",
+        });
+        alert("Done");
+      } else {
+        this.$refs["course"].validate();
+      }
     },
   },
 };

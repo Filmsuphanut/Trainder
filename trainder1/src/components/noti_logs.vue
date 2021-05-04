@@ -118,6 +118,7 @@
 <style></style>
 
 <script>
+import axios from "axios";
 import { mapGetters } from "vuex";
 import { fb } from "../firebase";
 import addFriend from "./addFriend.vue";
@@ -182,8 +183,13 @@ export default {
       // this.$store.commit("setNotification", deleted);
       this.$store.dispatch("updateNoti", deleted);
     },
-    joinCourse(id) {
+    async joinCourse(id) {
       console.log(`joining course ${id}`);
+      await axios.post("joinCourse", {
+        courseId: id,
+        userId: this.userData.uid,
+      });
+      alert("Done");
     },
   },
   async created() {

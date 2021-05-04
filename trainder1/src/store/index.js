@@ -173,8 +173,7 @@ export default new Vuex.Store({
             let trainerCourse = await courseRef.where("creator", "==", user.uid).get();
             //let CourseDocid;
             trainerCourse.forEach((doc) => {
-                console.log(doc.data())
-                context.commit("pushCourse", { id: doc.id, ...doc.data() })
+                context.commit("pushCourse", { docId: doc.id, ...doc.data() })
             });
         },
         async updateNoti(context, value) {
@@ -217,6 +216,9 @@ export default new Vuex.Store({
         },
         userRole(state) {
             return state.user.data.data.role
+        },
+        course(state) {
+            return state.course
         }
     },
     modules: {
