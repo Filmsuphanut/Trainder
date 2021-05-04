@@ -17,7 +17,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <span class="primary--text mx-4"
-      ><span class="black--text">Your Friend Id : </span>{{ userData.uid }}</span
+      ><span class="black--text">รหัสเพิ่มเพื่อนของคุณ : </span>{{ userData.uid }}</span
     >
     <chat-box-trainer v-if="role == 'trainer'" />
     <chat-box v-else />
@@ -42,7 +42,7 @@
             <v-icon>mdi-cog</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
+            <v-list-item-title>ตั้งค่าโปรไฟล์</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="logout">
@@ -50,7 +50,7 @@
             <v-icon>mdi-logout</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Logout</v-list-item-title>
+            <v-list-item-title>ออกจากระบบ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

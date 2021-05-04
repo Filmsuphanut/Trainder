@@ -55,7 +55,7 @@
           <v-card class="ma-2 pa-2" rounded="xl" dark color="primary" height="100%" width="100%" align="center" >
             <v-card dark color="primary" outlined height="45%" >
             </v-card>          
-            <v-btn text fab @click="like"><v-icon x-large >mdi-thumb-up</v-icon></v-btn>
+            <v-btn text fab @click="like(trainer_data[onboarding])"><v-icon x-large >mdi-thumb-up</v-icon></v-btn>
           </v-card>
         </v-col>
       </v-row>
@@ -65,7 +65,6 @@
 <v-dialog v-model="detail_dialog">
   <v-container>
     <v-row align="center" justify="center" >
-
       <!-- รายละเอียด -->
       <v-card class="ma-4 pa-4" rounded="xl" dark color="primary" width="100%" height="100%">
         <v-row>
@@ -128,6 +127,23 @@
   </v-container>
 </v-dialog>
 
+    <v-dialog v-model="snackbar" max-width="400">
+      <v-card dark color="white">
+        <v-toolbar color="primary">
+          <v-row>
+            <v-col cols="1">
+              <v-icon color="accent">mdi-check-bold</v-icon>
+            </v-col>
+            <v-col cols="5"> แจ้งเตือน </v-col>
+          </v-row> </v-toolbar
+        ><br />
+        <v-card-text>
+          <p style="color: gray">
+            เพิ่มเพื่อนเรียบร้อย ท่านสามารถตรวจสอบได้ที่แจ้งเตือน
+          </p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
 <!-- view image -->
 <v-dialog v-model="viewimage">
@@ -137,6 +153,80 @@
     </v-row>
   </v-container>
 </v-dialog>
+
+<v-dialog v-model="Trainerlike" absolute max-width="450" persistent>
+
+
+        <v-card width="600" light>
+          <v-card-title class="primary white--text text-center" primary-title>
+            <v-icon class="white--text mr-3">mdi-thumb-up</v-icon>
+            ส่งคำขอเป็นเพื่อน
+            <v-spacer></v-spacer>
+            <v-btn @click="Trainerlike = false" text icon color="white">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-card-text class="pt-3 mt-3" rounded="xl">
+            <p style="font-size: 15px;">ฮั่นแน่ ถูกใจเทรนเนอร์ {{ details.fullName }} เข้าแล้วล่ะสิ </p>
+            <p style="font-size: 15px;">เพิ่มเพื่อนพร้อมส่งข้อความให้เขาเลย..</p>
+            <v-textarea
+              outlined
+              ref="course"
+              label="ข้อความ"
+              color="info"
+              v-model="message"
+              hide-details
+            ></v-textarea>
+          </v-card-text>
+
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="right" @click="send()" :loading="loading" :disabled="loading" >ส่ง</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+
+
+</v-dialog>
+
+<!-- <v-dialog absolute max-width="450" persistent v-model="Trainerlike">
+
+        <v-card width="600" light>
+          <v-card-title class="primary white--text text-center" primary-title>
+            <v-icon class="white--text mr-3">mdi-thumb-up</v-icon>
+            ส่งคำขอเป็นเพื่อน
+            <v-spacer></v-spacer>
+            <v-btn @click="Trainerlike = false" text icon color="white">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-card-text class="pt-3 mt-3">
+            <p>{{ trainer_data[onboarding].fullName }}</p>
+            <p style="font-size: 1.25rem; font-weight: bold">ส่งข้อความให้เขาหน่อยสิ..</p>
+            <v-textarea
+              outlined
+              ref="course"
+              label="ข้อความ"
+              color="info"
+              v-model="message"
+              hide-details
+            ></v-textarea>
+          </v-card-text>
+
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              >Send</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+
+</v-dialog> -->
 
 <!-- loading -->
 <v-overlay :value="page_loading" :opacity="0.8">
@@ -188,6 +278,9 @@ export default {
 
 ///////////trainer like
       Trainerlike:false,
+      message:"",
+      loading:false,
+      snackbar:false,
 
     }
   },
@@ -202,6 +295,9 @@ export default {
         //     return displayname
         // },
         async connection(){
+
+          this.trainer_data = [];
+          this.trainer_course = [];
 
           this.page_loading = true;
           this.call_uid().then(() =>{
@@ -260,21 +356,36 @@ export default {
           }///endfor
 
         },
-        async like(){
+        async like(e){
+          this.Trainerlike = true;
+          this.details = e;
+         },
+
+
+        async send(){
+          this.loading = true;
 
           let docid = this.$store.getters["userData"].uid;
 
-          // await this.addFriend(docid,this.trainer_data[this.onboarding].docid).then(() => {
-          //   console.log("complete")
-          // })
+          await this.addFriend(docid,this.trainer_data[this.onboarding].docid).then(() => {
+            console.log("complete")
+          })
 
           //let logsId = this.$store.state.friendList[this.trainer_data[this.onboarding].docid].logsId;
-          let logsId = this.getDataById(this.trainer_data[this.onboarding].docid).logsId;
-          console.log(logsId);
 
-          // await this.sendChat(docid,logsId,"hello world").then(() => {
-          //   console.log("send msg")
-          // })
+          if(this.message != ""){
+
+              let logsId = this.getDataById(this.trainer_data[this.onboarding].docid).logsId;
+
+              await this.sendChat(docid,logsId,this.message).then(() => {
+                console.log("send msg")
+                this.message = "";
+              })
+
+          }
+          this.Trainerlike = false;
+          this.loading = false;
+          this.snackbar = true;
 
         },
 
@@ -319,11 +430,11 @@ export default {
             id1: my_docid,
             id2: trainer_docid,
           });
-          alert("Done");
+          console.log("Done");
           await this.$store.dispatch("fetchFriends");
           this.overlay = false;
         } catch (err) {
-          alert(err);
+          console.log(err);
         }
 
       // } 

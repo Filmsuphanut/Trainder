@@ -29,7 +29,7 @@
       <v-card width="450" style="min-height: 300px" max-height="550" class="mx-auto">
         <v-toolbar color="primary" dark>
           <v-toolbar-title>
-            <v-icon left>mdi-inbox-full</v-icon> Notification
+            <v-icon left>mdi-inbox-full</v-icon> การแจ้งเตือน
           </v-toolbar-title>
         </v-toolbar>
         <v-tabs-items v-model="tab">
