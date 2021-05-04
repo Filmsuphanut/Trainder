@@ -87,7 +87,7 @@
                 v-for="n in courses"
                 :key="n.docId"
                 :label="`${n.name}`"
-                :value="n.docId"
+                :value="{ id: n.docId, name: n.name }"
               ></v-radio>
             </v-radio-group>
             <p style="font-size: 1.25rem; font-weight: bold">ส่งข้อความให้เขาหน่อยสิ..</p>
@@ -197,8 +197,9 @@ export default {
           userId: this.user.target.uid,
           sender: this.user.current.uid,
           msg: {
-            course_id: this.overlays.invite.radio,
-            text: this.overlays.invite.msg,
+            course_id: this.overlays.invite.radio.id,
+            text: `คอร์ส : ${this.overlays.invite.radio.name} <br />
+                   ข้อความ : ${this.overlays.invite.msg}`,
           },
           date: new Date().toLocaleTimeString(),
           type: "invite",

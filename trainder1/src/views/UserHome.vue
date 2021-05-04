@@ -7,8 +7,8 @@
         </v-avatar>
 
         <div>Welcome back!</div>
-        <h3>{{callname()}}</h3>
-        <br>
+        <h3>{{ callname() }}</h3>
+        <br />
         <span>Your Friend Id : {{ userData.uid }}</span>
       </v-sheet>
 
@@ -50,19 +50,10 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-container class="pt-2 px-6" fluid>
+    <v-container class="pa-0" fluid>
       <v-flex class="d-flex flex-row justify-center" width="70%">
-        <v-carousel
-          cycle
-          hide-delimiter-background
-          show-arrows-on-hover
-          height="350"
-        >
-          <v-carousel-item
-            v-for="(slide, i) in slides"
-            :key="i"
-            :src="slide.src"
-          >
+        <v-carousel cycle hide-delimiter-background show-arrows-on-hover height="350">
+          <v-carousel-item v-for="(slide, i) in slides" :key="i" :src="slide.src">
           </v-carousel-item>
         </v-carousel>
       </v-flex>
@@ -70,52 +61,52 @@
 
       <!-- Exercise Mode -->
       <v-flex class="d-flex flex-row justify-center mt-4">
-        <span style="font-size:25px; font-family:verdana">Excercise Mode</span>
+        <span style="font-size: 25px; font-family: verdana">Excercise Mode</span>
       </v-flex>
-      <v-flex class="d-flex flex-row justify-center ma-5">
-        <v-card class="justify-center mx-3" max-width="300" link elevation="6" @click="createRoom">
+      <v-flex class="d-flex flex-row justify-center">
+        <v-card
+          class="justify-center mx-3 pa-0"
+          max-width="300"
+          link
+          elevation="6"
+          @click="createRoom"
+        >
           <v-img src="../images/friend.png" height="200px"></v-img>
-          <v-card-title>
-            With Friend
-          </v-card-title>
-          <v-card-subtitle>
-            Video call with your friends at once
-          </v-card-subtitle>
+          <v-card-title> With Friend </v-card-title>
+          <v-card-subtitle> Video call with your friends at once </v-card-subtitle>
         </v-card>
 
-        <v-card class="justify-center mx-3" max-width="300" link elevation="6" to="/vdoc">
+        <v-card
+          class="justify-center mx-3 pa-0"
+          max-width="300"
+          link
+          elevation="6"
+          to="/vdoc"
+        >
           <v-img src="../images/withpeople.jpg" height="200px"></v-img>
-          <v-card-title>
-            With People
-          </v-card-title>
-          <v-card-subtitle>
-            Having fun exercise with random people
-          </v-card-subtitle>
+          <v-card-title> With People </v-card-title>
+          <v-card-subtitle> Having fun exercise with random people </v-card-subtitle>
         </v-card>
       </v-flex>
       <v-divider></v-divider>
 
       <!-- looking for trainer -->
       <v-flex class="d-flex flex-row justify-center mt-4 ml-8">
-        <span style="font-size:25px; font-family:verdana"
-          >Looking for Trainer?</span
-        >
+        <span style="font-size: 25px; font-family: verdana">Looking for Trainer?</span>
       </v-flex>
-      <v-flex class="d-flex flex-row justify-center ma-5">
-        <v-card class="justify-center mx-3" link max-width="57%" elevation="6" to="User/FindTrainer">
+      <v-flex class="d-flex flex-row justify-center">
+        <v-card
+          class="justify-center mx-3 pa-0"
+          link
+          max-width="57%"
+          elevation="6"
+          to="User/FindTrainer"
+        >
           <div class="d-flex flex-row">
-            <v-img
-              src="../images/Slide4.jpg"
-              max-height="200"
-              max-width="50%"
-            ></v-img>
+            <v-img src="../images/Slide4.jpg" max-height="200" max-width="50%"></v-img>
             <div class="d-flex flex-column">
-              <v-card-title>
-                Find Trainer
-              </v-card-title>
-              <v-card-subtitle>
-                Choose your own Trainer that suits you
-              </v-card-subtitle>
+              <v-card-title> Find Trainer </v-card-title>
+              <v-card-subtitle> Choose your own Trainer that suits you </v-card-subtitle>
             </div>
           </div>
         </v-card>
@@ -133,11 +124,11 @@ export default {
   data() {
     return {
       slides: [
-      { src: require("../images/Course1.jpg") },
-      { src: require("../images/Course2.jpg") },
-      { src: require("../images/Course3.jpg") },
-      { src: require("../images/Course4.jpg") },
-    ],
+        { src: require("../images/Course1.jpg") },
+        { src: require("../images/Course2.jpg") },
+        { src: require("../images/Course3.jpg") },
+        { src: require("../images/Course4.jpg") },
+      ],
       profile_image: "",
     };
   },

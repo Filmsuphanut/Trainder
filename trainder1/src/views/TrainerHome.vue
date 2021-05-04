@@ -41,7 +41,7 @@
           <v-card rounded="xl" class="pa-5 mt-6" elevation="6">
             <v-row>
               <v-col cols="2" class="d-flex">
-                <h1 id="huge" class="ml-3">3</h1>
+                <h1 id="huge" class="ml-3">{{ course.length }}</h1>
               </v-col>
               <v-col cols="5" class="mt-3">
                 <h3>Courses</h3>
@@ -109,6 +109,7 @@ export default {
   computed: {
     ...mapGetters({
       userData: "userData",
+      course: "course",
     }),
   },
   methods: {

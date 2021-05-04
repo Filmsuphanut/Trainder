@@ -23,10 +23,10 @@ export default new Vuex.Store({
         },
         notification: [],
         course: [],
+        user_course: [],
         previous: {
             pre: "/",
         },
-        user_course: [],
         events: [],
         tableid: "",
     },
@@ -64,12 +64,13 @@ export default new Vuex.Store({
             Vue.set(state, "course", [])
         },
         pushCourse(state, value) {
-            Vue.set(state, "course", value)
-                //state.course.push(value)
+            // Vue.set(state, "course", value)
+            state.course.push(value)
         },
-        setUsercourse(state, value) {
+        pushUsercourse(state, value) {
             //console.log("here")
-            Vue.set(state, "user_course", value)
+            state.user_course.push(value)
+                // Vue.set(state, "user_course", value)
         },
         clearUsercourse(state) {
             //console.log("here")
@@ -193,33 +194,27 @@ export default new Vuex.Store({
             return prom;
         },
         async fetchCourse(context) {
-
-            //let user = context.state.user.data.data;
+            context.commit("clearCourse")
+                //let user = context.state.user.data.data;
             let docid = context.state.user.data.uid
 
             let courseRef = db.collection("Course");
             let trainerCourse = await courseRef.where("creator", "==", docid).get();
             // //let CourseDocid;
             let coursedocid;
-            let fullData = [];
 
             trainerCourse.forEach((doc) => {
                 coursedocid = doc.id;
-                let d = { id: doc.id, ...doc.data() };
+                let d = { docId: doc.id, ...doc.data() };
                 d.event = [];
 
                 courseRef.doc(coursedocid).collection("Event").get().then((courseEvent) => {
-
                     courseEvent.forEach(docevent => {
                         d.event.push(docevent.data())
                     })
-                    fullData.push(d);
+                    context.commit("pushCourse", d);
                 })
             });
-
-
-            context.commit("clearCourse")
-            context.commit("pushCourse", fullData);
             // CourseEvent.forEach(doc => {
             //     //console.log(doc.data())
             //     course_data.event.push(doc.data());
@@ -239,12 +234,10 @@ export default new Vuex.Store({
         },
 
         async fetchUser_course(context) {
-
+            context.commit("clearUsercourse");
             let user = context.state.user.data;
             let courseRef = await db.collection("Course").get();
             let userRef = db.collection("userData");
-            let d = [];
-
 
             courseRef.forEach((doc) => {
                 let member = doc.data().member;
@@ -254,16 +247,12 @@ export default new Vuex.Store({
                     buff.creatorname = "";
                     //console.log(buff.creator);
                     userRef.doc(buff.creator).get().then(userData => {
-
                         buff.creatorname = userData.data().fullName;
-                        d.push({...buff });
+                        context.commit("pushUsercourse", buff);
                     })
-
                 }
             });
 
-            context.commit("clearUsercourse");
-            context.commit("setUsercourse", d);
         },
 
         async getTableEvents(context) {

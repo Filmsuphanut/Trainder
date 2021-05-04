@@ -75,8 +75,9 @@
                           width="100"
                           color="success"
                           class="mt-1"
+                          :loading="!ready"
                           v-if="item.type == 'invite'"
-                          @click="joinCourse(item.msg.course_id)"
+                          @click="joinCourse(index, item.msg.course_id)"
                           >Enroll<v-icon right>mdi-account-arrow-right</v-icon>
                         </v-btn>
 
@@ -156,6 +157,7 @@ export default {
         },
       ],
       target: { target: "", current: "" },
+      ready: true,
     };
   },
   computed: {
@@ -183,13 +185,20 @@ export default {
       // this.$store.commit("setNotification", deleted);
       this.$store.dispatch("updateNoti", deleted);
     },
-    async joinCourse(id) {
-      console.log(`joining course ${id}`);
-      await axios.post("joinCourse", {
-        courseId: id,
-        userId: this.userData.uid,
-      });
-      alert("Done");
+    async joinCourse(index, id) {
+      this.ready = false;
+      try {
+        console.log(`joining course ${id}`);
+        await axios.post("joinCourse", {
+          courseId: id,
+          userId: this.userData.uid,
+        });
+        alert("Done");
+        this.deleteNoti(index);
+      } catch (err) {
+        alert(err);
+      }
+      this.ready = true;
     },
   },
   async created() {
