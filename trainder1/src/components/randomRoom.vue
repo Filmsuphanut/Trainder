@@ -521,11 +521,18 @@ export default {
       }
       return result.join("");
     },
+    async startTimer() {
+      await axios.get("timerStart?uid=" + this.userData.data.uid);
+    },
   },
   mounted() {
     this.initRTC();
     this.initCamera();
+    this.startTimer();
     // this.streamingInit();
+  },
+  async beforeDestroy() {
+    await axios.get("timerStop?uid=" + this.userData.data.uid);
   },
 };
 </script>
