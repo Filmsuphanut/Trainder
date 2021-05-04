@@ -233,31 +233,23 @@ export default {
     ///////////////////////// course method
 
     async CallCourse(id) {
-      // let user = this.$store.getters["userData"].data;
-      let db = firebase.firestore();
-      let courseRef = db.collection("Course");
-      let trainerCourse = await courseRef.where("id", "==", id).get();
-      let eventDocid;
-      let userData;
 
-      trainerCourse.forEach((doc) => {
-        eventDocid = doc.id;
-        userData = doc.data();
-      });
+      let cousre_data = this.$store.getters["course"];
+      this.CourseData = cousre_data;
+      //this.events = cousre_data.event;
 
-      this.CourseData = userData;
-
-      let event = await courseRef.doc(eventDocid).collection("Event").get();
-
-      event.forEach((doc) => {
-        if (JSON.stringify(doc.data()) != "{}") {
-          let data = doc.data();
-          console.log(data);
-          //data.id = doc.id;
-          this.events.push(data);
+      cousre_data.forEach(doc => {
+        if(doc.id == id){
+          this.CourseData = doc;
+          for(let i in doc.event){
+            console.log(JSON.stringify(doc.event[i]));
+            if(JSON.stringify(doc.event[i]) != "{}"){
+              this.events.push(doc.event[i]);
+            }
+          }
+          console.log(doc.event);
         }
-      });
-      //console.log(this.events);
+      })
     },
 
     async updateCourse() {
@@ -283,6 +275,8 @@ export default {
           .then(() => {
             this.snackupdate = true;
             this.loading = false;
+            this.CallCourse(this.courseid);
+
           });
       } else {
         this.loading = false;

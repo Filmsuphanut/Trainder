@@ -568,18 +568,19 @@ export default {
       return false;
     },
 
-    async CourseCreate() {
+    async CourseCreate() {////////////// <--------------- create course
       this.loading = true;
 
       if (this.$refs.Courseform.validate()) {
         console.log("create course function");
 
         let user = this.$store.getters["userData"].data;
+        let docid = this.$store.getters["userData"].uid;
         let db = firebase.firestore();
         let courseRef = db.collection("Course");
         let tableRef = db.collection("Table");
 
-        ////////compare event in course with event in usertable
+        ////////compare event in course with event in usertable  <------------------ table
         let tableData = await tableRef.where("uid", "==", user.uid).get();
         let tableEventid;
         let userTableEvent = [];
@@ -601,11 +602,12 @@ export default {
 
         /////////////check collide
         if (!collide) {
+          
           let course_docid;
           this.CourseData.id = this.makeid(20);
 
           courseRef.add({
-            creator: user.uid,
+            creator: docid,
             description: this.CourseData.description,
             genre: this.CourseData.genre,
             id: this.CourseData.id,
@@ -626,6 +628,7 @@ export default {
           let user_tableRef = tableRef.doc(tableEventid).collection("Event");
 
           eventRef.add({}).then(() => {
+
             for (let key in this.events) {
               eventRef.add({
                 name: this.events[key].name,
@@ -647,17 +650,23 @@ export default {
               });
             }
 
+            this.$store.dispatch("fetchCourse"); //<-------- fetch course
             this.snacksuccess = true;
             //this.back();
             this.ClearEvent();
             this.loading = false;
           });
+
         } else {
+
           this.snackcollide = true;
           this.loading = false;
+
         }
       } else {
+
         this.loading = false;
+
       }
     },
 
