@@ -149,6 +149,10 @@
       <v-row align="center" justify="center" >กำลังค้นหา Trainer .....</v-row>
 </v-overlay>
 
+
+<!-- like -->
+
+
   </v-container>
 </template>
 
@@ -170,13 +174,16 @@ export default {
 ///////////slide
       details:[],
       view_img:"",
-      length: 10,
+      length: 0,
       onboarding: 0,
 
 //////////dialog
       detail_dialog:false,
       page_loading:false,
       viewimage:false,
+
+///////////trainer like
+      Trainerlike:false,
 
     }
   },
@@ -196,6 +203,7 @@ export default {
           this.call_uid().then(() =>{
 
             this.callData(this.trainer_uid);
+            this.length = this.trainer_uid.length;
             this.page_loading = false;
 
           })
@@ -226,13 +234,16 @@ export default {
           for(let i in uid_obj){
 
             let userData = await userRef.where("uid","==",uid_obj[i]).get();
-            let courseData = await courseRef.where("creator","==",uid_obj[i]).get();
+            let userdocid = "";
             
             userData.forEach(doc => {///ข้อมูล
               let data = doc.data()
               data.docid = doc.id;
+              userdocid = doc.id
               this.trainer_data.push(data);
             });
+
+            let courseData = await courseRef.where("creator","==",userdocid).get();
 
             courseData.forEach(doc =>{//หา doc id ของ course
               //couresDocid = doc.id;
@@ -246,7 +257,14 @@ export default {
 
         },
         async like(){
-          console.log("trainer doc id =>",this.trainer_data[this.onboarding].docid);
+
+          let docid = this.$store.getters["userData"].uid;
+          //console.log("trainer doc id =>",this.trainer_data[this.onboarding].docid);
+          //console.log(docid,this.trainer_data[this.onboarding].docid)
+          await this.addFriend(docid,this.trainer_data[this.onboarding].docid).then(() => {
+            console.log("complete")
+          })
+
         },
 
 ////////////////////////////////////// details
@@ -266,8 +284,8 @@ export default {
         next() {
           let preonboarding = this.onboarding;
           this.onboarding = this.onboarding + 1 === this.length? 0: this.onboarding + 1;
-
-          if(preonboarding == 9 && this.onboarding ==0){
+          
+          if((preonboarding == this.length - 1) &&(this.onboarding == 0)){
             this.trainer_data = [];
             console.log('Reconnection...');
             this.connection();  
@@ -278,7 +296,32 @@ export default {
           this.onboarding = this.onboarding - 1 < 0? this.length - 1: this.onboarding - 1;
         },
 
+///////////////////api
 
+    async addFriend(my_docid,trainer_docid) {
+      //this.ready = false;
+      // if (this.uid) {
+
+        console.log(`${process.env.VUE_APP_ENDPOINT}/addFriend`);
+        try {
+          let res = await axios.post(`${process.env.VUE_APP_ENDPOINT}/addFriend`, {
+            id1: my_docid,
+            id2: trainer_docid,
+          });
+          alert("Done");
+          await this.$store.dispatch("fetchFriends");
+          this.overlay = false;
+        } catch (err) {
+          alert(err);
+        }
+
+      // } 
+      
+      // else {
+      //   this.$refs["uid1"].validate(true);
+      // }
+      //this.ready = true;
+    },
 
 
   },
