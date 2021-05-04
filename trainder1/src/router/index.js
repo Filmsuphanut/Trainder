@@ -141,7 +141,8 @@ router.beforeEach((to, from, next) => {
     // // console.log(firebase.auth().currentUser)
     const auth = ["/", "/register", "/Trainerregister"]
     if (store.getters["userData"].data) {
-        if (to.path == "/") return next("/user")
+        const redirect = store.getters["userRole"] == 'trainer' ? "/TrainerHome" : "/user"
+        if (to.path == "/") return next(redirect)
         next()
     } else {
         if (!auth.includes(to.path))
