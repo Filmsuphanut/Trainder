@@ -21,7 +21,7 @@
             class="pa-8 elevation-0 rounded-lg"
             style="font-size: 1rem"
             to="/Course"
-            >Create Your Course Now!</v-btn
+            >สร้างคอร์สของคุณ</v-btn
           >
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
@@ -43,12 +43,12 @@
             <h1 id="huge" class="ml-3">{{ course.length }}</h1>
           </v-col>
           <v-col cols="3" class="my-auto">
-            <h3>Courses</h3>
-            <span>in charge </span>
+            <h3>คอร์ส</h3>
+            <span>ที่รับผิดชอบ </span>
           </v-col>
           <v-col class="text-center my-auto">
             <v-btn rounded dark color="primary" class="mt-4" to="/Course">
-              view your course
+              ดูคอร์สของคุณ
             </v-btn>
           </v-col>
         </v-card>
@@ -63,9 +63,9 @@
             @click="createRoom"
           >
             <v-img contain src="../images/friend2.jpg" height="200px"></v-img>
-            <p class="text-h5">Exercise With Friend</p>
+            <p class="text-h5">ออกกำลังกายกับเพื่อนของคุณ</p>
             <v-card-subtitle class="pa-5 black--text">
-              Invite your friend or your trainer to a private Video call session.
+              เข้าสู่เซสชันวิดีโอคอลส่วนตัวกับเพื่อนหรือเทรนเนอร์ของคุณ
             </v-card-subtitle>
           </v-card>
 
@@ -77,9 +77,9 @@
             to="/vdoc"
           >
             <v-img contain src="../images/people3.jpg" height="200px"></v-img>
-            <p class="text-h5">Explore People</p>
+            <p class="text-h5">ค้นหาเพื่อนรอบโลก</p>
             <v-card-subtitle class="pa-5 black--text">
-              Having fun exercise with people around the world.</v-card-subtitle
+              สนุกไปกับการออกกำลังกายผ่านวิดีโอคอลกับเพื่อนใหม่รอบโลก</v-card-subtitle
             >
           </v-card>
 
@@ -91,9 +91,9 @@
             to="/Table"
           >
             <v-img contain src="../images/schedule.jpg" height="200px"></v-img>
-            <p class="text-h5">Plan Your Body</p>
+            <p class="text-h5">วางแผนการออกกำลังกาย</p>
             <v-card-subtitle class="pa-5 black--text">
-              Checkout your schedule if you already Enroll to a course.</v-card-subtitle
+              ตรวจสอบตารางออกกำลังของคอร์สเรียนที่กำลังดำเนินการอยู่</v-card-subtitle
             >
           </v-card>
         </v-sheet>
