@@ -10,56 +10,18 @@
     <v-divider></v-divider>
 
     <v-list>
-      <v-subheader>What's up going?</v-subheader>
       <v-list-item-group color="primary">
         <!-- main -->
-        <v-list-item link to="/user">
-          <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <!-- Schedule -->
-        <v-list-item link to="/Table">
-          <v-list-item-icon>
-            <v-icon>mdi-calendar-arrow-right</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Schedule</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <!-- Your stat -->
-        <v-list-item link to="/Stats">
-          <v-list-item-icon>
-            <v-icon>mdi-folder-heart</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Your Stat</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <!-- Attending Course -->
-        <v-list-item link to="/User/Course">
-          <v-list-item-icon>
-            <v-icon>mdi-folder-multiple</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Attending Course</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item link to="/ProfileSetting">
-          <v-list-item-icon>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="(item, index) in menus">
+          <v-list-item :key="index" link :to="item.link">
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.label }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
       </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -69,12 +31,66 @@
 import { mapGetters } from "vuex";
 export default {
   data() {
-    return {};
+    return {
+      userMenu: [
+        {
+          icon: "mdi-home",
+          label: "Home",
+          link: "/user",
+        },
+        {
+          icon: "mdi-calendar-arrow-right",
+          label: "Schedule",
+          link: "/user",
+        },
+        {
+          icon: "mdi-folder-heart",
+          label: "Your Stat",
+          link: "/Stats",
+        },
+        {
+          icon: "mdi-folder-multiple",
+          label: "Attending Course",
+          link: "/User/Course",
+        },
+      ],
+      trainerMenu: [
+        {
+          icon: "mdi-home",
+          label: "Home",
+          link: "/TrainerHome",
+        },
+        {
+          icon: "mdi-folder-multiple",
+          label: "Course Managment",
+          link: "/Course",
+        },
+        {
+          icon: "mdi-calendar-text",
+          label: "Table",
+          link: "/Table",
+        },
+      ],
+      common: [
+        {
+          icon: "mdi-cog",
+          label: "Settings",
+          link: "/ProfileSetting",
+        },
+      ],
+    };
   },
   computed: {
     ...mapGetters({
       userData: "userData",
+      role: "userRole",
     }),
+    menus() {
+      return [
+        ...(this.role == "trainer" ? this.trainerMenu : this.userMenu),
+        ...this.common,
+      ];
+    },
   },
 };
 </script>

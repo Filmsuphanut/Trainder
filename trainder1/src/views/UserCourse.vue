@@ -18,11 +18,15 @@
             <v-row justify="center">
               <v-card width="800" flat>
                 <v-expansion-panels popout>
-                  <v-expansion-panel v-for="(item, i) in $store.getters['user_course']" :key="i">
+                  <v-expansion-panel
+                    v-for="(item, i) in $store.getters['user_course']"
+                    :key="i"
+                  >
                     <v-expansion-panel-header
                       expand-icon="mdi-menu-down"
                       dark
                       color="secondary"
+                      class="white--text"
                       >{{ item.name }}</v-expansion-panel-header
                     >
                     <v-expansion-panel-content
@@ -64,15 +68,13 @@
   </v-container>
 </template>
 
-
 <script>
 import firebase from "firebase";
 
 export default {
   name: "UserCourse",
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     /////////////////////firebase

@@ -32,7 +32,11 @@
             </v-col>
           </v-row>
 
-          <v-row v-for="course in $store.getters['course']" :key="course" class="mb-2">
+          <v-row
+            v-for="(course, index) in $store.getters['course']"
+            :key="index"
+            class="mb-2"
+          >
             <v-col cols="12">
               <v-card rounded="xl" color="white">
                 <v-row>
@@ -153,7 +157,6 @@ export default {
     };
   },
   methods: {
-
     async callCourse() {
       // let user = this.$store.getters["userData"].data;
       // let db = firebase.firestore();
@@ -167,7 +170,6 @@ export default {
       // });
       //this.courses = this.$store.getters["course"];
       this.$store.dispatch("fetchCourse");
-    
     },
 
     async delete_Course() {
@@ -216,8 +218,7 @@ export default {
       this.$store.dispatch("fetchCourse");
     },
 
-
-////////////////////default methods
+    ////////////////////default methods
 
     callname() {
       let user = this.$store.getters["userData"];
@@ -228,7 +229,6 @@ export default {
       this.$router.push(previous);
     },
     Router_CreCourse() {
-
       this.$router.push("/Course/CreateCourse");
     },
     Router_EditCourse(e) {
