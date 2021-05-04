@@ -532,7 +532,9 @@ export default {
     // this.streamingInit();
   },
   async beforeDestroy() {
+    console.log("111");
     await axios.get("timerStop?uid=" + this.userData.data.uid);
+    await axios.delete(`dequeue/${this.userData.uid}`);
   },
 };
 </script>
