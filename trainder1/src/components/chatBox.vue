@@ -32,7 +32,7 @@
           <v-btn v-if="tab" @click="back" icon class="hidden-xs-only">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
-          <v-toolbar-title>{{ tab ? target.target.name : "Contacts" }}</v-toolbar-title>
+          <v-toolbar-title>{{ tab ? target.target.name : "รายชื่อผู้ติดต่อ" }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <add-friend v-if="!tab" />
           <chat-option @back="tab = 0" :user="target" v-if="tab" />

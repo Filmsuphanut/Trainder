@@ -22,7 +22,7 @@
             <br />
             <span class="font-weight-bold info--text"> Perfect Body</span>
             <br />
-            With The Trainer
+            Online With Trainer
             <span class="font-weight-bold info--text">your choice. </span>
           </p>
           <v-btn
@@ -30,7 +30,7 @@
             class="pa-8 elevation-0 rounded-lg"
             style="font-size: 1rem"
             to="User/FindTrainer"
-            >Find Your Trainer Now!</v-btn
+            >เริ่มหาเทรนเนอร์เลย!</v-btn
           >
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
@@ -45,7 +45,7 @@
 
       <!-- Exercise Mode -->
       <v-flex class="d-flex flex-row justify-center mt-4">
-        <span style="font-size: 2rem" class="white--text">Many way to Exercise</span>
+        <span style="font-size: 2rem" class="white--text">มาเริ่มออกกำลังกายกันเถอะ!</span>
       </v-flex>
       <v-sheet class="pa-5 primary d-flex flex-row justify-center">
         <v-card
@@ -56,9 +56,9 @@
           @click="createRoom"
         >
           <v-img contain src="../images/friend2.jpg" height="200px"></v-img>
-          <p class="text-h5">Exercise With Friend</p>
+          <p class="text-h5">ออกกำลังกายกับเพื่อนของคุณ</p>
           <v-card-subtitle class="pa-5 black--text">
-            Invite your friend or your trainer to a private Video call session.
+            เข้าสู่เซสชันวิดีโอคอลส่วนตัวกับเพื่อนหรือเทรนเนอร์ของคุณ
           </v-card-subtitle>
         </v-card>
 
@@ -70,9 +70,9 @@
           to="/vdoc"
         >
           <v-img contain src="../images/people3.jpg" height="200px"></v-img>
-          <p class="text-h5">Explore People</p>
+          <p class="text-h5">ค้นหาเพื่อนรอบโลก</p>
           <v-card-subtitle class="pa-5 black--text">
-            Having fun exercise with people around the world.</v-card-subtitle
+            สนุกไปกับการออกกำลังกายผ่านวิดีโอคอลกับเพื่อนใหม่รอบโลก</v-card-subtitle
           >
         </v-card>
 
@@ -84,9 +84,9 @@
           to="/User/Course"
         >
           <v-img contain src="../images/schedule.jpg" height="200px"></v-img>
-          <p class="text-h5">Plan Your Body</p>
+          <p class="text-h5">วางแผนการออกกำลังกาย</p>
           <v-card-subtitle class="pa-5 black--text">
-            Checkout your schedule if you already Enroll to a course.</v-card-subtitle
+            ตรวจสอบตารางออกกำลังของคอร์สเรียนที่กำลังดำเนินการอยู่</v-card-subtitle
           >
         </v-card>
       </v-sheet>

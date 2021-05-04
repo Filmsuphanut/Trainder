@@ -8,14 +8,14 @@
         <v-card width="400" light>
           <v-card-title class="primary white--text text-center" primary-title>
             <v-icon class="white--text mr-3">mdi-account-plus</v-icon>
-            Add Friend
+            เพิ่มเพื่อน
             <v-spacer></v-spacer>
             <v-btn @click="overlay = false" text icon color="white">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
           <v-card-text class="pt-3">
-            <p class="text-h6">Please enter your friend Id</p>
+            <p class="text-h6">กรอกรหัสเพิ่มเพื่อนของเพื่อนคุณ</p>
             <v-text-field
               ref="uid1"
               color="info"
@@ -28,7 +28,7 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :loading="!ready" @click="addFriend" color="success">Add</v-btn>
+            <v-btn :loading="!ready" @click="addFriend" color="success">เพิ่มเพื่อน</v-btn>
           </v-card-actions>
         </v-card>
       </v-overlay>

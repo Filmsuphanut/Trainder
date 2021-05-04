@@ -4,7 +4,7 @@
       <v-avatar class="mb-4" size="80">
         <v-img :src="userData.data.profilePic"></v-img>
       </v-avatar>
-      <div>Welcome back!</div>
+      <div>ยินดีต้อนรับ!</div>
       <h3 class="primary--text">{{ userData.data.fullName }}</h3>
     </v-sheet>
     <v-divider></v-divider>
@@ -35,46 +35,46 @@ export default {
       userMenu: [
         {
           icon: "mdi-home",
-          label: "Home",
+          label: "หน้าแรก",
           link: "/user",
         },
         {
           icon: "mdi-calendar-arrow-right",
-          label: "Schedule",
+          label: "ตารางกิจกรรม",
           link: "/Table",
         },
         {
           icon: "mdi-folder-heart",
-          label: "Your Stat",
+          label: "สถิติ",
           link: "/Stats",
         },
         {
           icon: "mdi-folder-multiple",
-          label: "Attending Course",
+          label: "คอร์สเรียนที่ดำเนินอยู่",
           link: "/User/Course",
         },
       ],
       trainerMenu: [
         {
           icon: "mdi-home",
-          label: "Home",
+          label: "หน้าแรก",
           link: "/TrainerHome",
         },
         {
           icon: "mdi-folder-multiple",
-          label: "Course Managment",
+          label: "การจัดการคอร์ส",
           link: "/Course",
         },
         {
           icon: "mdi-calendar-text",
-          label: "Table",
+          label: "ตารางกิจกรรม",
           link: "/Table",
         },
       ],
       common: [
         {
           icon: "mdi-cog",
-          label: "Settings",
+          label: "ตั้งค่าโปรไฟล์",
           link: "/ProfileSetting",
         },
       ],
