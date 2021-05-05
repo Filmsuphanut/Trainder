@@ -249,7 +249,7 @@
                             :items="sports"
                             label="ประเภทกีฬา?"
                             outlined
-                            v-model="temp_meal"
+                            v-model="temp_sport_type"
                           ></v-select>
                           <v-text-field
                             label="ระยะเวลา?"
@@ -379,6 +379,7 @@ export default {
         },
         colors: ["#1b9e77", "#d95f02", "#7570b3"],
         height: 400,
+        scaleBeginAtZero: true
       },
       meals: ["มื้อเช้า", "กลางวัน", "เย็น"],
       temp_data: null,
@@ -401,6 +402,7 @@ export default {
         },
         colors: ["#1b9e77", "#d95f02", "#7570b3"],
         height: 300,
+        scaleBeginAtZero: true
       },
       sports: ["กีฬาบาสเก็ตบอล","เวทเทรนนิ่ง","วิ่ง"],
       temp_sport: null,
@@ -409,13 +411,14 @@ export default {
       historyDataByDate : [],
       cal_eaten : [],
       cal_burned : [],
-      exercise_Time : [],
+      exercise_Time : null,
       weight_start: 0,
       calories_limit : 0,
       firstVisit : true,
       date:0,
       uid:'',
       db: null,
+      temp_sport_type:null,
 
 
     }
@@ -427,7 +430,31 @@ export default {
       this.update_HW(this.height, this.weight, this.uid)
       this.dialog_status = false;
     },
-    update_eating_history() { //need fix here //update database
+    async update_eating_history() { //need fix here //update database this.date = 0000-00-00
+      let d = this.date;
+      let tCal = this.temp_cal;
+      let tMeal = this.temp_meal;
+      let data;
+      if(tMeal == this.meals[0]){
+        data = {
+          cal_eaten : {
+            morning : tCal
+          }
+        }
+      }else if(tMeal == this.meals[1]) {
+        data = {
+          cal_eaten : {
+            noon : tCal
+          }
+        }
+      } else {
+        data = {
+          cal_eaten : {
+            evening : tCal
+          }
+        }
+      }
+      this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
       this.dialog_status1 = false;
     },
     update_exercise_history() { //need fix here //update database
@@ -469,115 +496,23 @@ export default {
 
     //////////////////////////////// firebase methods
 
-    async fetch_all(){
-      //init
-      //prepare to check if exist below
-      const today = this.getStatDate();
+    async fetch_HW(){ //====
       let myQuery = this.db.collection("userStats").doc(this.uid);
-      await myQuery.get().then(soData => {
-        if (!soData.exists) { //create not exists
-          myQuery.set({ //5 of fundamental data
-          dummy:"dummy",
-            height:0,
-            weight:0,
-            weight_start:0,
-            calories_limit:0
-          });
-        } else { //exists
-          if(soData.data().dummy != "dummy") { //but from timerAPI
-            myQuery.set({ //5 of fundamental data
-              dummy:"dummy",
-              height:0,
-              weight:0,
-              weight_start:0,
-              calories_limit:0
-            });
-          }
-        }
-        console.log('done check first doc exists');
-      }).catch(e => {
-        console.log('errID4'+e);
-      });
-      //check if that user data exist for real
-      
       await myQuery.get().then(soData => {
         soData = soData.data();
         this.weight = soData.weight;
         this.weight_start = soData.weight_start;
         this.height = soData.height;
         this.calories_limit = soData.calories_limit;
-        console.log('done set WWHC');
+        //console.log('done set WWHC (second)'); second is ok 1 round
       }).catch(e => {
         console.log('errID2'+e);
       });
-      
-      myQuery = this.db.collection("userStats").doc(this.uid).collection("history").doc(today);
-      await myQuery.get().then(soData => {
-        if (!soData.exists) {
-          myQuery.set({
-            cal_burned :0,
-            cal_eaten :{
-              evening : 0,
-              morning : 0,
-              noon : 0
-            },
-            date : today,
-            exercise_time : 0
-          });
-        }
-      }).catch(e => {
-        console.log('errID1'+e);
-      });
-      
-
-      // created & ready // pass here
-
-      //history
-      myQuery = this.db.collection("userStats").doc(this.uid).collection('history');
-
-      
-
-      
-
-
-      this.historyDataByDate.forEach(async (data,index) => { //replace '' with real data
-        if (data == ''){
-          await myQuery.doc(this.historyDate[index]).get().then( soData => {
-            soData = soData.data();
-            //cal_eaten
-            this.cal_eaten[index] = soData.cal_eaten;
-            //cal_burned
-            this.cal_burned[index] = soData.cal_burned;
-            //exercise_time
-            this.exercise_time[index] = soData.exercise_time;
-            console.log('done set array EBT :'+(index+1)+'/7');
-          }).catch(e => {
-            console.log('errID3'+e)
-          });
-        }
-      })
-
-
-      //data to all history
-      //assign data to charts
-      this.goals[0].title = this.weightGainStatus;
-      this.goals[0].value = this.weightGainAbs;
-      this.goals[1].value = this.exerciseTime;
-      this.goals[1].measure = this.exTimeUnit;
-      this.goals[2].value = this.calEaten;
-
-      for (let i=1 ; i<8 ; i++) {
-        this.eatingData[i] = [this.historyDate[i-1], this.cal_eaten[i-1].morning, this.cal_eaten[i-1].noon, this.cal_eaten[i-1].evening];
-        this.exerciseData[i] = [this.historyDate[i-1], this.cal_burned[i-1]];
-      } 
-
-
     },
-    call_stat() {
-      if (this.firstVisit) {
-        this.firstVisit = false;
-      }
-      this.fetch_all();
+
+    call_stat() { //====
+      this.fetch_HW();
+      this.reloadChart();
     },
 
     async update_HW(H,W,uid) {
@@ -603,13 +538,13 @@ export default {
         console.log('errID6'+err+'atUpdateHW');
       }
     },
-    checkWeek() {
+    fillEmptyWeek() { //====
       //check exist if not then create
-      let myQuery = this.db.collection("userStats").doc(this.uid).collection('history');
+      console.log('start (fillEmptyWeek)')
       this.historyDate.forEach(async (iDate,index) => { //loop
         //check exist here
+        let myQuery = this.db.collection("userStats").doc(this.uid).collection('history');
         let myData = myQuery.doc(iDate);
-        let toPush;
         await myData.get().then(soData => {
           if (!soData.exist) { //not exist
             //create
@@ -623,15 +558,90 @@ export default {
               date : iDate,
               exercise_time : 0
             });
-            toPush = '';
-          } else { //exist
-            toPush = tempDoc.data()
           }
-          this.historyDataByDate[index] = toPush; //get doc from each date to check exist
-          console.log('done toPush :'+(index+1)+'/7');
+          console.log('done fill :'+(index+1)+'/7 in fillEmptyWeek');
         }).catch(e => {
           console.log('errID5'+e);
         }); // recieve doc
+      });
+    },
+    async genToday() { //====
+      myQuery = this.db.collection("userStats").doc(this.uid).collection("history").doc(today);
+      await myQuery.get().then(soData => {
+        if (!soData.exists) {
+          myQuery.set({
+            cal_burned :0,
+            cal_eaten :{
+              evening : 0,
+              morning : 0,
+              noon : 0
+            },
+            date : today,
+            exercise_time : 0
+          });
+        }
+        console.log('done history today exists (genToday)');
+      }).catch(e => {
+        console.log('errID1'+e);
+      });
+    },
+    reloadChart() { //====
+      try {
+        this.goals[0].title = this.weightGainStatus;
+        this.goals[0].value = this.weightGainAbs;
+        this.goals[1].value = this.exerciseTime;
+        this.goals[1].measure = this.exTimeUnit;
+        this.goals[2].value = this.calEaten;
+
+        for (let i=1 ; i<8 ; i++) {
+         this.eatingData[i] = [this.historyDate[i-1], this.cal_eaten[i-1].morning, this.cal_eaten[i-1].noon, this.cal_eaten[i-1].evening];
+          this.exerciseData[i] = [this.historyDate[i-1], this.cal_burned[i-1]];
+        }
+        console.log('done assign data to charts'); 
+      } catch (e) {
+        console.error('assign data to charts '+e);
+      }
+    },
+    async queryStats() { //====
+      console.log('start (queryStats)')
+      let historyRes;
+      try{
+        historyRes = await this.db.collection("userStats").doc(this.uid).collection('history').orderBy('date','desc').limit(7).get();
+      } catch (e) {
+        console.log('queuyStats '+e);
+      }
+      historyRes.forEach((doc,index) => { //desc = more recent come first
+        this.cal_eaten[6-index] = doc.data().cal_eaten;
+        this.cal_burned[6-index] = doc.data().cal_burned;
+        this.exercise_time[6-index] = doc.data().exercise_time;
+      });
+      
+    },
+    async checkExists(){ //====
+      let myQuery = this.db.collection("userStats").doc(this.uid);
+      await myQuery.get().then(soData => {
+        if (!soData.exists) { //create not exists
+          myQuery.set({ //5 of fundamental data
+          dummy:"dummy",
+            height:0,
+            weight:0,
+            weight_start:0,
+            calories_limit:0
+          });
+        } else { //exists
+          if(soData.data().dummy != "dummy") { //but from timerAPI
+            myQuery.set({ //5 of fundamental data
+              dummy:"dummy",
+              height:0,
+              weight:0,
+              weight_start:0,
+              calories_limit:0
+            });
+          }
+        }
+        //console.log('done check first doc exists (first)'); first is ok 1 round
+      }).catch(e => {
+        console.log('errID4'+e);
       });
     }
 
@@ -692,6 +702,7 @@ export default {
       let index6;
       try {
         index6 = this.exercise_time[6];
+        console.log('exTime can read now');
       } catch (e){
         index6 = 0;
         console.log('exTime err'+e);
@@ -706,6 +717,7 @@ export default {
       let result;
       try {
         result = this.exercise_time[6];
+        console.log('exerciseTime can read now');
       }catch(err){
         result = 0;
         console.log('exerciseTime err'+err);
@@ -717,8 +729,21 @@ export default {
       return result;
     },
     calEaten() {
-      return this.cal_eaten[6];
+      return this.cal_eaten[6].morning + this.cal_eaten[6].noon + this.cal_eaten[6].evening;
+    },
+    eatingHistoryC(){
+      return [
+        ["วัน", "มื้อเช้า", "มื้อกลางวัน", "มื้อเย็น"],
+        ['day1', 100, 200, 300], //first day
+        ['day2', 400, 500, 600],
+        ['day3', 100, 200, 300],
+        ['day4', 400, 500, 600],
+        ['day5', 100, 200, 300],
+        ['day6', 400, 500, 600],
+        ['day7', 100, 200, 300], //today
+      ]
     }
+    
   },
 
 
@@ -728,14 +753,24 @@ export default {
 
   },
   created: function(){
-    const temptoday = new Date();
     for (let i = 6 ; i >=0 ; i--) { //get year-month-day (0000-00-00)
-      this.historyDate[6-i] = this.getStatDate(temptoday,i);
+      this.historyDate[6-i] = this.getStatDate(new Date(),i);
+      console.log(this.historyDate[6-i]);
     }
-    this.cal_eaten = [0,0,0,0,0,0,0]
-    this.uid = this.$store.getters["userData"].data.uid;
-    this.db = fb.firestore();
-    this.fetch_all();
+    this.cal_eaten = [ //preset
+      {morning:0,noon:0,evening:0},
+      {morning:0,noon:0,evening:0},
+      {morning:0,noon:0,evening:0},
+      {morning:0,noon:0,evening:0},
+      {morning:0,noon:0,evening:0},
+      {morning:0,noon:0,evening:0},
+      {morning:0,noon:0,evening:0}
+    ]
+    this.checkExists();
+    this.genToday(); //do only 1 round
+    this.fillEmptyWeek();
+    this.fetch_HW();
+    this.queryStats();
   }
 };
 </script>
