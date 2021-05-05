@@ -284,7 +284,7 @@
                 <v-card rounded="xl" light class="pa-2 text-center elevation-5">
                   <GChart
                     type="ColumnChart"
-                    :data="this.calBurnedC"
+                    :data="calBurnedC"
                     :options="exerciseChartOptions"
                   ></GChart>
                 </v-card>
@@ -460,17 +460,18 @@ export default {
       this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
       this.dialog_status1 = false;
     },
-    update_exercise_history() { //need fix here //update database
+    async update_exercise_history() { //need fix here //update database
       let data;
       let tSport = this.temp_sport_type;
       let tTime = this.temp_exercise_time;
       let d = this.date;
       let totalCal = tTime*8;
-      this.dialog_status2 = false;
+      this.cal_burned[6] = parseInt(this.cal_burned[6]) +totalCal;
       data = {
-        cal_burned : totalCal
+        cal_burned : cal_burned[6]
       }
-      this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
+      await this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
+      this.dialog_status2 = false;
     },
     eating_history_range(){
       const current = new Date();
@@ -758,13 +759,13 @@ export default {
     calBurnedC() {
       return [
         ["วันที่", "แคลอรี่ที่เผาพลาญ"],
-        [this.historyDate[0], this.cal_burned[0]],
-        [this.historyDate[1], this.cal_burned[1]],
-        [this.historyDate[2], this.cal_burned[2]],
-        [this.historyDate[3], this.cal_burned[3]],
-        [this.historyDate[4], this.cal_burned[4]],
-        [this.historyDate[5], this.cal_burned[5]],
-        [this.historyDate[6], this.cal_burned[6]],
+        [this.historyDate[0], parseInt(this.cal_burned[0])],
+        [this.historyDate[1], parseInt(this.cal_burned[1])],
+        [this.historyDate[2], parseInt(this.cal_burned[2])],
+        [this.historyDate[3], parseInt(this.cal_burned[3])],
+        [this.historyDate[4], parseInt(this.cal_burned[4])],
+        [this.historyDate[5], parseInt(this.cal_burned[5])],
+        [this.historyDate[6], parseInt(this.cal_burned[6])],
       ]
     }
     
