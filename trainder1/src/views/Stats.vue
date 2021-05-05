@@ -186,7 +186,7 @@
             </v-row>
             <v-row>
               <v-col
-                v-for="goal in goals"
+                v-for="goal in goalsC"
                 :key="goal.id"
                 cols="4"
                 lg="12"
@@ -404,14 +404,14 @@ export default {
         height: 300,
         scaleBeginAtZero: true
       },
-      sports: ["กีฬาบาสเก็ตบอล","เวทเทรนนิ่ง","วิ่ง"],
+      sports: ["กีฬาบาสเก็ตบอล","เวทเทรนนิ่ง","วิ่ง",'จ้อกกิ้ง','ว่ายน้ำ:สบายๆ'],
       temp_sport: null,
       temp_exercise_time: null,
       historyDate : [],
       historyDataByDate : [],
       cal_eaten : [],
       cal_burned : [],
-      exercise_Time : null,
+      exercise_Time : [],
       weight_start: 0,
       calories_limit : 0,
       firstVisit : true,
@@ -420,6 +420,7 @@ export default {
       db: null,
       temp_sport_type:null,
       temp_date : null,
+      ch : true,
 
 
     }
@@ -431,47 +432,111 @@ export default {
       this.update_HW(this.height, this.weight, this.uid)
       this.dialog_status = false;
     },
-    async update_eating_history() { //need fix here //update database this.date = 0000-00-00
-      let d = this.temp_date;
+    update_eating_history() { //need fix here //update database this.date = 0000-00-00
+      //let d = this.temp_date;
       let tCal = parseInt(this.temp_cal);
-      let tMeal = this.temp_meal;
+      let tMeal = String(this.temp_meal);
       let data;
+      let i;
+      switch (String(d)){
+        case String(this.historyDate[0]):
+          i=0;
+          break;
+        case String(this.historyDate[1]):
+          i=1;
+          break;
+        case String(this.historyDate[2]):
+          i=2;
+          break;
+        case String(this.historyDate[3]):
+          i=3;
+          break;
+        case String(this.historyDate[4]):
+          i=4;
+          break;
+        case String(this.historyDate[5]):
+          i=5;
+          break;
+        case String(this.historyDate[6]):
+          i=6;
+          break;
+      }
+      if (i==6){
+        this.goals[1].value = tCal;
+      }
+      i = parseInt(i);
       if(tMeal == this.meals[0]){
-        this.cal_eaten[6].morning = tCal;
+        this.cal_eaten[i].morning = tCal;
         data = {
           cal_eaten : {
             morning : tCal
           }
         }
       }else if(tMeal == this.meals[1]) {
-        this.cal_eaten[6].noon = tCal;
+        this.cal_eaten[i].noon = tCal;
         data = {
           cal_eaten : {
             noon : tCal
           }
         }
       } else {
-        this.cal_eaten[6].evening = tCal;
+        this.cal_eaten[i].evening = tCal;
         data = {
           cal_eaten : {
             evening : tCal
           }
         }
       }
-      this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
+      try {
+        this.db.collection('userStats').doc(this.uid).collection('history').doc(this.temp_date).update(data);
+      } catch (err) {
+        console.log('updateEat'+err);
+      }
       this.dialog_status1 = false;
     },
-    async update_exercise_history() { //need fix here //update database
+    update_exercise_history() { //need fix here //update database
+      this.ch = !this.ch;
       let data;
       let tSport = this.temp_sport_type;
       let tTime = this.temp_exercise_time;
-      let d = this.temp_date;
-      let totalCal = tTime*8;
-      this.cal_burned[6] = this.cal_burned[6] +totalCal;
-      data = {
-        cal_burned : this.cal_burned[6]
+      //let d = this.temp_date;
+      let i;
+      switch (String(d)){
+        case String(this.historyDate[0]):
+          i=0;
+          break;
+        case String(this.historyDate[1]):
+          i=1;
+          break;
+        case String(this.historyDate[2]):
+          i=2;
+          break;
+        case String(this.historyDate[3]):
+          i=3;
+          break;
+        case String(this.historyDate[4]):
+          i=4;
+          break;
+        case String(this.historyDate[5]):
+          i=5;
+          break;
+        case String(this.historyDate[6]):
+          i=6;
+          break;
       }
-      await this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
+      if (i==6){
+        this.goals[2].value = totalCal;
+      }
+      let totalCal = tTime*this.getCalScale(tSport);
+      this.cal_burned[i] = this.cal_burned[i] +totalCal;
+      data = {
+        cal_burned : this.cal_burned[i]
+      }
+      try {
+        this.db.collection('userStats').doc(this.uid).collection('history').doc(this.temp_date).update(data);
+      } catch (err) {
+        console.log('updateExe'+err);
+      }
       this.dialog_status2 = false;
     },
     eating_history_range(){
@@ -526,7 +591,7 @@ export default {
 
     call_stat() { //====
       this.fetch_HW();
-      this.reloadChart();
+      //this.reloadChart();
     },
 
     async update_HW(H,W,uid) {
@@ -547,7 +612,7 @@ export default {
         }
       }
       try {
-        await this.db.collection('userStats').doc(uid).update(data);
+        await this.db.collection('userStats').doc(this.uid).update(data);
       } catch (err) {
         console.log('errID6'+err+'atUpdateHW');
       }
@@ -590,7 +655,7 @@ export default {
               morning : 0,
               noon : 0
             },
-            date : today,
+            date : this.getStatDate(),
             exercise_time : 0
           });
         }
@@ -599,31 +664,23 @@ export default {
         console.log('errID1'+e);
       });
     },
-    reloadChart() { //====
+    /* reloadChart() { //====
       try {
-        this.goals[0].title = this.weightGainStatus;
+       this.goals[0].title = this.weightGainStatus;
         this.goals[0].value = this.weightGainAbs;
         this.goals[1].value = this.exerciseTime;
         this.goals[1].measure = this.exTimeUnit;
         this.goals[2].value = this.calEaten;
 
-        /*for (let i=1 ; i<8 ; i++) {
-         this.eatingData[i] = [this.historyDate[i-1], this.cal_eaten[i-1].morning, this.cal_eaten[i-1].noon, this.cal_eaten[i-1].evening];
-          this.exerciseData[i] = [this.historyDate[i-1], this.cal_burned[i-1]];
-        }*/
+        
         console.log('done assign data to charts'); 
       } catch (e) {
         console.error('assign data to charts '+e);
       }
-    },
+    },*/
     async queryStats() { //====
       console.log('start (queryStats)')
-      let historyRes;
-      try{
-        historyRes = await this.db.collection("userStats").doc(this.uid).collection('history').orderBy('date','desc').limit(7).get();
-      } catch (e) {
-        console.log('queuyStats '+e);
-      }
+      let historyRes = await this.db.collection("userStats").doc(this.uid).collection('history').orderBy('date','desc').limit(7).get();
       historyRes.forEach((doc,index) => { //desc = more recent come first
         this.cal_eaten[6-index] = doc.data().cal_eaten;
         this.cal_burned[6-index] = doc.data().cal_burned;
@@ -657,10 +714,36 @@ export default {
       }).catch(e => {
         console.log('errID4'+e);
       });
+    },
+    getCalScale(weight=60, sport='jogging') {
+      function scaleValue(value, from, to) {
+	      var scale = (to[1] - to[0]) / (from[1] - from[0]);
+	      var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
+	      return ~~(capped * scale + to[0]);
+      }
+      let scale=0;
+      switch(sport) { //cal per 30 minutes
+          case 'จ้อกกิ้ง':
+              scale = scaleValue(weight,[56,83],[240,336]);
+              break;
+          case "วิ่งเร็ว":
+              scale = scaleValue(weight,[56,83],[375,525]);
+              break;
+          case "กีฬาบาสเก็ตบอล":
+              scale = scaleValue(weight,[56,83],[240,336]);
+              break;
+          case "เวทเทรนนิ่ง":
+              scale = scaleValue(weight,[56,83],[140,200]);
+              break;
+          case 'ว่ายน้ำ:สบายๆ':
+              scale = scaleValue(weight,[56,83],[180,252]);
+              break;
+          default:
+              scale = 240;
+          }
+          //cal_burned_per_minute
+      return scale /30;
     }
-
-
-
 
   },
   computed: {
@@ -758,19 +841,59 @@ export default {
       ]
     },
     calBurnedC() {
-      return [
+      if(this.ch){
+        return [
+          ["วันที่", "แคลอรี่ที่เผาพลาญ"],
+          [this.historyDate[0], parseInt(this.cal_burned[0])],
+          [this.historyDate[1], parseInt(this.cal_burned[1])],
+          [this.historyDate[2], parseInt(this.cal_burned[2])],
+          [this.historyDate[3], parseInt(this.cal_burned[3])],
+          [this.historyDate[4], parseInt(this.cal_burned[4])],
+          [this.historyDate[5], parseInt(this.cal_burned[5])],
+          [this.historyDate[6], parseInt(this.cal_burned[6])],
+        ]
+      } else {
+        return [
         ["วันที่", "แคลอรี่ที่เผาพลาญ"],
-        [this.historyDate[0], parseInt(this.cal_burned[0])],
-        [this.historyDate[1], parseInt(this.cal_burned[1])],
-        [this.historyDate[2], parseInt(this.cal_burned[2])],
-        [this.historyDate[3], parseInt(this.cal_burned[3])],
-        [this.historyDate[4], parseInt(this.cal_burned[4])],
-        [this.historyDate[5], parseInt(this.cal_burned[5])],
-        [this.historyDate[6], parseInt(this.cal_burned[6])],
+        ['day1', 100],
+        ['day2', 200],
+        ['day3', 300],
+        ['day4', 400],
+        ['day5', 500],
+        ['day6', 600],
+        ['day7', 700],
+      ]
+      }
+    },
+    goalsC() 
+    {
+      return [
+        {
+          icon: "mdi-weight", //weight gain display
+          title: this.weightGainStatus,
+          value: this.weightGainAbs, //weightGain()
+          measure: "กิโลกรัม",
+          id :0
+        },
+        {
+          icon: "mdi-run", //exercise time display
+          title: "คุณออกกำลังกายไป",
+          value: this.exerciseTime,
+          measure: this.exTimeUnit,
+          id :1
+        },
+        {
+          icon: "mdi-barley", //cal eaten display
+          title: "วันนี้คุณรับประทานไป",
+          value: this.calEaten,
+          measure: "แคลอรี่",
+          id:2
+        },
       ]
     }
     
   },
+  
 
 
   mounted(){
@@ -779,12 +902,13 @@ export default {
 
   },
   created: function(){
+    this.ch = false;
     this.temp_meal = 0;
     this.temp_cal = 0;
-    this.temp_date=0;
-    
-    this.db = fb.firestore();
+    this.temp_date='';
     this.uid = this.$store.getters["userData"].data.uid;
+    this.db = fb.firestore();
+    console.log('my uid is ' + this.$store.getters["userData"].data.uid);
     for (let i = 6 ; i >=0 ; i--) { //get year-month-day (0000-00-00)
       this.historyDate[6-i] = String(this.getStatDate(new Date(),i));
       console.log(this.historyDate[6-i]);
@@ -798,7 +922,16 @@ export default {
       {morning:0,noon:0,evening:0},
       {morning:0,noon:0,evening:0}
     ]
-    this.cal_burned[
+    this.cal_burned = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+    this.exercise_time = [
       0,
       0,
       0,
