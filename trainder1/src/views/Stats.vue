@@ -186,7 +186,7 @@
             </v-row>
             <v-row>
               <v-col
-                v-for="goal in goalsC"
+                v-for="goal in this.goalsC"
                 :key="goal.id"
                 cols="4"
                 lg="12"
