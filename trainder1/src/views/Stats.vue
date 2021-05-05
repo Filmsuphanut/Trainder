@@ -433,7 +433,7 @@ export default {
       this.dialog_status = false;
     },
     update_eating_history() { //need fix here //update database this.date = 0000-00-00
-      //let d = this.temp_date;
+      let d = this.temp_date;
       let tCal = parseInt(this.temp_cal);
       let tMeal = String(this.temp_meal);
       let data;
@@ -499,7 +499,7 @@ export default {
       let data;
       let tSport = this.temp_sport_type;
       let tTime = this.temp_exercise_time;
-      //let d = this.temp_date;
+      let d = this.temp_date;
       let i;
       switch (String(d)){
         case String(this.historyDate[0]):
