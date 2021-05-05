@@ -34,7 +34,7 @@
                         class="ma-1 pa-3 semi-transparent"
                         rounded="xl"
                         dark
-                        color="primary"
+                        color=" "
                         width="100%"
                         height="100%"
                         align="left"
@@ -48,7 +48,7 @@
                         class="ma-2 pa-2 semi-transparent"
                         rounded="xl"
                         dark
-                        color="primary"
+                        color=" "
                         width="100%"
                         height="100%"
                         align="center"
@@ -60,7 +60,7 @@
                         class="ma-2 pa-2 semi-transparent"
                         rounded="xl"
                         dark
-                        color="primary"
+                        color=" "
                         width="100%"
                         height="100%"
                         align="center"
