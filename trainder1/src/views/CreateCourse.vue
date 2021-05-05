@@ -37,6 +37,7 @@
               type="text"
               outlined
               label="รายละเอียดคอร์ส"
+              :rules="checkdetail"
             ></v-textarea>
 
             <v-select
@@ -391,7 +392,26 @@ export default {
       pre_eventdetails: null,
 
       ////////////////// rule
-      checkdata: [(val) => !!val || (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+      checkdata: [(val) => !!val || (val || "").length > 0 || "โปรดกรอกฟิลด์นี้", 
+      (val) =>(val && val.length <= 30 && 
+          (!val.match("\'") &&
+           !val.match("\"") &&
+          !val.match("#") &&
+          !val.match("AND") &&
+          !val.match("OR") &&
+          !val.match("  ") &&
+          !val.match(";"))) ||
+          "ต้องไม่เกิน 100 ตัวอักษร และ ไม่มีอัขระพิเศษดังนี้ (\' \" # AND OR spacebar(มากกว่า 2 ตัว) ;)",],
+      checkdetail: [(val) => !!val || (val || "").length > 0 || "โปรดกรอกฟิลด์นี้", 
+      (val) =>(val && val.length <= 100 && 
+          (!val.match("\'") &&
+           !val.match("\"") &&
+          !val.match("#") &&
+          !val.match("AND") &&
+          !val.match("OR") &&
+          !val.match("  ") &&
+          !val.match(";"))) ||
+          "ต้องไม่เกิน 100 ตัวอักษร และ ไม่มีอัขระพิเศษดังนี้ (\' \" # AND OR spacebar(มากกว่า 2 ตัว) ;)",],
       snackbar: false,
       snacksuccess: false,
       snackcollide: false,

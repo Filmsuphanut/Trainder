@@ -424,9 +424,9 @@ export default {
             !value.match("#") &&
             !value.match("AND") &&
             !value.match("OR") &&
-            !value.match("—") &&
+            !value.match("   ") &&
             !value.match(";")) ||
-          "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร",
+          "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร และ ไม่มีอัขระพิเศษดังนี้ (\' \" # AND OR spacebar(มากกว่า 3 ตัว) ;)",
       ],
       bankaccountNumberRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
