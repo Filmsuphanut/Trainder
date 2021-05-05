@@ -252,7 +252,7 @@
                             v-model="temp_sport_type"
                           ></v-select>
                           <v-text-field
-                            label="ระยะเวลา?"
+                            label="ระยะเวลา? (นาที)"
                             required
                             v-model="temp_exercise_time"
                           ></v-text-field>
@@ -432,22 +432,25 @@ export default {
     },
     async update_eating_history() { //need fix here //update database this.date = 0000-00-00
       let d = this.date;
-      let tCal = this.temp_cal;
+      let tCal = parseInt(this.temp_cal);
       let tMeal = this.temp_meal;
       let data;
       if(tMeal == this.meals[0]){
+        this.cal_eaten[6].morning = tCal;
         data = {
           cal_eaten : {
             morning : tCal
           }
         }
       }else if(tMeal == this.meals[1]) {
+        this.cal_eaten[6].noon = tCal;
         data = {
           cal_eaten : {
             noon : tCal
           }
         }
       } else {
+        this.cal_eaten[6].evening = tCal;
         data = {
           cal_eaten : {
             evening : tCal
@@ -458,7 +461,16 @@ export default {
       this.dialog_status1 = false;
     },
     update_exercise_history() { //need fix here //update database
+      let data;
+      let tSport = this.temp_sport_type;
+      let tTime = this.temp_exercise_time;
+      let d = this.date;
+      let totalCal = tTime*8;
       this.dialog_status2 = false;
+      data = {
+        cal_burned : totalCal
+      }
+      this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
     },
     eating_history_range(){
       const current = new Date();
