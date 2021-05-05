@@ -122,7 +122,7 @@
                       <v-row justify="center">
                         <v-col cols="12">
                           <v-date-picker
-                            v-model="date"
+                            v-model="temp_date"
                             class="mt-4"
                             :min="eating_history_range()[0]"
                             :max="eating_history_range()[1]"
@@ -240,7 +240,7 @@
                       <v-row justify="center">
                         <v-col cols="12">
                           <v-date-picker
-                            v-model="date"
+                            v-model="temp_date"
                             class="mt-4"
                             :min="eating_history_range()[0]"
                             :max="eating_history_range()[1]"
@@ -419,6 +419,7 @@ export default {
       uid:'',
       db: null,
       temp_sport_type:null,
+      temp_date : null,
 
 
     }
@@ -431,7 +432,7 @@ export default {
       this.dialog_status = false;
     },
     async update_eating_history() { //need fix here //update database this.date = 0000-00-00
-      let d = this.date;
+      let d = this.temp_date;
       let tCal = parseInt(this.temp_cal);
       let tMeal = this.temp_meal;
       let data;
@@ -464,11 +465,11 @@ export default {
       let data;
       let tSport = this.temp_sport_type;
       let tTime = this.temp_exercise_time;
-      let d = this.date;
+      let d = this.temp_date;
       let totalCal = tTime*8;
-      this.cal_burned[6] = parseInt(this.cal_burned[6]) +totalCal;
+      this.cal_burned[6] = this.cal_burned[6] +totalCal;
       data = {
-        cal_burned : cal_burned[6]
+        cal_burned : this.cal_burned[6]
       }
       await this.db.collection('userStats').doc(this.uid).collection('history').doc(d).update(data);
       this.dialog_status2 = false;
@@ -778,6 +779,10 @@ export default {
 
   },
   created: function(){
+    this.temp_meal = 0;
+    this.temp_cal = 0;
+    this.temp_date=0;
+    
     this.db = fb.firestore();
     this.uid = this.$store.getters["userData"].data.uid;
     for (let i = 6 ; i >=0 ; i--) { //get year-month-day (0000-00-00)
