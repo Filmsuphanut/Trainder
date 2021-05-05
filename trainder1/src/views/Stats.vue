@@ -166,7 +166,7 @@
                 <v-card rounded="xl" light class="pa-2 text-center elevation-5">
                   <GChart
                     type="ColumnChart"
-                    :data="eatingData"
+                    :data="this.eatingHistoryC"
                     :options="eatingChartOptions"
                   ></GChart>
                 </v-card>
@@ -284,7 +284,7 @@
                 <v-card rounded="xl" light class="pa-2 text-center elevation-5">
                   <GChart
                     type="ColumnChart"
-                    :data="exerciseData"
+                    :data="this.calBurnedC"
                     :options="exerciseChartOptions"
                   ></GChart>
                 </v-card>
@@ -593,10 +593,10 @@ export default {
         this.goals[1].measure = this.exTimeUnit;
         this.goals[2].value = this.calEaten;
 
-        for (let i=1 ; i<8 ; i++) {
+        /*for (let i=1 ; i<8 ; i++) {
          this.eatingData[i] = [this.historyDate[i-1], this.cal_eaten[i-1].morning, this.cal_eaten[i-1].noon, this.cal_eaten[i-1].evening];
           this.exerciseData[i] = [this.historyDate[i-1], this.cal_burned[i-1]];
-        }
+        }*/
         console.log('done assign data to charts'); 
       } catch (e) {
         console.error('assign data to charts '+e);
@@ -734,13 +734,25 @@ export default {
     eatingHistoryC(){
       return [
         ["วัน", "มื้อเช้า", "มื้อกลางวัน", "มื้อเย็น"],
-        ['day1', 100, 200, 300], //first day
-        ['day2', 400, 500, 600],
-        ['day3', 100, 200, 300],
-        ['day4', 400, 500, 600],
-        ['day5', 100, 200, 300],
-        ['day6', 400, 500, 600],
-        ['day7', 100, 200, 300], //today
+        [this.historyDate[0], this.cal_eaten[0].morning, this.cal_eaten[0].noon, this.cal_eaten[0].evening], //first day
+        [this.historyDate[1], this.cal_eaten[1].morning, this.cal_eaten[1].noon, this.cal_eaten[1].evening],
+        [this.historyDate[2], this.cal_eaten[2].morning, this.cal_eaten[2].noon, this.cal_eaten[2].evening],
+        [this.historyDate[3], this.cal_eaten[3].morning, this.cal_eaten[3].noon, this.cal_eaten[3].evening],
+        [this.historyDate[4], this.cal_eaten[4].morning, this.cal_eaten[4].noon, this.cal_eaten[4].evening],
+        [this.historyDate[5], this.cal_eaten[5].morning, this.cal_eaten[5].noon, this.cal_eaten[5].evening],
+        [this.historyDate[6], this.cal_eaten[6].morning, this.cal_eaten[6].noon, this.cal_eaten[6].evening], //today
+      ]
+    },
+    calBurnedC() {
+      return [
+        ["วันที่", "แคลอรี่ที่เผาพลาญ"],
+        [this.historyDate[0], this.cal_burned[0]],
+        [this.historyDate[1], this.cal_burned[1]],
+        [this.historyDate[2], this.cal_burned[2]],
+        [this.historyDate[3], this.cal_burned[3]],
+        [this.historyDate[4], this.cal_burned[4]],
+        [this.historyDate[5], this.cal_burned[5]],
+        [this.historyDate[6], this.cal_burned[6]],
       ]
     }
     
@@ -754,7 +766,7 @@ export default {
   },
   created: function(){
     for (let i = 6 ; i >=0 ; i--) { //get year-month-day (0000-00-00)
-      this.historyDate[6-i] = this.getStatDate(new Date(),i);
+      this.historyDate[6-i] = String(this.getStatDate(new Date(),i));
       console.log(this.historyDate[6-i]);
     }
     this.cal_eaten = [ //preset
@@ -765,6 +777,15 @@ export default {
       {morning:0,noon:0,evening:0},
       {morning:0,noon:0,evening:0},
       {morning:0,noon:0,evening:0}
+    ]
+    this.cal_burned[
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
     ]
     this.checkExists();
     this.genToday(); //do only 1 round
