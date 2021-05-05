@@ -381,7 +381,7 @@ export default {
       AddressRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
-          (value && value.length <= 100) || "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร",
+          (value && value.length <= 100 && !value.match("   ")) || "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร และ spacbar ต้องน้อยกว่า 3 ตัว" ,
       ],
 
       bankaccountNumberRule: [
