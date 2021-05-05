@@ -396,7 +396,6 @@ export default {
       (val) =>(val && val.length <= 30 && 
           (!val.match("\'") &&
            !val.match("\"") &&
-          !val.match("#") &&
           !val.match("AND") &&
           !val.match("OR") &&
           !val.match("  ") &&
