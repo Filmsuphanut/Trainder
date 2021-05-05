@@ -332,6 +332,24 @@
 </template>
 
 <script>
+
+function personalID_check(id){
+  let i=0, sum=0;
+  for(i=0, sum=0; i < 12; i++)
+    sum += parseFloat(id.charAt(i)) * (13 - i);
+    if((11 - sum % 11) % 10 != parseFloat(id.charAt(12))){
+      // console.log(sum);
+      // console.log((11 - sum % 11) % 10);
+      // console.log(id.charAt(12));
+      console.log("wrong personal id!");
+      return false;
+    }
+    console.log("this is personal id!");
+    return true;
+  
+}
+
+
 import firebase from "firebase";
 
 export default {
@@ -373,15 +391,23 @@ export default {
         (value) =>
           (value &&
             value.length == 13 &&
-            typeof parseInt(value) == "number" &&
-            parseInt(value) >= 0) ||
+            value.match(/^[0-9]+$/) &&
+          personalID_check(value)) ||
           "หมายเลขบัตรประชาชนต้องเป็นตัวเลข และ เท่ากับ 13 ตัว",
       ],
 
       AddressRule: [
         (value) => !!value || "โปรดกรอกฟิลด์นี้",
         (value) =>
-          (value && value.length <= 100 && !value.match("   ")) || "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร และ spacbar ต้องน้อยกว่า 3 ตัว" ,
+          (value && value.length <= 100 && 
+          (!value.match("\'") &&
+           !value.match("\"") &&
+          !value.match("#") &&
+          !value.match("AND") &&
+          !value.match("OR") &&
+          !value.match("  ") &&
+          !value.match(";"))) ||
+          "ที่อยู่ต้องไม่เกิน 100 ตัวอักษร และ ไม่มีอัขระพิเศษดังนี้ (\' \" # AND OR spacebar(มากกว่า 2 ตัว) ;)",
       ],
 
       bankaccountNumberRule: [
@@ -402,9 +428,12 @@ export default {
         (value) =>
           (value &&
             value.length == 10 &&
-            typeof parseInt(value) == "number" &&
-            parseInt(value) >= 0) ||
-          "เบอร์โทรศัพท์ต้องเป็นตัวเลข และ มี 10 หลัก",
+            value.match(/^[0-9]+$/) &&
+            (value[0] == '0' && 
+            value[1] == '6' || 
+            value[1] == '8' ||
+            value[1] == '9')) ||
+          "เบอร์โทรศัพท์มือถือต้องมีเลขขึ้นต้นเป็น 06, 08, 09 และ มี 10 หลัก",
       ],
 
       checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
