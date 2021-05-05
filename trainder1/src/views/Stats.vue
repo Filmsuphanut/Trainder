@@ -566,7 +566,7 @@ export default {
       });
     },
     async genToday() { //====
-      myQuery = this.db.collection("userStats").doc(this.uid).collection("history").doc(today);
+      let myQuery = this.db.collection("userStats").doc(this.uid).collection("history").doc(this.getStatDate());
       await myQuery.get().then(soData => {
         if (!soData.exists) {
           myQuery.set({
@@ -765,6 +765,8 @@ export default {
 
   },
   created: function(){
+    this.db = fb.firestore();
+    this.uid = this.$store.getters["userData"].data.uid;
     for (let i = 6 ; i >=0 ; i--) { //get year-month-day (0000-00-00)
       this.historyDate[6-i] = String(this.getStatDate(new Date(),i));
       console.log(this.historyDate[6-i]);
