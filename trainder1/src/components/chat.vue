@@ -133,6 +133,7 @@ export default {
       return current.uid == uid ? current.name : target.name;
     },
     async sendChat() {
+      if(this.msg){
       await axios.put("saveLog", {
         LogRef: this.user.logDoc,
         sender: this.user.current.uid,
@@ -140,6 +141,7 @@ export default {
         date: new Date().toLocaleTimeString(),
       });
       this.msg = "";
+    }
     },
     isCurrentUser(uid) {
       let user = this.nameDisplay(uid);

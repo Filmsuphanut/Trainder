@@ -160,15 +160,16 @@ export default {
 
       passwordRules: [
         (value) => !!value || "คุณยังไม่ได้ใส่รหัสผ่าน",
-        (value) =>
-          (value && value.length >= 8) ||
-          "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร",
+        (value) => (value && value.length >= 8) || "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัวอักษร",
+        (value) => (!value.match(" ")) || "ห้ามเป็น spacerbar",
       ],
       confirmPasswordRules: [
         (value) => !!value || "โปรดกรอกรหัสผ่านอีกครั้ง",
         (value) => value === this.userdata.pass || "รหัสผ่านไม่ตรงกัน",
+        (value) => (!value.match(" ")) || "ห้ามเป็น spacerbar",
       ],
-      checkdata: [(val) => (val || "").length > 0 || "โปรดกรอกฟิลด์นี้"],
+
+      checkdata: [(value) => !!value || "โปรดกรอกฟิลดิ์นี้",(value) => (value && value.length <= 20 && !value.match(" ")) || "ห้ามกรอกเกิน 20 ตัว และห้ามเป็น spacerbar"],
 
       checkbox: false,
       dialog: false,
