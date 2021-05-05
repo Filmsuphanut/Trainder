@@ -1,10 +1,9 @@
 <template>
-  <v-container>
-    <v-row no-gutters style="height: 150px">
+  <v-container class="pa-0 ma-0" fluid>
+    <v-row class="pa-0 ma-0" no-gutters style="height: 100vh">
       <v-col>
         <v-card
-          class="ma-2 pa-2"
-          rounded="xl"
+          class="pa-2 rounded-0"
           dark
           color="primary"
           height="100%"
@@ -19,82 +18,67 @@
       </v-col>
 
       <v-col cols="12" sm="2" md="9">
-        <v-card
-          class="ma-2 pa-2"
-          rounded="xl"
-          dark
-          color="blue"
-          width="100%"
-          height="100%"
-        >
+        <v-card rounded="0" dark color="black" width="100%" height="100%">
           <v-window v-model="onboarding">
             <v-carousel-item v-for="(item, i) in trainer_data" :key="`card-${i}`">
-              <v-row align="center" justify="center">
-                <v-card class="ma-5 pa-2" rounded="xl">
-                  <v-row align="center" justify="center">
-                    <v-card rounded="xl" width="600" height="550">
-                      <v-img
-                        class="white--text align-end"
-                        :src="item.profilePic"
+              <v-card rounded="lg">
+                <v-img
+                  class="white--text align-end"
+                  :src="item.profilePic"
+                  height="100vh"
+                  @click="onDetails(item)"
+                >
+                  <v-card-title>
+                    <v-col cols="8">
+                      <v-card
+                        class="ma-1 pa-3 semi-transparent"
+                        rounded="xl"
+                        dark
+                        color="primary"
+                        width="100%"
                         height="100%"
-                        max-width="600"
-                        @click="onDetails(item)"
+                        align="left"
+                        justify="start"
                       >
-                        <v-card-title>
-                          <v-col cols="8">
-                            <v-card
-                              class="ma-1 pa-3 semi-transparent"
-                              rounded="xl"
-                              dark
-                              color="primary"
-                              width="100%"
-                              height="100%"
-                              align="left"
-                              justify="start"
-                            >
-                              {{ item.fullName }}<br />เพศ : {{ item.Gender }}
-                            </v-card>
-                          </v-col>
-                          <v-col cols="4">
-                            <v-card
-                              class="ma-2 pa-2 semi-transparent"
-                              rounded="xl"
-                              dark
-                              color="primary"
-                              width="100%"
-                              height="100%"
-                              align="center"
-                              justify="center"
-                            >
-                              {{ item.EC_skill }}
-                            </v-card>
-                            <v-card
-                              class="ma-2 pa-2 semi-transparent"
-                              rounded="xl"
-                              dark
-                              color="primary"
-                              width="100%"
-                              height="100%"
-                              align="center"
-                              justify="center"
-                            >
-                              {{ item.Purpose }}
-                            </v-card>
-                          </v-col>
-                        </v-card-title>
-                      </v-img>
-                    </v-card>
-                  </v-row>
-                </v-card>
-              </v-row>
+                        {{ item.fullName }}<br />เพศ : {{ item.Gender }}
+                      </v-card>
+                    </v-col>
+                    <v-col cols="4">
+                      <v-card
+                        class="ma-2 pa-2 semi-transparent"
+                        rounded="xl"
+                        dark
+                        color="primary"
+                        width="100%"
+                        height="100%"
+                        align="center"
+                        justify="center"
+                      >
+                        {{ item.EC_skill }}
+                      </v-card>
+                      <v-card
+                        class="ma-2 pa-2 semi-transparent"
+                        rounded="xl"
+                        dark
+                        color="primary"
+                        width="100%"
+                        height="100%"
+                        align="center"
+                        justify="center"
+                      >
+                        {{ item.Purpose }}
+                      </v-card>
+                    </v-col>
+                  </v-card-title>
+                </v-img>
+              </v-card>
             </v-carousel-item>
           </v-window>
         </v-card>
       </v-col>
       <v-col>
         <v-card
-          class="ma-2 pa-2"
-          rounded="xl"
+          class="pa-2 rounded-0"
           dark
           color="primary"
           height="100%"
@@ -112,65 +96,75 @@
     <!-- details -->
 
     <v-dialog class="elevation-0" v-model="detail_dialog">
-      <v-container>
+      <v-container style="position: relative">
         <v-row align="center" justify="center">
           <!-- รายละเอียด -->
-          <v-card
-            class="ma-4 pa-4"
-            rounded="xl"
-            dark
-            color="primary"
-            width="100%"
-            height="100%"
-          >
+          <v-card class="pa-6 py-3" rounded="lg" light height="100%">
+            <v-btn
+              text
+              style="position: absolute; top: 10px; right: 10px; z-index: 20"
+              icon
+              fab
+              outlined
+              color="error"
+              @click="detail_dialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-card-title class="px-0 pb-0" primary-title>
+              <h2>
+                <v-icon color="primary" large left>mdi-account</v-icon>
+                ข้อมูลประจำตัวเทรนเนอร์
+              </h2>
+            </v-card-title>
+            <v-divider class="my-5"></v-divider>
             <v-row>
-              <v-col cols="2">
-                <v-card class="ma-2 pa-2" rounded="xl" height="195" width="190">
-                  <v-img
-                    class="white--text align-end"
-                    :src="details.profilePic"
-                    height="180"
-                    width="180"
-                  ></v-img>
-                </v-card>
-              </v-col>
-              <v-col cols="4">
-                <v-card class="ma-2 pa-4" rounded="xl" color="secondary">
-                  ชื่อ : {{ details.fullName }}<br />
-                  เพศ : {{ details.Gender }}<br />
-                  วันเกิด : {{ details.Birthday }}<br />
-                  อาชีพ : {{ details.Career }}<br />
-                  ติดต่อ : {{ details.PhoneNumber }}<br />
-                  ทักษะที่ถนัด : {{ details.EC_skill }}<br />
-                  เป้าหมาย : {{ details.Purpose }}
-                </v-card>
-              </v-col>
-              <v-col cols="3">
-                <v-card class="ma-2 pa-4" rounded="xl" color="green">
-                  คอร์สที่กำลังเปิดอยู่ :<br />
-                  <div v-for="(item, i) in trainer_course" :key="i">
-                    <div v-if="item.id == details.uid">- {{ item.name }}</div>
-                  </div>
-                </v-card>
-              </v-col>
+              <v-card
+                class="ma-2 pa-2"
+                color="primary"
+                rounded="lg"
+                height="195"
+                width="215"
+              >
+                <v-img
+                  class="white--text align-end"
+                  :src="details.profilePic"
+                  height="180"
+                  width="200"
+                ></v-img>
+              </v-card>
+              <v-card class="ma-2 pa-4 black--text" rounded="lg" color="white">
+                <span class="font-weight-bold"> ชื่อ </span>
+                {{ details.fullName }}<br />
+                <span class="font-weight-bold"> เพศ </span> : {{ details.Gender }}<br />
+                <span class="font-weight-bold"> วันเกิด</span> : {{ details.Birthday
+                }}<br />
+                <span class="font-weight-bold"> อาชีพ </span>: {{ details.Career }}<br />
+                <span class="font-weight-bold">ติดต่อ</span> : {{ details.PhoneNumber
+                }}<br />
+                <span class="font-weight-bold"> ทักษะที่ถนัด</span> : {{ details.EC_skill
+                }}<br />
+                <span class="font-weight-bold"> เป้าหมาย</span>:
+                {{ details.Purpose }}
+              </v-card>
+              <v-card class="ma-2 pa-4" rounded="lg" light>
+                <span class="font-weight-bold mb-2">คอร์สที่กำลังเปิดอยู่ : </span><br />
+                <div v-for="(item, i) in trainer_course" :key="i">
+                  <div v-if="item.id == details.uid">- {{ item.name }}</div>
+                </div>
+              </v-card>
             </v-row>
-          </v-card>
 
-          <!-- เกียรติบัตร -->
-          <v-card
-            class="ma-4 pa-4"
-            rounded="xl"
-            dark
-            color="secondary"
-            width="100%"
-            height="100%"
-          >
+            <v-divider class="my-5"></v-divider>
             <v-row class="ma-1">
-              <h2>เกียรติบัตรที่เกี่ยวข้องกับการออกกำลังกาย</h2>
+              <h2>
+                <v-icon color="amber" large left>mdi-certificate</v-icon>
+                เกียรติบัตรที่เกี่ยวข้องกับการออกกำลังกาย
+              </h2>
             </v-row>
             <v-row justify="start">
               <v-col cols="4">
-                <v-card hidden rounded="xl" height="150" width="250">
+                <v-card hidden rounded="lg" height="150" width="250">
                   <v-img
                     class="white--text align-end"
                     :src="details.cert1"
