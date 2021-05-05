@@ -9,7 +9,7 @@
               <h2>
                 <v-avatar color="white" class="mr-2"
                   ><v-icon color="accent">mdi-account-heart</v-icon></v-avatar
-                >Current Status
+                >สถานะล่าสุด
               </h2>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog_status" width="400">
@@ -21,25 +21,25 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    Update
+                    แก้ไข
                     <v-icon>mdi-update</v-icon>
                   </v-btn>
                 </template>
                 <v-card rounded="xl">
                   <v-card-title class="headline grey lighten-2">
-                    Update Your Weight and Height
+                    แก้ไขน้ำหนักและส่วนสูงของคุณ
                   </v-card-title>
                   <v-card-text>
                     <v-container>
                       <v-row>
                         <v-col cols="12">
                           <v-text-field
-                            label="Weight"
+                            label="น้ำหนัก"
                             required
                             v-model="temp_weight"
                           ></v-text-field>
                           <v-text-field
-                            label="Height"
+                            label="ส่วนสูง"
                             required
                             v-model="temp_height"
                           ></v-text-field>
@@ -53,10 +53,10 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" text @click="dialog_status = false">
-                      Cancel
+                      ยกเลิก
                     </v-btn>
                     <v-btn color="primary" text @click="update_status()">
-                      Update
+                      ยืนยัน
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -65,7 +65,7 @@
             <v-row>
               <v-col
                 v-for="(stat, index) in current_status"
-                :key="stat"
+                :key="stat.id"
                 xl="3"
                 lg="6"
                 md="6"
@@ -83,6 +83,7 @@
                     <v-icon large>{{ stat.icon }}</v-icon>
                     {{ stat.title }}
                   </span>
+                  <!-- display current value here -->
                   <h3>{{ current_value[index] }} {{ stat.measure }}</h3>
                 </v-card>
               </v-col>
@@ -95,7 +96,7 @@
               <h2>
                 <v-avatar color="white" class="mr-2"
                   ><v-icon color="accent">mdi-rice</v-icon></v-avatar
-                >Eating History
+                >ประวัติการรับประทานอาหาร
               </h2>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog_status1" width="400">
@@ -108,13 +109,13 @@
                     v-on="on"
                     @click="eating_history_range()"
                   >
-                    Update
+                    เพิ่มข้อมูล
                     <v-icon>mdi-update</v-icon>
                   </v-btn>
                 </template>
                 <v-card rounded="xl">
                   <v-card-title class="headline grey lighten-2">
-                    Update Your Meal and Calories
+                    โปรดใส่ข้อมูลการกินของคุณ
                   </v-card-title>
                   <v-card-text>
                     <v-container>
@@ -128,12 +129,12 @@
                           ></v-date-picker>
                           <v-select
                             :items="meals"
-                            label="Which Meal?"
+                            label="อาหารมื้อไหน?"
                             outlined
                             v-model="temp_meal"
                           ></v-select>
                           <v-text-field
-                            label="Calories"
+                            label="แคลอรี่"
                             required
                             v-model="temp_cal"
                           ></v-text-field>
@@ -147,14 +148,14 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" text @click="dialog_status1 = false">
-                      Cancel
+                      ยกเลิก
                     </v-btn>
                     <v-btn
                       color="primary"
                       text
                       @click="update_eating_history()"
                     >
-                      Update
+                      บันทึกข้อมูล
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -180,13 +181,13 @@
               <h2>
                 <v-avatar color="white" class="mr-2"
                   ><v-icon color="accent">mdi-bullseye-arrow</v-icon></v-avatar
-                >Goals
+                >เป้าหมาย
               </h2>
             </v-row>
             <v-row>
               <v-col
                 v-for="goal in goals"
-                :key="goal"
+                :key="goal.id"
                 cols="4"
                 lg="12"
                 class="d-flex flex-column"
@@ -214,7 +215,7 @@
               <h2>
                 <v-avatar color="white" class="mr-2"
                   ><v-icon color="accent">mdi-weight-lifter</v-icon></v-avatar
-                >Exercise History
+                >ประวัติการออกกำลังกาย
               </h2>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog_status2" width="400">
@@ -226,13 +227,13 @@
                     v-bind="attrs"
                     v-on="on"
                   >
-                    Update
+                    เพิ่มข้อมูลด้วยตนเอง
                     <v-icon>mdi-update</v-icon>
                   </v-btn>
                 </template>
                 <v-card rounded="xl">
                   <v-card-title class="headline grey lighten-2">
-                    Update Your Exercise History
+                    โปรดกรอกข้อมูลการออกกำลังกายภายนอกแอพของคุณ
                   </v-card-title>
                   <v-card-text>
                     <v-container>
@@ -246,12 +247,12 @@
                           ></v-date-picker>
                           <v-select
                             :items="sports"
-                            label="Which Sport?"
+                            label="ประเภทกีฬา?"
                             outlined
                             v-model="temp_meal"
                           ></v-select>
                           <v-text-field
-                            label="How long?"
+                            label="ระยะเวลา?"
                             required
                             v-model="temp_exercise_time"
                           ></v-text-field>
@@ -261,18 +262,18 @@
                   </v-card-text>
 
                   <v-divider></v-divider>
- 
+
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" text @click="dialog_status2 = false">
-                      Cancel
+                      ยกเลิก
                     </v-btn>
                     <v-btn
                       color="primary"
                       text
                       @click="update_exercise_history()"
                     >
-                      Update
+                      บันทึก
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -281,13 +282,11 @@
             <v-row>
               <v-col cols="12" class="flex-column">
                 <v-card rounded="xl" light class="pa-2 text-center elevation-5">
-
                   <GChart
                     type="ColumnChart"
                     :data="exerciseData"
                     :options="exerciseChartOptions"
                   ></GChart>
-
                 </v-card>
               </v-col>
             </v-row>
@@ -300,7 +299,7 @@
 
 <script>
 import { GChart } from "vue-google-charts";
-import firebase from 'firebase';
+import { fb } from "../firebase";
 
 
 export default {
@@ -311,23 +310,26 @@ export default {
     return {
       current_status: [
         {
-          title: "Weight",
+          title: "น้ำหนัก",
           icon: "mdi-weight-kilogram",
-          measure: "kg",
+          measure: "กิโลกรัม",
           color: '#F98C8C',
+          id: 0
         },
         {
-          title: "Height",
+          title: "ส่วนสูง",
           icon: "mdi-human-male-height-variant",
-          measure: "Cm",
+          measure: "เซนติเมตร",
           color: "#F98C8C",
+          id: 1
         },
-        { title: "BMI", icon: "mdi-tab-minus", measure: "", color: "#F98C8C" },
+        { title: "ค่าดัชนีมวลกาย", icon: "mdi-tab-minus", measure: "", color: "#F98C8C" ,id:2},
         {
-          title: "Status",
+          title: "ตอนนี้คุณ",
           icon: "mdi-heart-multiple",
           measure: "",
           color: "#F98C8C",
+          id:3
         },
       ],
       dialog_status: false,
@@ -335,87 +337,103 @@ export default {
       dialog_status2: false,
       temp_weight: null,
       temp_height: null,
-      weight: 65,
-      height: 180,
+      weight: 60,
+      height: 160,
       goals: [
         {
-          icon: "mdi-weight",
-          title: "Weight Gain lost",
-          value: 70,
-          measure: "Kg",
+          icon: "mdi-weight", //weight gain display
+          title: 'น้ำหนักคุณเพิ่มมา',
+          value: 0, //weightGain()
+          measure: "กิโลกรัม",
+          id :0
         },
         {
-          icon: "mdi-run",
-          title: "Exercise Time",
-          value: 3,
-          measure: "Hours",
+          icon: "mdi-run", //exercise time display
+          title: "คุณออกกำลังกายไป",
+          value: 0,
+          measure: 'นาที',
+          id :1
         },
         {
-          icon: "mdi-barley",
-          title: "Calories Eaten",
-          value: 5000,
-          measure: "Cals",
+          icon: "mdi-barley", //cal eaten display
+          title: "วันนี้คุณรับประทานไป",
+          value: 0,
+          measure: "แคลอรี่",
+          id:2
         },
       ],
       eatingData: [
-        ["Date", "Breakfast", "Lunch", "Dinner"],
-        ["2014", 1000, 400, 200],
-        ["2015", 1170, 460, 250],
-        ["2016", 660, 1120, 300],
-        ["2014", 1000, 400, 200],
-        ["2015", 1170, 460, 250],
-        ["2016", 660, 1120, 300],
-        ["2016", 660, 1120, 300],
+        ["วัน", "มื้อเช้า", "มื้อกลางวัน", "มื้อเย็น"],
+        ['day1', 100, 200, 300], //first day
+        ['day2', 400, 500, 600],
+        ['day3', 100, 200, 300],
+        ['day4', 400, 500, 600],
+        ['day5', 100, 200, 300],
+        ['day6', 400, 500, 600],
+        ['day7', 100, 200, 300], //today
       ],
       eatingChartOptions: {
         chart: {
-          title: "Kuy",
-          subtitle: "Rai I sus",
+          title: "กราฟการรับประทานอาหาร",
+          subtitle: "แสดงแคลอรี่ที่รับประทานเข้าไป วันนี้และย้อนหลัง6วัน",
         },
         colors: ["#1b9e77", "#d95f02", "#7570b3"],
         height: 400,
       },
-      meals: ["Breakfast", "Lunch", "Dinner"],
+      meals: ["มื้อเช้า", "กลางวัน", "เย็น"],
       temp_data: null,
       temp_meal: null,
       temp_cal: null,
       exerciseData: [
-        ["Date", "Calories Burned"],
-        ["2014", 1000],
-        ["2015", 1170],
-        ["2016", 660],
-        ["2014", 1000],
-        ["2015", 1170],
-        ["2016", 660],
-        ["2016", 660],
+        ["วันที่", "แคลอรี่ที่เผาพลาญ"],
+        ['day1', 100],
+        ['day2', 200],
+        ['day3', 300],
+        ['day4', 400],
+        ['day5', 500],
+        ['day6', 600],
+        ['day7', 700],
       ],
       exerciseChartOptions: {
         chart: {
-          title: "Kuy",
-          subtitle: "Rai I sus",
+          title: "กราฟแสดงการออกกำลังกาย",
+          subtitle: "แสดงแคลอรี่ที่เผาผลาญจากการออกกำลังกาย วันนี้และย้อนหลัง6วัน",
         },
         colors: ["#1b9e77", "#d95f02", "#7570b3"],
         height: 300,
       },
-      sports: ["Basketball","Weight Training","Running"],
+      sports: ["กีฬาบาสเก็ตบอล","เวทเทรนนิ่ง","วิ่ง"],
       temp_sport: null,
       temp_exercise_time: null,
+      historyDate : [],
+      historyDataByDate : [],
+      cal_eaten : [],
+      cal_burned : [],
+      exercise_Time : [],
+      weight_start: 0,
+      calories_limit : 0,
+      firstVisit : true,
+      date:0,
+      uid:'',
+      db: null,
+
+
     }
-  },
+  }, // end of data ====================================================
   methods: {
-    update_status() {
+    update_status() { //need fix here //update database
       this.weight = this.temp_weight;
       this.height = this.temp_height;
+      this.update_HW(this.height, this.weight, this.uid)
       this.dialog_status = false;
     },
-    update_eating_history() {
+    update_eating_history() { //need fix here //update database
       this.dialog_status1 = false;
     },
-    update_exercise_history() {
+    update_exercise_history() { //need fix here //update database
       this.dialog_status2 = false;
     },
     eating_history_range(){
-      
       const current = new Date();
       let tempDate = current.getDate()-7;
       let tempMonth = current.getMonth()+1;
@@ -437,51 +455,184 @@ export default {
       const max = current.getFullYear()+'-'+zeroone+(current.getMonth()+1)+'-'+(current.getDate());
       return [min,max];
     },
+    getStatDate(inDate = new Date(),goBack = 0) {
+      inDate.setDate(inDate.getDate()-goBack);
+      let d = inDate;
+      let year = d.getFullYear();
+      let month = d.getMonth()+1;
+      month = (month<10)?'0'+month:month;
+      let date = d.getDate();
+      date = (date<10)?'0'+date:date;
+      let myDate = `${year}-${month}-${date}`;
+      return myDate;
+    },
 
-//////////////////////////////// firebase methods
+    //////////////////////////////// firebase methods
 
-    async call_stat(){
-
-      let uid = this.$store.getters["userData"].data.uid;
-      let db = firebase.firestore();
-      let statRef = db.collection("userStats");
-      let statData = await statRef.get();
-      let check_stat_data = false;
-
-      statData.forEach(doc => {
-        if(doc.id == uid){
-          check_stat_data = true;
-        }
-      });
-
-      if(check_stat_data==true){
-        console.log("get data");
-        let statData = await statRef.doc(uid).get();
-        this.weight = statData.data().weight;
-        this.height = statData.data().height;
-
-
-      }else{
-        console.log("create data");
-
-        await statRef.doc(uid).set({
-          BMI:0,
-          BMI_status:"Normal",
-          calories_burned_history:{"0/0/0":0},
-          calories_eaten_history:{"0/0/0":{noon:0,morning:0,evening:0},calories_limit:0},
-          dates:{exercise_first_edited:"0/0/0",exercise_last_edited:"0/0/0",meal_first_edited:"0/0/0",meal_last_edited:"0/0/0",
-          weight_first_edited:"0/0/0",weight_last_edited:"0/0/0"},
-          exercise_time_history:{"0/0/0":0},
+    async fetch_all(){
+      //init
+      //prepare to check if exist below
+      const today = this.getStatDate();
+      let myQuery = this.db.collection("userStats").doc(this.uid);
+      await myQuery.get().then(soData => {
+        if (!soData.exists) { //create not exists
+          myQuery.set({ //5 of fundamental data
           dummy:"dummy",
-          height:0,
-          weight:0,
-          weight_start:0,
-        });
+            height:0,
+            weight:0,
+            weight_start:0,
+            calories_limit:0
+          });
+        } else { //exists
+          if(soData.data().dummy != "dummy") { //but from timerAPI
+            myQuery.set({ //5 of fundamental data
+              dummy:"dummy",
+              height:0,
+              weight:0,
+              weight_start:0,
+              calories_limit:0
+            });
+          }
+        }
+        console.log('done check first doc exists');
+      }).catch(e => {
+        console.log('errID4'+e);
+      });
+      //check if that user data exist for real
+      
+      await myQuery.get().then(soData => {
+        soData = soData.data();
+        this.weight = soData.weight;
+        this.weight_start = soData.weight_start;
+        this.height = soData.height;
+        this.calories_limit = soData.calories_limit;
+        console.log('done set WWHC');
+      }).catch(e => {
+        console.log('errID2'+e);
+      });
+      
+      myQuery = this.db.collection("userStats").doc(this.uid).collection("history").doc(today);
+      await myQuery.get().then(soData => {
+        if (!soData.exists) {
+          myQuery.set({
+            cal_burned :0,
+            cal_eaten :{
+              evening : 0,
+              morning : 0,
+              noon : 0
+            },
+            date : today,
+            exercise_time : 0
+          });
+        }
+      }).catch(e => {
+        console.log('errID1'+e);
+      });
+      
 
+      // created & ready // pass here
+
+      //history
+      myQuery = this.db.collection("userStats").doc(this.uid).collection('history');
+
+      
+
+      
+
+
+      this.historyDataByDate.forEach(async (data,index) => { //replace '' with real data
+        if (data == ''){
+          await myQuery.doc(this.historyDate[index]).get().then( soData => {
+            soData = soData.data();
+            //cal_eaten
+            this.cal_eaten[index] = soData.cal_eaten;
+            //cal_burned
+            this.cal_burned[index] = soData.cal_burned;
+            //exercise_time
+            this.exercise_time[index] = soData.exercise_time;
+            console.log('done set array EBT :'+(index+1)+'/7');
+          }).catch(e => {
+            console.log('errID3'+e)
+          });
+        }
+      })
+
+
+      //data to all history
+      //assign data to charts
+      this.goals[0].title = this.weightGainStatus;
+      this.goals[0].value = this.weightGainAbs;
+      this.goals[1].value = this.exerciseTime;
+      this.goals[1].measure = this.exTimeUnit;
+      this.goals[2].value = this.calEaten;
+
+      for (let i=1 ; i<8 ; i++) {
+        this.eatingData[i] = [this.historyDate[i-1], this.cal_eaten[i-1].morning, this.cal_eaten[i-1].noon, this.cal_eaten[i-1].evening];
+        this.exerciseData[i] = [this.historyDate[i-1], this.cal_burned[i-1]];
+      } 
+
+
+    },
+    call_stat() {
+      if (this.firstVisit) {
+        this.firstVisit = false;
       }
+      this.fetch_all();
+    },
 
-
-
+    async update_HW(H,W,uid) {
+      let data;
+      this.weight = W;
+      this.height = H;
+      if (this.weight_start ==0) { //include weight_start in data
+        this.weight_start = W;
+        data = {
+          weight : W,
+          height : H,
+          weight_start : W
+        }
+      } else {//dont
+        data = {
+          weight : W,
+          height : H
+        }
+      }
+      try {
+        await this.db.collection('userStats').doc(uid).update(data);
+      } catch (err) {
+        console.log('errID6'+err+'atUpdateHW');
+      }
+    },
+    checkWeek() {
+      //check exist if not then create
+      let myQuery = this.db.collection("userStats").doc(this.uid).collection('history');
+      this.historyDate.forEach(async (iDate,index) => { //loop
+        //check exist here
+        let myData = myQuery.doc(iDate);
+        let toPush;
+        await myData.get().then(soData => {
+          if (!soData.exist) { //not exist
+            //create
+            myData.set({
+              cal_burned : 0,
+              cal_eaten : {
+                morning : 0,
+                noon : 0,
+                evening : 0
+              },
+              date : iDate,
+              exercise_time : 0
+            });
+            toPush = '';
+          } else { //exist
+            toPush = tempDoc.data()
+          }
+          this.historyDataByDate[index] = toPush; //get doc from each date to check exist
+          console.log('done toPush :'+(index+1)+'/7');
+        }).catch(e => {
+          console.log('errID5'+e);
+        }); // recieve doc
+      });
     }
 
 
@@ -490,32 +641,83 @@ export default {
   },
   computed: {
     bmi() {
-      return (
-        Math.round(
-          (this.weight / ((this.height / 100) * (this.height / 100))) * 10
-        ) / 10
-      );
+      if (this.height >= 50 && this.height <= 300 && this.height != ''){
+        return (
+          Math.round(
+            (this.weight / ((this.height / 100) * (this.height / 100))) * 10
+          ) / 10
+        );
+      }
+      else {
+        return (
+          0
+        );
+      }
     },
     bmi_status() {
-      if (this.bmi < 18.5) {
-        return "Underweight";
+      if (this.bmi == 0) {
+        return "กรุณาตั้งน้ำหนักและส่วนสูงที่เหมาะสม";
+      } else if (this.bmi < 18.5) {
+        return "น้ำหนักต่ำกว่าเกฑณ์";
       } else if (this.bmi < 25) {
-        return "Normal range";
+        return "น้ำหนักปกติ";
       } else if (this.bmi < 30) {
-        return "Overweight";
+        return "น้ำหนักเกินเกฑณ์";
       } else if (this.bmi < 35) {
-        return "Obese class I";
+        return "เป็นโรคอ้วน ระดับ 1";
       } else if (this.bmi < 40) {
-        return "Obese class II";
+        return "เป็นโรคอ้วน ระดับ 2";
       } else {
-        return "Obese class III";
+        return "เป็นโรคอ้วน ระดับ 3";
       }
     },
     current_value() {
       return [this.weight, this.height, this.bmi, this.bmi_status];
     },
-    calculate_calories(){
-      return 0
+    weightGainCal() {
+      return this.weight-this.weight_start;
+    },
+    weightGainStatus() {
+      if (this.weightGainCal >= 0) {
+        return 'น้ำหนักคุณเพิ่มมา';
+      } else if(this.weightGainCal < 0) {
+        return 'น้ำหนักคุณลดไป';
+      }
+      return 'น้ำหนักคุณเพิ่มมา';
+    },
+    weightGainAbs() {
+      return Math.abs(this.weightGainCal);
+    },
+    exTimeUnit() { //minute or hour
+      let index6;
+      try {
+        index6 = this.exercise_time[6];
+      } catch (e){
+        index6 = 0;
+        console.log('exTime err'+e);
+      }
+      let result = 'นาที';
+      if (index6>60) {
+        result = 'ชั่วโมง';
+      }
+      return result;
+    },
+    exerciseTime(){
+      let result;
+      try {
+        result = this.exercise_time[6];
+      }catch(err){
+        result = 0;
+        console.log('exerciseTime err'+err);
+      }
+      
+      if (this.exTimeUnit === 'ชั่วโมง') {
+        result = Math.round(result/6)/10; //result in hour with 1 digit of decimal place
+      }
+      return result;
+    },
+    calEaten() {
+      return this.cal_eaten[6];
     }
   },
 
@@ -524,9 +726,16 @@ export default {
 
     this.call_stat();
 
-
-
-
+  },
+  created: function(){
+    const temptoday = new Date();
+    for (let i = 6 ; i >=0 ; i--) { //get year-month-day (0000-00-00)
+      this.historyDate[6-i] = this.getStatDate(temptoday,i);
+    }
+    this.cal_eaten = [0,0,0,0,0,0,0]
+    this.uid = this.$store.getters["userData"].data.uid;
+    this.db = fb.firestore();
+    this.fetch_all();
   }
 };
 </script>
